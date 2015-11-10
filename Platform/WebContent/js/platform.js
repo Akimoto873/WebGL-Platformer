@@ -25,6 +25,7 @@ var controllingCrane = false;
 var keyMap = [];
 var hinge1;
 var tempPos;
+var level1Texture;
 
 function main() {
 	init();
@@ -57,6 +58,13 @@ function init() {
 
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth
 			/ window.innerHeight, 0.01, 10000);
+	
+	camera.position.x = 2;
+	camera.position.y = 2;
+	camera.position.z = 2;
+	scene.add(camera);
+	
+	controls = new THREE.OrbitControls(camera); //Added for testing purposes. Makes it easier to see whats going on.
 
 	// Lights
 
@@ -77,16 +85,21 @@ function init() {
 
 	textureLoader = new THREE.TextureLoader();
 	var groundTexture = textureLoader.load('images/ground.jpg');
+	
 
 	dockMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
 		map : groundTexture
 	}), .7, .2);
+	
+	level1Texture = textureLoader.load('images/level_1_texture.jpg');
+	
 
 	var loader = new THREE.JSONLoader();
 
-	loader.load('models/dock.js', dockModelLoadedCallback);
-	loader.load('models/dock.js', dockModelLoadedCallback2);
+//	loader.load('models/dock.js', dockModelLoadedCallback);
+//	loader.load('models/dock.js', dockModelLoadedCallback2);
 	loader.load('models/char.js', characterLoadedCallback);
+	loader.load('models/level_01.js', level1loadedCallback);
 
 	window.addEventListener('resize', onWindowResize, false);
 	//
@@ -120,18 +133,9 @@ function init() {
 	 var craneTexture = textureLoader.load( 'images/crane.jpg');
 	 craneMaterial = Physijs.createMaterial( new THREE.MeshBasicMaterial({map: craneTexture}),  0.4, 0.8);
 	 
-	 group = new THREE.Object3D();
-     wholeCrane = new THREE.Object3D();
-     pivotHoz = new THREE.Object3D();
-     pivot1 = new THREE.Object3D();
-     pivot2 = new THREE.Object3D();
-     pivot3 = new THREE.Object3D();
-     helpBox = new THREE.Object3D();
-     hourPivot = new THREE.Object3D();
-     minutePivot = new THREE.Object3D();
-     secondPivot = new THREE.Object3D();
+	 
      craneObj = new THREE.Object3D();
-	 buildCrane();
+//	 buildCrane();
 
 //	document.addEventListener("keydown", function(e) {
 //		e = e || event;
@@ -190,6 +194,11 @@ function dockModelLoadedCallback2(geometry) {
 	scene.add(dockModel2);
 }
 
+function level1loadedCallback(geometry, materials){
+	levelMesh = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map:level1Texture}), 0.4, 0.6), 0);
+	scene.add(levelMesh);
+}
+
 function characterLoadedCallback(geometry, materials) {
 	charMesh = new Physijs.ConcaveMesh(geometry, Physijs.createMaterial(
 			new THREE.MeshBasicMaterial({
@@ -198,16 +207,16 @@ function characterLoadedCallback(geometry, materials) {
 	charMesh.position.y += 3;
 	
 	scene.add(charMesh);
-	camera.position.y = 5;
-	camera.position.z = -5;
-	camera.lookAt(charMesh.position);
-	charMesh.add(camera);
+//	camera.position.y = 5;
+//	camera.position.z = -5;
+//	camera.lookAt(charMesh.position);
+//	scene.add(camera);
 //	charMesh.setAngularFactor(0,1,0);
 	charMesh.addEventListener('collision', function(other_object,
 			relative_velocity, relative_rotation, contact_normal) {
-		if (other_object == dockModel || other_object == dockModel2) {
-			airborne = false;
-		}
+//		if (other_object == dockModel || other_object == dockModel2) {
+//			airborne = false;
+//		}
 	});
 	charMesh.setDamping(0.1, 0.9);
 	tick();
@@ -315,11 +324,11 @@ function checkMovement(){
 		}
 	
 		if (keyMap[65]) { //A
-			charMesh.setAngularVelocity(new THREE.Vector3(0, 1, 0));
+			charMesh.setAngularVelocity(new THREE.Vector3(0, 1.5, 0));
 	
 		}
 		if (keyMap[68]) { //D
-			charMesh.setAngularVelocity(new THREE.Vector3(0, -1, 0));
+			charMesh.setAngularVelocity(new THREE.Vector3(0, -1.5, 0));
 	
 		}
 		if(charMesh.position.y < -5){ //Checks if fallen off the edge.
