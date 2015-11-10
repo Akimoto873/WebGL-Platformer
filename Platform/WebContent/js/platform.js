@@ -38,6 +38,7 @@ function tick() {
 	renderer.render(scene, camera);
 	checkMovement();
 	
+	
 
 	requestAnimationFrame(tick);
 }
@@ -60,7 +61,7 @@ function init() {
 			/ window.innerHeight, 0.01, 10000);
 	
 	camera.position.x = 2;
-	camera.position.y = 2;
+	camera.position.y = 15;
 	camera.position.z = 2;
 	scene.add(camera);
 	
@@ -100,6 +101,8 @@ function init() {
 //	loader.load('models/dock.js', dockModelLoadedCallback2);
 	loader.load('models/char.js', characterLoadedCallback);
 	loader.load('models/level_01.js', level1loadedCallback);
+	
+	generateLevel();
 
 	window.addEventListener('resize', onWindowResize, false);
 	//
@@ -195,8 +198,9 @@ function dockModelLoadedCallback2(geometry) {
 }
 
 function level1loadedCallback(geometry, materials){
-	levelMesh = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map:level1Texture}), 0.4, 0.6), 0);
+	levelMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map:level1Texture}));
 	scene.add(levelMesh);
+	tick();
 }
 
 function characterLoadedCallback(geometry, materials) {
@@ -205,6 +209,7 @@ function characterLoadedCallback(geometry, materials) {
 				color : 0xeeff33
 			}), .7, .2), 1);
 	charMesh.position.y += 3;
+	charMesh.position.x += 10;
 	
 	scene.add(charMesh);
 //	camera.position.y = 5;
@@ -220,6 +225,7 @@ function characterLoadedCallback(geometry, materials) {
 	});
 	charMesh.setDamping(0.1, 0.9);
 	tick();
+	
 }
 
 //Just making a simple crane to test stuff.
@@ -374,6 +380,124 @@ function checkMovement(){
 			
 		}
 	}
+}
+
+function generateLevel(){
+	var floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100,1,100), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xee2233}), 0.4, 0.8), 0);
+	floor.position.y -= 2.5;
+	scene.add(floor);
+	var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(4, 4, 0.2), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x22ee44}), 0.4, 0.8), 0);
+	wall1 = cloneBox(basicWall1);
+	wall1.position.z +=3.9;
+	wall1.scale.set(3.5,1,1);
+	wall1.position.x += 3.5;
+	scene.add(wall1);
+	wall2 = cloneBox(basicWall1);
+	wall2.position.x -= 0;
+	wall2.position.z += 7.4;
+	wall2.scale.set(3.5, 1, 1);
+	scene.add(wall2);
+	wall3 = cloneBox(basicWall1);
+	wall3.position.x += 2;
+	wall3.position.z -= 7.5;
+	scene.add(wall3);
+	wall4 = cloneBox(basicWall1);
+	wall4.position.x += 2;
+	wall4.position.z -= 15;
+	scene.add(wall4);
+	wall5 = cloneBox(basicWall1);
+	wall5.position.x += 7;
+	wall5.position.z -= 10.5;
+	wall5.scale.set(1.6, 1, 1);
+	scene.add(wall5);
+	wall6 = cloneBox(basicWall1);
+	wall6.position.x -= 10;
+	wall6.position.z -= 25;
+	wall6.scale.set(12, 1, 1);
+	scene.add(wall6);
+	wall7 = cloneBox(basicWall1);
+	wall7.position.x += 2;
+	wall7.position.z += 10.5;
+	scene.add(wall7);
+	wall8 = cloneBox(basicWall1);
+	wall8.position.x += 20;
+	wall8.position.z += 11;
+	wall8.scale.set(3,1,1);
+	scene.add(wall8);
+	wall9 = cloneBox(basicWall1);
+	wall9.position.x += 17;
+	wall9.position.z += 14.5;
+	wall9.scale.set(2.5, 1,1);
+	scene.add(wall9);
+	wall10 = cloneBox(basicWall1);
+	wall10.position.x += 18;
+	wall10.position.z += 18;
+	wall10.scale.set(3.5, 1,1);
+	scene.add(wall10);
+	wall11 = cloneBox(basicWall1);
+	wall11.position.x += 4;
+	wall11.position.z += 21.5;
+	wall11.scale.set(11, 1,1);
+	scene.add(wall11);
+	wall12 = cloneBox(basicWall1);
+	wall12.position.x += 0;
+	wall12.position.z += 25;
+	wall12.scale.set(15, 1,1);
+	scene.add(wall12);
+	wall13 = cloneBox(basicWall1);
+	wall13.position.x -= 5;
+	wall13.position.z += 14.5;
+	wall13.scale.set(1, 1,1);
+	scene.add(wall13);
+	wall14 = cloneBox(basicWall1);
+	wall14.position.x -= 5.2;
+	wall14.position.z += 18;
+	wall14.scale.set(2.8, 1,1);
+	scene.add(wall14);
+	wall15 = cloneBox(basicWall1);
+	wall15.position.x -= 24;
+	wall15.position.z += 21.5;
+	wall15.scale.set(1, 1,1);
+	scene.add(wall15);
+	wall16 = cloneBox(basicWall1);
+	wall16.position.x -= 12.5;
+	wall16.position.z += 7.5;
+	wall16.scale.set(1, 1,1);
+	scene.add(wall16);
+	wall17 = cloneBox(basicWall1);
+	wall17.position.x -= 16;
+	wall17.position.z -= 0;
+	wall17.scale.set(1, 1,1);
+	scene.add(wall17);
+	wall18 = cloneBox(basicWall1);
+	wall18.position.x -= 19.5;
+	wall18.position.z -= 4;
+	wall18.scale.set(1, 1,1);
+	scene.add(wall18);
+	wall19 = cloneBox(basicWall1);
+	wall19.position.x -= 12.5;
+	wall19.position.z -= 14;
+	wall19.scale.set(1, 1,1);
+	scene.add(wall19);
+	wall20 = cloneBox(basicWall1);
+	wall20.position.x -= 11;
+	wall20.position.z -= 17.8;
+	wall20.scale.set(1.8, 1,1);
+	scene.add(wall20);
+	wall20 = cloneBox(basicWall1);
+	wall20.position.x -= 18;
+	wall20.position.z -= 21.5;
+	wall20.scale.set(1.8, 1,1);
+	scene.add(wall20);
+//	var basicWall2 = new Physijs.BoxMesh(new THREE.BoxGeometry(0.2, 4, 4), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444}), 0.4, 0.8), 0);
+//	wall4 = cloneBox(basicWall2);
+//	wall4.position.x -= 3.5;
+//	scene.add(wall4);
+}
+
+function cloneBox(object){
+	var clone = new Physijs.BoxMesh(object.clone().geometry, object.material, object.mass);
+	return clone;
 }
 
 function onWindowResize() {
