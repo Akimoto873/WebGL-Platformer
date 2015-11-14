@@ -6,7 +6,7 @@ levelGenerator = function(){
 }
 
 function generateLevel(){
-	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100,1,100), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xee2233, visibility: false}), 0.7, 0.2), 0);
+	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100,1,100), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xee2233, visible: false}), 0.7, 0.2), 0);
 	floor.position.y -= 2.25;
 	scene.add(floor);
 	var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(4, 6, 0.2), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x22ee44}), 0.0, 0.1), 0);
@@ -39,7 +39,7 @@ function generateLevel(){
 	wall6.scale.set(12, 1, 1);
 	scene.add(wall6);
 	wall7 = cloneBox(basicWall1);
-	wall7.position.x += 2;
+	wall7.position.x += 1.8;
 	wall7.position.z += 10.5;
 	scene.add(wall7);
 	wall8 = cloneBox(basicWall1);
@@ -68,12 +68,12 @@ function generateLevel(){
 	wall12.scale.set(15, 1,1);
 	scene.add(wall12);
 	wall13 = cloneBox(basicWall1);
-	wall13.position.x -= 5;
+	wall13.position.x -= 5.2;
 	wall13.position.z += 14.5;
 	wall13.scale.set(1, 1,1);
 	scene.add(wall13);
 	wall14 = cloneBox(basicWall1);
-	wall14.position.x -= 5.2;
+	wall14.position.x -= 5.4;
 	wall14.position.z += 18;
 	wall14.scale.set(2.8, 1,1);
 	scene.add(wall14);
@@ -130,28 +130,28 @@ function generateLevel(){
 	scene.add(wall23);
 	wall24 = cloneBox(basicWall2);
 	wall24.position.x -= 11;
-	wall24.position.z -= 23;
+	wall24.position.z -= 23.5;
 	wall24.scale.set(1,1,1);
 	scene.add(wall24);
 	wall25 = cloneBox(basicWall2);
 	wall25.position.x -= 14.5;
-	wall25.position.z += 16;
+	wall25.position.z += 16.2;
 	wall25.scale.set(1,1,2.5);
 	scene.add(wall25);
 	wall26 = cloneBox(basicWall2);
 	wall26.position.x -= 14.5;
-	wall26.position.z += 5;
+	wall26.position.z += 5.2;
 	wall26.scale.set(1,1,1);
 	scene.add(wall26);
 	wall27 = cloneBox(basicWall2);
 	wall27.position.x -= 14.5;
-	wall27.position.z -= 6;
-	wall27.scale.set(1,1,3.5);
+	wall27.position.z -= 6.5;
+	wall27.scale.set(1,1,3.4);
 	scene.add(wall27);
 	wall28 = cloneBox(basicWall2);
 	wall28.position.x -= 14.5;
-	wall28.position.z -= 20;
-	wall28.scale.set(1,1,1);
+	wall28.position.z -= 19.8;
+	wall28.scale.set(1,1,0.9);
 	scene.add(wall28);
 	wall29 = cloneBox(basicWall2);
 	wall29.position.x -= 18;
@@ -235,12 +235,25 @@ function generateLevel(){
 	scene.add(wall44);
 	crate = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5,1,1.5), crateMaterial, 15);
 	moveableObjects.push(crate);
+	crate.position.x += 9;
+	crate.position.z -= 12;
+	crate.addEventListener('collision', function(other_object,
+			relative_velocity, relative_rotation, contact_normal) {
+		if (other_object == trap || other_object == trap2left) {
+			crate.setLinearVelocity(new THREE.Vector3(0,0,0));
+			scene.remove(crate);
+			crate.position.x = 9;
+			crate.position.z = -12;
+			scene.add(crate);
+			
+		}
+	});
 	scene.add(crate);
 	tile = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444}), 0.0, 0.1), 0);
 	tile.position.x -= 9;
-	tile.position.y -= 1.7;
+	tile.position.y -= 2.55;
 	scene.add(tile);
-	trap = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 1, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444, visibility:false}), 0.0, 0.1), 100);
+	trap = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 1, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444}), 0.0, 0.1), 100);
 	trap.position.x -= 9;
 	trap.position.y += 4;
 	scene.add(trap);
@@ -248,7 +261,33 @@ function generateLevel(){
 	trap.setLinearFactor(new THREE.Vector3(0,0,0));
 	trap.setAngularFactor(new THREE.Vector3(0,0,0));
 	trapCaster = new THREE.Raycaster();
-	trapCaster.set(tile.position, new THREE.Vector3(0, 1, 0));
+	trapCaster.set(new THREE.Vector3(tile.position.x, tile.position.y, tile.position.z + 2), new THREE.Vector3(0, 1, 0));
+	tile2 = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 3), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444}), 0.0, 0.1), 0);
+	tile2.position.x -= 20;
+	tile2.position.z += 4
+	tile2.position.y -=2.55;
+	scene.add(tile2);
+	trap2left = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5, 6, 0.1), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x224444, visible: false}), 0.0, 0.1), 10);
+	trap2left.position.x -= 20;
+	trap2left.position.z += 24.5;
+	trap2left.position.y += 1.5;
+	scene.add(trap2left);
+	trap2left.setAngularFactor(new THREE.Vector3(0,0,0));
+	trap2left.setLinearFactor(new THREE.Vector3(0,0,1));
+	trapCaster2 = new THREE.Raycaster();
+	trapCaster2.set(tile2.position, new THREE.Vector3(0, 1,0));
+	exitSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2), exitMaterial, 0);
+	exitSign.position.x += 25;
+	exitSign.position.z += 23.2;
+	exitSign.position.y += 3;
+	scene.add(exitSign);
+	crushingSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2), crushingMaterial, 0);
+	crushingSign.position.x -= 10.6;
+	crushingSign.position.z += 16.5;
+	crushingSign.position.y += 3;
+	scene.add(crushingSign);
+	
+	
 	scene.traverse( function( node ) {
 
 	    if ( node instanceof Physijs.BoxMesh ) {
@@ -259,4 +298,6 @@ function generateLevel(){
 	    }
 
 	} );
+	levelLoaded = true;
+	checkTick();
 }

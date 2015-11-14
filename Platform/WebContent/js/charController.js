@@ -72,7 +72,7 @@ function checkMovement(){
 				if(distance.length() < 3){
 					scene.remove(crate);
 					crate.position.x = 0;
-					crate.position.y = 0;
+					crate.position.y = -1;
 					crate.position.z = 0;
 					charMesh.add(crate);
 					crate.position.z += 1;
@@ -96,28 +96,40 @@ function checkMovement(){
 				var finalPosition = positionDiff.applyMatrix4(rotationMatrix);
 				var oldPosition = charMesh.position
 				crate.position.x = oldPosition.x + finalPosition.x;
-				crate.position.y = oldPosition.y;
+				crate.position.y = -1;
 				crate.position.z = oldPosition.z + finalPosition.z;
 				scene.add(crate);
 				carrying = false;
 			}
 		}
+		charCaster.set(charMesh.position, new THREE.Vector3(0, -1, 0));
+		var intersects = charCaster.intersectObjects(objects);
 		if(airborne && airTime.getElapsedTime() > 1){ //check for landing
-			charCaster.set(charMesh.position, new THREE.Vector3(0, -1, 0));
-			var intersects = charCaster.intersectObjects(objects);
+			
 			for(var i = 0; i < intersects.length; i++){
 				if (intersects[i].distance < 10){
 						airborne = false;
 						airTime.stop();
-					
+
+						
 				}
 			}
 		}
+		if(intersects[0]){
+			if(charMesh.getLinearVelocity().y < -14 && intersects[0].distance < 2  ){
+				if(fallClock.getElapsedTime() > 1){
+					var damage = Math.abs(charMesh.getLinearVelocity().y) * 1.5;
+					health -= damage;
+					damaged = true;
+					fallClock = new THREE.Clock();
+				}
+			}
+		}
+		
 		var intersects = trapCaster.intersectObjects(moveableObjects);
 		
 		if(intersects.length > 0){
 			if(!triggered){
-				log("test");
 				trap.setLinearFactor(new THREE.Vector3(0,1,0));
 				trap.setAngularFactor(new THREE.Vector3(0,0,0));
 				scene.remove(trap);
@@ -131,41 +143,75 @@ function checkMovement(){
 			var intersects = trapCaster.intersectObject(trap);
 			
 			if(intersects[0].distance < 1){
-				trap.setLinearVelocity(new THREE.Vector3(0,10,0));
+				applyForce = true;
+			}
+			if(applyForce){
+				trap.applyCentralForce(new THREE.Vector3(0,1100,0));
+			}
+			if(intersects[0].distance > 6 && trapTime.getElapsedTime() > 2){
+				trap.setLinearVelocity(new THREE.Vector3(0,0,0));
+				trap.setLinearFactor(new THREE.Vector3(0,0,0));
+				applyForce = false;
+				
 				
 			}
-			if(intersects[0].distance > 5 && trapTime.getElapsedTime() > 2){
-				trap.setLinearVelocity(new THREE.Vector3(0,0,0));
-				scene.remove(trap);
-				scene.add(trap);
-				trap.setLinearFactor(new THREE.Vector3(0,0,0));
-				triggered = false;
+
+			if(trapTime.getElapsedTime() > 10){
 				trapTime.stop();
+				triggered = false;
 			}
 		}
 		
-	}
-	if(controllingCrane){
-		if(keyMap[65]){ //A
-			meshFoundation.setLinearVelocity(new THREE.Vector3(1,0,0));
-		}
-		if(keyMap[68]){ //D
-			meshFoundation.setLinearVelocity(new THREE.Vector3(-1,0,0));
-		}
-		if(keyMap[70]){ //F
-			controllingChar = true;
-			controllingCrane = false;
-			scene.remove(camera);
-			camera.position.x = tempPos.x;
-			camera.position.y = tempPos.y;
-			camera.position.z = tempPos.z;
-			camera.lookAt(charMesh.position); //This doesnt turn out exactly how it should. Don't know why.
+		var intersects = trapCaster2.intersectObjects(moveableObjects);
+		if(intersects.length > 0){
 			
-			charMesh.add(camera);
-			
+			if(!triggered2){
+				
+				trap2left.setLinearVelocity(new THREE.Vector3(0, 0, -7));
+				triggered2 = true;
+				
+			}
 		}
+		
+			
+		
+		
 	}
-	if(health < 1){
+//	if(controllingCrane){
+//		if(keyMap[65]){ //A
+//			meshFoundation.setLinearVelocity(new THREE.Vector3(1,0,0));
+//		}
+//		if(keyMap[68]){ //D
+//			meshFoundation.setLinearVelocity(new THREE.Vector3(-1,0,0));
+//		}
+//		if(keyMap[70]){ //F
+//			controllingChar = true;
+//			controllingCrane = false;
+//			scene.remove(camera);
+//			camera.position.x = tempPos.x;
+//			camera.position.y = tempPos.y;
+//			camera.position.z = tempPos.z;
+//			camera.lookAt(charMesh.position); //This doesnt turn out exactly how it should. Don't know why.
+//			
+//			charMesh.add(camera);
+//			
+//		}
+//	}
+	
+	
+	
+	if(damaged){
+		sprite.scale.set((Math.abs(health)/100)*(window.innerWidth/3),window.innerHeight/15,1);
+		sprite.position.x -= (0.1)*(window.innerWidth/6);
+		if(health < 80){
+			sprite.material.color.setHex(0xffff00);
+		}
+		if(health < 50){
+			sprite.material.color.setHex(0xff0000);
+		}
+		damaged = false;
+	}
+	if(health < 2){
 		showGameOver();
 		health = 100;
 	}
