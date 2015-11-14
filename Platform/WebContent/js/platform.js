@@ -31,10 +31,13 @@ var charCaster;
 var objects = [];
 var moveableObjects = [];
 var airTime;
+var trapTime;
 var crateMaterial;
-var charCam = false;
+var charCam = true;
 var carrying = false;
 var triggered = false;
+var health = 100;
+var gameOverAudio;
 
 function main() {
 	init();
@@ -77,7 +80,6 @@ function init() {
 	}
 	
 	
-	
 
 	// Lights
 
@@ -105,22 +107,22 @@ function init() {
 	}), .7, .2);
 	
 	level1Texture = textureLoader.load('images/level_1_texture.jpg');
+	trapTexture = textureLoader.load('images/bouncers.jpg');
 	
 	
 
 	var loader = new THREE.JSONLoader();
 
-//	loader.load('models/dock.js', dockModelLoadedCallback);
-//	loader.load('models/dock.js', dockModelLoadedCallback2);
 //	loader.load('models/char.js', characterLoadedCallback);
 	loader.load('models/level_01.js', level1loadedCallback);
+	loader.load('models/trap.js', trapLoadedCallback);
 	
 	 var craneTexture = textureLoader.load( 'images/crane.jpg');
 	 craneMaterial = Physijs.createMaterial( new THREE.MeshBasicMaterial({map: craneTexture}),  0.4, 0.8);
 	 var crateTexture = textureLoader.load('images/crate.jpg');
 	 crateMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({map: crateTexture}), 0.4, 0.8);
 	
-	generateLevel();
+	generator = new levelGenerator();
 
 	window.addEventListener('resize', onWindowResize, false);
 	//
@@ -149,7 +151,7 @@ function init() {
 	    }
 	};
 	
-	
+	gameOverAudio = new Audio('audio/gameOver.mp3');
 	
 	
 	 createChar();
@@ -201,23 +203,18 @@ function init() {
 
 }
 
-function dockModelLoadedCallback(geometry) {
-	dockModel = new Physijs.BoxMesh(geometry, dockMaterial, 0);
-	dockModel.position.y -= 1;
-	scene.add(dockModel);
-}
-
-function dockModelLoadedCallback2(geometry) {
-	dockModel2 = new Physijs.BoxMesh(geometry, dockMaterial, 0);
-	dockModel2.position.x += 35;
-	dockModel2.position.y -= 1;
-	scene.add(dockModel2);
-}
 
 function level1loadedCallback(geometry, materials){
 	levelMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map:level1Texture}));
 	scene.add(levelMesh);
 //	tick();
+}
+
+function trapLoadedCallback(geometry){
+	trapMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map:trapTexture}));
+	trapMesh.scale.set(0.1,0.1,0.1);
+	trapMesh.position.y -= 0.5;
+	trap.add(trapMesh);
 }
 
 function createChar() {
@@ -234,15 +231,15 @@ function createChar() {
 		camera.position.z +=0;
 		camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
 		charMesh.add(camera);
-		charMesh.material.visibility = false;
+		charMesh.material.visible = false;
 	}
 	charMesh.setAngularFactor(new THREE.Vector3(0,0.1,0));
-//	charMesh.addEventListener('collision', function(other_object,
-//			relative_velocity, relative_rotation, contact_normal) {
-//		if (other_object == floor) {
-//			airborne = false;
-//		}
-//	});
+	charMesh.addEventListener('collision', function(other_object,
+			relative_velocity, relative_rotation, contact_normal) {
+		if (other_object == trap) {
+			health -= 100;
+		}
+	});
 	charMesh.setDamping(0.1, 0.9);
 	
 	charCaster = new THREE.Raycaster();
@@ -323,427 +320,27 @@ function buildCrane(){
 //	camera.lookAt(charMesh.position);
 //}
 
-function checkMovement(){
-	if(controllingChar){
-		if (keyMap[87]) { //W
-			if(!airborne){
-				var rotationMatrix = new THREE.Matrix4();
-				rotationMatrix.extractRotation(charMesh.matrix);
-				var forceVector = new THREE.Vector3(0, 0, 4);
-				var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-				var oldVelocity = charMesh.getLinearVelocity();
-				charMesh.setLinearVelocity(new THREE.Vector3(finalForceVector.x, oldVelocity.y, finalForceVector.z ));
-			}
-		}
-		if (keyMap[83]) { //S
-			if(!airborne){
-				var rotationMatrix = new THREE.Matrix4();
-				rotationMatrix.extractRotation(charMesh.matrix);
-				var forceVector = new THREE.Vector3(0, 0, -4);
-				var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-				var oldVelocity = charMesh.getLinearVelocity();
-				charMesh.setLinearVelocity(new THREE.Vector3(finalForceVector.x, oldVelocity.y, finalForceVector.z ));
-			}
-	
-		}
-		if (keyMap[32]) { //Space
-			if (!airborne) {
-				airborne = true;
-				airTime = new THREE.Clock();
-				charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
-			}
-		}
-	
-		if (keyMap[65]) { //A
-			charMesh.setAngularVelocity(new THREE.Vector3(0, 1.5, 0));
-	
-		}
-		if (keyMap[68]) { //D
-			charMesh.setAngularVelocity(new THREE.Vector3(0, -1.5, 0));
-	
-		}
-		if(!keyMap[65] && !keyMap[68]){
-			charMesh.setAngularVelocity(new THREE.Vector3(0,0,0));
-		}
-		if(charMesh.position.y < -5){ //Checks if fallen off the edge.
-			charMesh.__dirtyPosition = true;
-			charMesh.position.x = 0;
-			charMesh.position.y = 5;
-			charMesh.position.z = 0;
-			charMesh.setLinearVelocity(new THREE.Vector3(0,0,0));
-			
-		}
-		if(keyMap[69]){ //E
-//			var distance = new THREE.Vector3(); 
-//			distance.subVectors(charMesh.position, meshFoundation.position);
-//			if(distance.length() < 3){
-//				controllingChar = false;
-//				controllingCrane = true;
-//				tempPos = camera.position.clone();		//		Crane
-//				charMesh.remove(camera);
-//				scene.add(camera);
-//				camera.position.set(0, 15, 15);
-//				camera.lookAt(meshFoundation.position);
-//				
-//			}
-			if(!carrying){
-				var distance = new THREE.Vector3();
-				distance.subVectors(charMesh.position, crate.position);
-				if(distance.length() < 3){
-					scene.remove(crate);
-					crate.position.x = 0;
-					crate.position.y = 0;
-					crate.position.z = 0;
-					charMesh.add(crate);
-					crate.position.z += 1;
-					carrying = true;
-				}
-			}
-			
-			
-		}
-		if(keyMap[70]){
-//			charMesh.remove(camera);
-//			charMesh.visible = true;
-//			camera.position.y += 10;   //CameraChange
-//			camera.lookAt(charMesh.position);
-//			scene.add(camera);
-			if(carrying){
-				charMesh.remove(crate);
-				var rotationMatrix = new THREE.Matrix4();
-				rotationMatrix.extractRotation(charMesh.matrix);
-				var positionDiff = new THREE.Vector3(0, 0, 1);
-				var finalPosition = positionDiff.applyMatrix4(rotationMatrix);
-				var oldPosition = charMesh.position
-				crate.position.x = oldPosition.x + finalPosition.x;
-				crate.position.y = oldPosition.y;
-				crate.position.z = oldPosition.z + finalPosition.z;
-				scene.add(crate);
-				carrying = false;
-			}
-		}
-		if(airborne && airTime.getElapsedTime() > 1){ //check for landing
-			charCaster.set(charMesh.position, new THREE.Vector3(0, -1, 0));
-			var intersects = charCaster.intersectObjects(objects);
-			for(var i = 0; i < intersects.length; i++){
-				if (intersects[i].distance < 10){
-						airborne = false;
-						airTime.stop();
-					
-				}
-			}
-		}
-		var intersects = trapCaster.intersectObjects(moveableObjects);
-		
-		if(intersects.length > 0){
-			if(!triggered){
-				log("test");
-				trap.setLinearFactor(new THREE.Vector3(0,1,0));
-				trap.setAngularFactor(new THREE.Vector3(0,0,0));
-				scene.remove(trap);
-				scene.add(trap);
-				trap.setAngularFactor(new THREE.Vector3(0,0,0));
-				triggered = true;
-			}
-		}
-		if(triggered){
-			var intersects = trapCaster.intersectObject(trap);
-			
-			if(intersects[0].distance < 1){
-				trap.setLinearVelocity(new THREE.Vector3(0,10,0));
-				
-			}
-			if(intersects[0].distance > 6){
-				trap.setLinearVelocity(new THREE.Vector3(0,0,0));
-				scene.remove(trap);
-				scene.add(trap);
-				trap.setLinearFactor(new THREE.Vector3(0,0,0));
-				triggered = false;
-			}
-		}
-		
-	}
-	if(controllingCrane){
-		if(keyMap[65]){ //A
-			meshFoundation.setLinearVelocity(new THREE.Vector3(1,0,0));
-		}
-		if(keyMap[68]){ //D
-			meshFoundation.setLinearVelocity(new THREE.Vector3(-1,0,0));
-		}
-		if(keyMap[70]){ //F
-			controllingChar = true;
-			controllingCrane = false;
-			scene.remove(camera);
-			camera.position.x = tempPos.x;
-			camera.position.y = tempPos.y;
-			camera.position.z = tempPos.z;
-			camera.lookAt(charMesh.position); //This doesnt turn out exactly how it should. Don't know why.
-			
-			charMesh.add(camera);
-			
-		}
-	}
-}
 
-function generateLevel(){
-	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100,1,100), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xee2233, visibility: false}), 0.7, 0.2), 0);
-	floor.position.y -= 2.25;
-	scene.add(floor);
-	var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(4, 6, 0.2), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x22ee44}), 0.0, 0.1), 0);
-	wall1 = cloneBox(basicWall1);
-	wall1.position.z +=3.9;
-	wall1.scale.set(3.5,1,1);
-	wall1.position.x += 3.5;
-	scene.add(wall1);
-	wall2 = cloneBox(basicWall1);
-	wall2.position.x -= 0;
-	wall2.position.z += 7.4;
-	wall2.scale.set(3.5, 1, 1);
-	scene.add(wall2);
-	wall3 = cloneBox(basicWall1);
-	wall3.position.x += 2;
-	wall3.position.z -= 7.5;
-	scene.add(wall3);
-	wall4 = cloneBox(basicWall1);
-	wall4.position.x += 2;
-	wall4.position.z -= 15;
-	scene.add(wall4);
-	wall5 = cloneBox(basicWall1);
-	wall5.position.x += 7;
-	wall5.position.z -= 10.5;
-	wall5.scale.set(1.6, 1, 1);
-	scene.add(wall5);
-	wall6 = cloneBox(basicWall1);
-	wall6.position.x -= 10;
-	wall6.position.z -= 25;
-	wall6.scale.set(12, 1, 1);
-	scene.add(wall6);
-	wall7 = cloneBox(basicWall1);
-	wall7.position.x += 2;
-	wall7.position.z += 10.5;
-	scene.add(wall7);
-	wall8 = cloneBox(basicWall1);
-	wall8.position.x += 20;
-	wall8.position.z += 11;
-	wall8.scale.set(2.8,1,1);
-	scene.add(wall8);
-	wall9 = cloneBox(basicWall1);
-	wall9.position.x += 16.5;
-	wall9.position.z += 14.5;
-	wall9.scale.set(2.8, 1,1);
-	scene.add(wall9);
-	wall10 = cloneBox(basicWall1);
-	wall10.position.x += 18;
-	wall10.position.z += 18;
-	wall10.scale.set(3.5, 1,1);
-	scene.add(wall10);
-	wall11 = cloneBox(basicWall1);
-	wall11.position.x += 4;
-	wall11.position.z += 21.5;
-	wall11.scale.set(11, 1,1);
-	scene.add(wall11);
-	wall12 = cloneBox(basicWall1);
-	wall12.position.x += 0;
-	wall12.position.z += 25;
-	wall12.scale.set(15, 1,1);
-	scene.add(wall12);
-	wall13 = cloneBox(basicWall1);
-	wall13.position.x -= 5;
-	wall13.position.z += 14.5;
-	wall13.scale.set(1, 1,1);
-	scene.add(wall13);
-	wall14 = cloneBox(basicWall1);
-	wall14.position.x -= 5.2;
-	wall14.position.z += 18;
-	wall14.scale.set(2.8, 1,1);
-	scene.add(wall14);
-	wall15 = cloneBox(basicWall1);
-	wall15.position.x -= 24;
-	wall15.position.z += 21.5;
-	wall15.scale.set(1, 1,1);
-	scene.add(wall15);
-	wall16 = cloneBox(basicWall1);
-	wall16.position.x -= 12.5;
-	wall16.position.z += 7.5;
-	wall16.scale.set(1, 1,1);
-	scene.add(wall16);
-	wall17 = cloneBox(basicWall1);
-	wall17.position.x -= 16;
-	wall17.position.z -= 0;
-	wall17.scale.set(1, 1,1);
-	scene.add(wall17);
-	wall18 = cloneBox(basicWall1);
-	wall18.position.x -= 19.5;
-	wall18.position.z -= 4;
-	wall18.scale.set(1, 1,1);
-	scene.add(wall18);
-	wall19 = cloneBox(basicWall1);
-	wall19.position.x -= 12.5;
-	wall19.position.z -= 14;
-	wall19.scale.set(1, 1,1);
-	scene.add(wall19);
-	wall20 = cloneBox(basicWall1);
-	wall20.position.x -= 11;
-	wall20.position.z -= 17.8;
-	wall20.scale.set(1.8, 1,1);
-	scene.add(wall20);
-	wall20 = cloneBox(basicWall1);
-	wall20.position.x -= 18;
-	wall20.position.z -= 21.5;
-	wall20.scale.set(1.8, 1,1);
-	scene.add(wall20);
-	var basicWall2 = new Physijs.BoxMesh(new THREE.BoxGeometry(0.2, 6, 4), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444}), 0.0, 0.1), 0);
-	wall21 = cloneBox(basicWall2);
-	wall21.position.x -= 3.5;
-	wall21.position.z -= 12;
-	wall21.scale.set(1,1,8);
-	scene.add(wall21);
-	wall22 = cloneBox(basicWall2);
-	wall22.position.x -= 7;
-	wall22.position.z -= 3;
-	wall22.scale.set(1,1,9);
-	scene.add(wall22);
-	wall23 = cloneBox(basicWall2);
-	wall23.position.x -= 11;
-	wall23.position.z += 2;
-	wall23.scale.set(1,1,8);
-	scene.add(wall23);
-	wall24 = cloneBox(basicWall2);
-	wall24.position.x -= 11;
-	wall24.position.z -= 23;
-	wall24.scale.set(1,1,1);
-	scene.add(wall24);
-	wall25 = cloneBox(basicWall2);
-	wall25.position.x -= 14.5;
-	wall25.position.z += 16;
-	wall25.scale.set(1,1,2.5);
-	scene.add(wall25);
-	wall26 = cloneBox(basicWall2);
-	wall26.position.x -= 14.5;
-	wall26.position.z += 5;
-	wall26.scale.set(1,1,1);
-	scene.add(wall26);
-	wall27 = cloneBox(basicWall2);
-	wall27.position.x -= 14.5;
-	wall27.position.z -= 6;
-	wall27.scale.set(1,1,3.5);
-	scene.add(wall27);
-	wall28 = cloneBox(basicWall2);
-	wall28.position.x -= 14.5;
-	wall28.position.z -= 20;
-	wall28.scale.set(1,1,1);
-	scene.add(wall28);
-	wall29 = cloneBox(basicWall2);
-	wall29.position.x -= 18;
-	wall29.position.z += 10;
-	wall29.scale.set(1,1,5.5);
-	scene.add(wall29);
-	wall30 = cloneBox(basicWall2);
-	wall30.position.x -= 18;
-	wall30.position.z -= 11;
-	wall30.scale.set(1,1,3.5);
-	scene.add(wall30);
-	wall31 = cloneBox(basicWall2);
-	wall31.position.x -= 21.5;
-	wall31.position.z -= 0;
-	wall31.scale.set(1,1,10);
-	scene.add(wall31);
-	wall32 = cloneBox(basicWall2);
-	wall32.position.x -= 25;
-	wall32.position.z -= 0;
-	wall32.scale.set(1,1,12);
-	scene.add(wall32);
-	wall33 = cloneBox(basicWall2);
-	wall33.position.x -= 3.5;
-	wall33.position.z += 12;
-	wall33.scale.set(1,1,1);
-	scene.add(wall33);
-	wall34 = cloneBox(basicWall2);
-	wall34.position.x += 0;
-	wall34.position.z += 14.5;
-	wall34.scale.set(1,1,2);
-	scene.add(wall34);
-	wall35 = cloneBox(basicWall2);
-	wall35.position.x += 3.5;
-	wall35.position.z += 14.5;
-	wall35.scale.set(1,1,2);
-	scene.add(wall35);
-	wall36 = cloneBox(basicWall2);
-	wall36.position.x += 0;
-	wall36.position.z -= 11;
-	wall36.scale.set(1,1,2);
-	scene.add(wall36);
-	wall37 = cloneBox(basicWall2);
-	wall37.position.x += 4;
-	wall37.position.z -= 3.5;
-	wall37.scale.set(1,1,2);
-	scene.add(wall37);
-	wall38 = cloneBox(basicWall2);
-	wall38.position.x += 4;
-	wall38.position.z -= 20.5;
-	wall38.scale.set(1,1,3);
-	scene.add(wall38);
-	wall39 = cloneBox(basicWall2);
-	wall39.position.x += 7.5;
-	wall39.position.z += 12.5;
-	wall39.scale.set(1,1,2.8);
-	scene.add(wall39);
-	wall40 = cloneBox(basicWall2);
-	wall40.position.x += 7;
-	wall40.position.z -= 12.5;
-	wall40.scale.set(1,1,6);
-	scene.add(wall40);
-	wall41 = cloneBox(basicWall2);
-	wall41.position.x += 11;
-	wall41.position.z -= 10.5;
-	wall41.scale.set(1,1,5.5);
-	scene.add(wall41);
-	wall42 = cloneBox(basicWall2);
-	wall42.position.x += 11;
-	wall42.position.z += 9;
-	wall42.scale.set(1,1,2.5);
-	scene.add(wall42);
-	wall43 = cloneBox(basicWall2);
-	wall43.position.x += 14.5;
-	wall43.position.z -= 9;
-	wall43.scale.set(1,1,10);
-	scene.add(wall43);
-	wall44 = cloneBox(basicWall2);
-	wall44.position.x += 25;
-	wall44.position.z += 15.5;
-	wall44.scale.set(1,1,3);
-	scene.add(wall44);
-	crate = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5,1,1.5), crateMaterial, 15);
-	moveableObjects.push(crate);
-	scene.add(crate);
-	tile = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444}), 0.0, 0.1), 0);
-	tile.position.x -= 9;
-	tile.position.y -= 1.7;
-	scene.add(tile);
-	trap = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 1, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444}), 0.0, 0.1), 100);
-	trap.position.x -= 9;
-	trap.position.y += 4;
-	scene.add(trap);
-	trap.setLinearFactor(new THREE.Vector3(0,0,0));
-	trap.setAngularFactor(new THREE.Vector3(0,0,0));
-	trapCaster = new THREE.Raycaster();
-	trapCaster.set(tile.position, new THREE.Vector3(0, 1, 0));
-	scene.traverse( function( node ) {
-
-	    if ( node instanceof Physijs.BoxMesh ) {
-
-	        // insert your code here, for example:
-	        objects.push(node);
-
-	    }
-
-	} );
-}
 
 function cloneBox(object){
 	var clone = new Physijs.BoxMesh(object.clone().geometry, object.material, object.mass);
 	clone.visible = false;
 	return clone;
+}
+
+function showGameOver(){
+	gameOverPopup = document.getElementById('gameOverPopup');
+	gameOverPopup.style.visibility = "visible";
+	gameOverPopup.style.position = 'absolute';
+	gameOverPopup.style.width = 300 + 'px';
+	gameOverPopup.style.height = 200 + 'px';
+	gameOverPopup.style.backgroundColor = "green";
+	gameOverPopup.innerHTML = "GAME OVER";
+	gameOverPopup.style.top = 300 + 'px';
+	gameOverPopup.style.left = 800 + 'px';
+	gameOverPopup.style.fontSize = 30 + 'px';
+	document.body.appendChild(gameOverPopup);
+	gameOverAudio.play();
 }
 
 function onWindowResize() {
