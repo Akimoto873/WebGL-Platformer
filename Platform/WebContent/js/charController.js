@@ -6,23 +6,36 @@
 function checkMovement(){
 	if(controllingChar){
 		if (keyMap[87]) { //W
-			if(!airborne){
-				var rotationMatrix = new THREE.Matrix4();
-				rotationMatrix.extractRotation(charMesh.matrix);
-				var forceVector = new THREE.Vector3(0, 0, 4);
-				var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-				var oldVelocity = charMesh.getLinearVelocity();
-				charMesh.setLinearVelocity(new THREE.Vector3(finalForceVector.x, oldVelocity.y, finalForceVector.z ));
-			}
+				if(keyMap[16] && stamina > 0 && Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) + Math.pow(charMesh.getLinearVelocity().z, 2)) < 8 ){
+					var rotationMatrix = new THREE.Matrix4();
+					rotationMatrix.extractRotation(charMesh.matrix);
+					var forceVector = new THREE.Vector3(0, 0, 200);
+					var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
+					var oldVelocity = charMesh.getLinearVelocity();
+					charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0, finalForceVector.z ));
+					stamina -= 2;
+				}
+				else if (Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) + Math.pow(charMesh.getLinearVelocity().z, 2)) < 4){
+					var rotationMatrix = new THREE.Matrix4();
+					rotationMatrix.extractRotation(charMesh.matrix);
+					var forceVector = new THREE.Vector3(0, 0, 200);
+					var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
+					var oldVelocity = charMesh.getLinearVelocity();
+					charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0, finalForceVector.z ));
+				}
+			
+		}
+		if(!keyMap[16] && stamina < 200){
+			stamina += 1;
 		}
 		if (keyMap[83]) { //S
-			if(!airborne){
+			if (Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) + Math.pow(charMesh.getLinearVelocity().z, 2)) < 4){
 				var rotationMatrix = new THREE.Matrix4();
 				rotationMatrix.extractRotation(charMesh.matrix);
-				var forceVector = new THREE.Vector3(0, 0, -4);
+				var forceVector = new THREE.Vector3(0, 0, -200);
 				var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
 				var oldVelocity = charMesh.getLinearVelocity();
-				charMesh.setLinearVelocity(new THREE.Vector3(finalForceVector.x, oldVelocity.y, finalForceVector.z ));
+				charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0, finalForceVector.z ));
 			}
 	
 		}
@@ -197,20 +210,22 @@ function checkMovement(){
 //			
 //		}
 //	}
-	
+	staminaSprite.scale.set((Math.abs(stamina)/200)*(window.innerWidth/3),window.innerHeight/15,1);
+	staminaSprite.position.x = (-window.innerWidth/3.2) -(1 - Math.abs(stamina/200))*(window.innerWidth/6.0);
 	
 	
 	if(damaged){
-		sprite.scale.set((Math.abs(health)/100)*(window.innerWidth/3),window.innerHeight/15,1);
-		sprite.position.x -= (0.1)*(window.innerWidth/6);
+		healthSprite.scale.set((Math.abs(health)/100)*(window.innerWidth/3),window.innerHeight/15,1);
+		healthSprite.position.x = (-window.innerWidth/3.2) -(1 - Math.abs(health/100))*(window.innerWidth/6.0);
 		if(health < 80){
-			sprite.material.color.setHex(0xffff00);
+			healthSprite.material.color.setHex(0xffff00);
 		}
 		if(health < 50){
-			sprite.material.color.setHex(0xff0000);
+			healthSprite.material.color.setHex(0xff0000);
 		}
 		damaged = false;
 	}
+	
 	if(health < 2){
 		showGameOver();
 		health = 100;

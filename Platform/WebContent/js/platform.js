@@ -26,7 +26,8 @@ var charCam = true;
 var carrying = false;
 var triggered = false;
 var triggered2 = false;
-var health = 101;
+var health = 101; 
+var stamina = 200;
 var gameOverAudio;
 var charLoaded = false;
 var levelLoaded = false;
@@ -156,7 +157,7 @@ function init() {
 function level1loadedCallback(geometry, materials){
 	levelMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map:level1Texture}));
 	levelMesh.scale.set(1,1.8,1)
-	levelMesh.position.y += 1;
+	levelMesh.position.y += 1.4;
 	scene.add(levelMesh);
 //	tick();
 }
@@ -177,7 +178,7 @@ function createChar() {
 	charMesh = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5,3,1), Physijs.createMaterial(
 			new THREE.MeshBasicMaterial({
 				color : 0xeeff33
-			}), .9, .1), 10);
+			}), .95, .1), 10);
 	charMesh.position.y += 1;
 	charMesh.position.x += 5;
 	
@@ -262,8 +263,23 @@ function createOverlay(){
 			  
 	  orthoScene = new THREE.Scene();
 	  var spriteMaterial = new THREE.SpriteMaterial({color: 0x00ff00});
-	  sprite = new THREE.Sprite(spriteMaterial);
-	  sprite.position.set(-(window.innerWidth/3.2),-(window.innerHeight/2) + 100,10);
-	  sprite.scale.set(window.innerWidth/3,window.innerHeight/15,1);
-	  orthoScene.add(sprite);
+	  healthSprite = new THREE.Sprite(spriteMaterial);
+	  healthSprite.position.set(-(window.innerWidth/3.2),-(window.innerHeight/2) + 100,10);
+	  healthSprite.scale.set(window.innerWidth/3,window.innerHeight/15,1);
+	  orthoScene.add(healthSprite);
+	  var spriteMaterial2 = new THREE.SpriteMaterial({color: 0x000000});
+	  healthSprite2 = new THREE.Sprite(spriteMaterial2);
+	  healthSprite2.position.set(-(window.innerWidth/3.2),-(window.innerHeight/2) + 100,8);
+	  healthSprite2.scale.set(window.innerWidth/3,window.innerHeight/15,1);
+	  orthoScene.add(healthSprite2);
+	  var spriteMaterial3 = new THREE.SpriteMaterial({color: 0x0000ff});
+	  staminaSprite = new THREE.Sprite(spriteMaterial3);
+	  staminaSprite.position.set(-(window.innerWidth/3.2),-(window.innerHeight/2.5) + 100,10);
+	  staminaSprite.scale.set(window.innerWidth/3,window.innerHeight/15,1);
+	  orthoScene.add(staminaSprite);
+	  var spriteMaterial4 = new THREE.SpriteMaterial({color: 0x000000});
+	  staminaSprite2 = new THREE.Sprite(spriteMaterial4);
+	  staminaSprite2.position.set(-(window.innerWidth/3.2),-(window.innerHeight/2.5) + 100,8);
+	  staminaSprite2.scale.set(window.innerWidth/3,window.innerHeight/15,1);
+	  orthoScene.add(staminaSprite2);
 }

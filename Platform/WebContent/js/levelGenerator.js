@@ -6,7 +6,7 @@ levelGenerator = function(){
 }
 
 function generateLevel(){
-	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100,1,100), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xee2233, visible: false}), 0.7, 0.2), 0);
+	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100,1,100), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xee2233, visible: false}), 0.9, 0.2), 0);
 	floor.position.y -= 2.25;
 	scene.add(floor);
 	var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(4, 6, 0.2), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x22ee44}), 0.0, 0.1), 0);
