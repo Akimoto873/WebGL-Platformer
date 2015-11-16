@@ -44,6 +44,8 @@ function checkMovement(){
 				airborne = true;
 				airTime = new THREE.Clock();
 				charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
+//				health -= 10;
+//				damaged = true;  //for testing purposes
 			}
 		}
 	
@@ -67,6 +69,19 @@ function checkMovement(){
 			
 		}
 		if(keyMap[69]){ //E
+			
+			
+			if (Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) + Math.pow(charMesh.getLinearVelocity().z, 2)) < 4){
+				var rotationMatrix = new THREE.Matrix4();
+				rotationMatrix.extractRotation(charMesh.matrix);
+				var forceVector = new THREE.Vector3(-200, 0, 0);
+				var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
+				var oldVelocity = charMesh.getLinearVelocity();
+				charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0, finalForceVector.z ));
+			}
+				
+				
+				
 //			var distance = new THREE.Vector3(); 
 //			distance.subVectors(charMesh.position, meshFoundation.position);
 //			if(distance.length() < 3){
@@ -79,6 +94,39 @@ function checkMovement(){
 //				camera.lookAt(meshFoundation.position);
 //				
 //			}
+			
+			
+			
+		}
+		
+		if(keyMap[82] && gameOverScreen){
+			restartLevel();
+		}
+		
+if(keyMap[81]){ //E
+			
+			
+			if (Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) + Math.pow(charMesh.getLinearVelocity().z, 2)) < 4){
+				var rotationMatrix = new THREE.Matrix4();
+				rotationMatrix.extractRotation(charMesh.matrix);
+				var forceVector = new THREE.Vector3(200, 0, 0);
+				var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
+				var oldVelocity = charMesh.getLinearVelocity();
+				charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0, finalForceVector.z ));
+			}
+				
+			
+			
+			
+		}
+
+		if(pickup){
+//			charMesh.remove(camera);
+//			charMesh.visible = true;
+//			camera.position.y += 10;   //CameraChange
+//			camera.lookAt(charMesh.position);
+//			scene.add(camera);
+			
 			if(!carrying){
 				var distance = new THREE.Vector3();
 				distance.subVectors(charMesh.position, crate.position);
@@ -90,18 +138,12 @@ function checkMovement(){
 					charMesh.add(crate);
 					crate.position.z += 1;
 					carrying = true;
+					pickupThisFrame = true;
 				}
 			}
 			
-			
-		}
-		if(keyMap[70]){
-//			charMesh.remove(camera);
-//			charMesh.visible = true;
-//			camera.position.y += 10;   //CameraChange
-//			camera.lookAt(charMesh.position);
-//			scene.add(camera);
-			if(carrying){
+			if(carrying && !pickupThisFrame){
+				
 				charMesh.remove(crate);
 				var rotationMatrix = new THREE.Matrix4();
 				rotationMatrix.extractRotation(charMesh.matrix);
@@ -109,11 +151,13 @@ function checkMovement(){
 				var finalPosition = positionDiff.applyMatrix4(rotationMatrix);
 				var oldPosition = charMesh.position
 				crate.position.x = oldPosition.x + finalPosition.x;
-				crate.position.y = -1;
+				crate.position.y = oldPosition.y - 1;
 				crate.position.z = oldPosition.z + finalPosition.z;
 				scene.add(crate);
 				carrying = false;
+				
 			}
+			pickup = false;
 		}
 		charCaster.set(charMesh.position, new THREE.Vector3(0, -1, 0));
 		var intersects = charCaster.intersectObjects(objects);
@@ -180,7 +224,7 @@ function checkMovement(){
 			
 			if(!triggered2){
 				
-				trap2left.setLinearVelocity(new THREE.Vector3(0, 0, -7));
+				trap2.setLinearVelocity(new THREE.Vector3(0, 0, -7));
 				triggered2 = true;
 				
 			}
@@ -210,13 +254,16 @@ function checkMovement(){
 //			
 //		}
 //	}
-	staminaSprite.scale.set((Math.abs(stamina)/200)*(window.innerWidth/3),window.innerHeight/15,1);
+	staminaSprite.scale.set((Math.abs(stamina)/200)*(window.innerWidth/3),window.innerHeight/16,1);
 	staminaSprite.position.x = (-window.innerWidth/3.2) -(1 - Math.abs(stamina/200))*(window.innerWidth/6.0);
 	
 	
 	if(damaged){
-		healthSprite.scale.set((Math.abs(health)/100)*(window.innerWidth/3),window.innerHeight/15,1);
+		healthSprite.scale.set((Math.abs(health)/100)*(window.innerWidth/3),window.innerHeight/16,1);
 		healthSprite.position.x = (-window.innerWidth/3.2) -(1 - Math.abs(health/100))*(window.innerWidth/6.0);
+		if(health > 80){
+			healthSprite.material.color.setHex(0x00ff00);
+		}
 		if(health < 80){
 			healthSprite.material.color.setHex(0xffff00);
 		}
@@ -226,8 +273,19 @@ function checkMovement(){
 		damaged = false;
 	}
 	
-	if(health < 2){
+	if(health < 1){
 		showGameOver();
 		health = 100;
 	}
+	if(gameOverScreen){
+		if(bloodSprite.material.opacity < 0.8){
+	
+			bloodSprite.material.opacity += 0.01;
+			gameOverSprite.material.opacity += 0.015;
+		}
+		else if(restartSprite.material.opacity < 0.5){
+			restartSprite.material.opacity += 0.02;
+		}
+	}
+	pickupThisFrame = false;
 }

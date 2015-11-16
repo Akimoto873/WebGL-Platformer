@@ -26,7 +26,7 @@ var charCam = true;
 var carrying = false;
 var triggered = false;
 var triggered2 = false;
-var health = 101; 
+var health = 100; 
 var stamina = 200;
 var gameOverAudio;
 var charLoaded = false;
@@ -34,21 +34,42 @@ var levelLoaded = false;
 var applyForce = false;
 var damaged = false;
 var fallClock;
+var pickup = false;
+var healthTexture;
+var healthBoxTexture;
+var bloodTexture;
+var gameOverTexture;
+var restartTexture;
+var gameOverScreen = false;
+var level = 1;
 
 function main() {
 	init();
 }
 
 function tick() {
-	scene.simulate();
-	stats.update();
-//	updateCamera(); //removed since camera is now attached to character.
-	renderer.clear();
-	renderer.render(scene, camera);
-	renderer.clearDepth();
-	renderer.render(orthoScene, orthoCamera);
-	checkMovement();
-	
+	if(level == 1){
+		scene.simulate();
+		stats.update();
+	//	updateCamera(); //removed since camera is now attached to character.
+		renderer.clear();
+		renderer.render(scene, camera);
+		renderer.clearDepth();
+		renderer.render(orthoScene, orthoCamera);
+		checkMovement();
+	}
+	else if(level == 2){
+		scene.simulate();
+		stats.update();
+	//	updateCamera(); //removed since camera is now attached to character.
+		renderer.clear();
+		renderer.render(scene, camera);
+		renderer.clearDepth();
+		renderer.render(orthoScene, orthoCamera);
+	}
+	else{
+		
+	}
 	
 
 	requestAnimationFrame(tick);
@@ -59,6 +80,7 @@ function init() {
 	Physijs.scripts.ammo = 'http://gamingJS.com/ammo.js';
 
 	scene = new Physijs.Scene();
+	scene.fog = new THREE.Fog(0x202020, 10, 100);
 	scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
 	scene.addEventListener('update', function() {
 		scene.simulate(); // simulate on every scene update
@@ -82,11 +104,10 @@ function init() {
 
 	// Lights
 
-	directionalLight = new THREE.DirectionalLight(0x909080);
-	directionalLight.position.set(-2, 2, 5);
 	ambientLight = new THREE.AmbientLight(0x606060);
-	scene.add(directionalLight);
 	scene.add(ambientLight);
+	
+	
 
 	// renderer
 
@@ -101,7 +122,7 @@ function init() {
 	textureLoader = new THREE.TextureLoader();
 	
 	
-	level1Texture = textureLoader.load('images/level_1_texture.jpg');
+	level1Texture = textureLoader.load('images/level_1_texture2.jpg');
 	trapTexture = textureLoader.load('images/crushers.jpg');
 	
 	
@@ -112,14 +133,20 @@ function init() {
 	loader.load('models/level_01.js', level1loadedCallback);
 	loader.load('models/trap.js', trapLoadedCallback);
 	
-	 var craneTexture = textureLoader.load( 'images/crane.jpg');
-	 craneMaterial = Physijs.createMaterial( new THREE.MeshBasicMaterial({map: craneTexture}),  0.4, 0.8);
 	 var crateTexture = textureLoader.load('images/crate.jpg');
 	 crateMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({map: crateTexture}), 0.4, 0.8);
 	 var exitTexture = textureLoader.load('images/exit.jpg');
 	 exitMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({map: exitTexture}), 0.4, 0.8);
 	 var crushingTexture = textureLoader.load('images/crushing.jpg');
 	 crushingMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({map:crushingTexture}), 0.4, 0.8);
+	 roofTexture = textureLoader.load('images/concrete.jpg');
+	 roofTexture.wrapT = roofTexture.wrapS = THREE.RepeatWrapping;
+	 roofTexture.repeat.set(20,20);
+	 healthTexture = textureLoader.load('images/health.jpg');
+	 healthBoxTexture = textureLoader.load('images/healthBox.png');
+	 bloodTexture = textureLoader.load('images/blood.jpg');
+	 gameOverTexture = textureLoader.load('images/gameOver.jpg');
+	 restartTexture = textureLoader.load('images/restart.jpg');
 	
 	generator = new levelGenerator();
 
@@ -141,6 +168,11 @@ function init() {
 	    keyMap[e.keyCode] = e.type == 'keydown';
 	    if(e.keyCode == 32){
 	    	e.preventDefault();
+	    }
+	    if(e.keyCode == 70){
+	    	if(e.type == 'keyup'){
+	    		pickup = true;
+	    	}
 	    }
 	};
 	
@@ -171,7 +203,7 @@ function trapLoadedCallback(geometry){
 	trap2Mesh = trapBase.clone();
 	trap2Mesh.rotation.x += Math.PI / 2;
 	trap2Mesh.scale.set(0.1,0.1,0.08);
-	trap2left.add(trap2Mesh);
+	trap2.add(trap2Mesh);
 }
 
 function createChar() {
@@ -192,9 +224,12 @@ function createChar() {
 	charMesh.setAngularFactor(new THREE.Vector3(0,0.1,0));
 	charMesh.addEventListener('collision', function(other_object,
 			relative_velocity, relative_rotation, contact_normal) {
-		if (other_object == trap || other_object == trap2left) {
+		if (other_object == trap || other_object == trap2) {
 			health -= 100;
 			damaged = true;
+		}
+		if(other_object == exit){
+			levelComplete();
 		}
 	});
 	charMesh.setDamping(0.1, 0.9);
@@ -215,17 +250,34 @@ function cloneBox(object){
 }
 
 function showGameOver(){
-	gameOverPopup = document.getElementById('gameOverPopup');
-	gameOverPopup.style.visibility = "visible";
-	gameOverPopup.style.position = 'absolute';
-	gameOverPopup.style.width = 300 + 'px';
-	gameOverPopup.style.height = 200 + 'px';
-	gameOverPopup.style.backgroundColor = "green";
-	gameOverPopup.innerHTML = "GAME OVER";
-	gameOverPopup.style.top = 300 + 'px';
-	gameOverPopup.style.left = 800 + 'px';
-	gameOverPopup.style.fontSize = 30 + 'px';
-	document.body.appendChild(gameOverPopup);
+	 var bloodMaterial = new THREE.SpriteMaterial({map: bloodTexture, opacity: 0.1});
+	  bloodSprite = new THREE.Sprite(bloodMaterial);
+	  bloodSprite.position.set(0,0,5);
+	  bloodSprite.scale.set(window.innerWidth,window.innerHeight,1);
+	  orthoScene.add(bloodSprite);
+	  var gameOverMaterial = new THREE.SpriteMaterial({map: gameOverTexture, opacity: 0.0});
+	  gameOverSprite = new THREE.Sprite(gameOverMaterial);
+	  gameOverSprite.position.set(0,0,4);
+	  gameOverSprite.scale.set(window.innerWidth,window.innerHeight,1);
+	  orthoScene.add(gameOverSprite);
+
+	  var restartSpriteMaterial = new THREE.SpriteMaterial({map: restartTexture, opacity: 0.0});
+	  restartSprite = new THREE.Sprite(restartSpriteMaterial);
+	  restartSprite.position.set(0,0,7);
+	  restartSprite.scale.set(window.innerWidth/2.5, window.innerHeight/2.5, 1);
+	  orthoScene.add(restartSprite);
+	  gameOverScreen = true;
+//	gameOverPopup = document.getElementById('gameOverPopup');
+//	gameOverPopup.style.visibility = "visible";
+//	gameOverPopup.style.position = 'absolute';
+//	gameOverPopup.style.width = 300 + 'px';
+//	gameOverPopup.style.height = 200 + 'px';
+//	gameOverPopup.style.backgroundColor = "green";
+//	gameOverPopup.innerHTML = "GAME OVER";
+//	gameOverPopup.style.top = 300 + 'px';
+//	gameOverPopup.style.left = 800 + 'px';
+//	gameOverPopup.style.fontSize = 30 + 'px';
+//	document.body.appendChild(gameOverPopup);
 	gameOverAudio.play();
 }
 
@@ -238,7 +290,6 @@ function onWindowResize() {
 
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
-
 	renderer.setSize(window.innerWidth, window.innerHeight);
 
 }
@@ -249,37 +300,98 @@ function log(param){
     },0)
 }
 
+function levelComplete(){
+	restartLevel();
+}
+
 function createOverlay(){
 	  overlayContainer = document.createElement( 'div' );
-	  overlayContainer.setAttribute(
-	    "style","width:800px; height:600px");
 	  document.body.appendChild( overlayContainer );
 	  
 	  orthoCamera = new THREE.OrthographicCamera( 
-			    window.innerWidth / - 2, window.innerWidth / 2,     window.innerHeight / 2, window.innerHeight / - 2, - 500, 1000 );
+			    window.innerWidth / - 2, window.innerWidth / 2,     window.innerHeight / 2, window.innerHeight / - 2, -10, 1000 );
 			  orthoCamera.position.x = 0;
 			  orthoCamera.position.y = 0;
 			  orthoCamera.position.z = 0;
 			  
 	  orthoScene = new THREE.Scene();
-	  var spriteMaterial = new THREE.SpriteMaterial({color: 0x00ff00});
+	  var spriteMaterial = new THREE.SpriteMaterial({map: healthTexture, color: 0x00ff00});
 	  healthSprite = new THREE.Sprite(spriteMaterial);
 	  healthSprite.position.set(-(window.innerWidth/3.2),-(window.innerHeight/2) + 100,10);
-	  healthSprite.scale.set(window.innerWidth/3,window.innerHeight/15,1);
+	  healthSprite.scale.set(window.innerWidth/3,window.innerHeight/16,1);
 	  orthoScene.add(healthSprite);
-	  var spriteMaterial2 = new THREE.SpriteMaterial({color: 0x000000});
+	  var spriteMaterial2 = new THREE.SpriteMaterial({map: healthBoxTexture, color: 0x000000});
 	  healthSprite2 = new THREE.Sprite(spriteMaterial2);
 	  healthSprite2.position.set(-(window.innerWidth/3.2),-(window.innerHeight/2) + 100,8);
-	  healthSprite2.scale.set(window.innerWidth/3,window.innerHeight/15,1);
+	  healthSprite2.scale.set(window.innerWidth/2.8,window.innerHeight/15,1);
 	  orthoScene.add(healthSprite2);
-	  var spriteMaterial3 = new THREE.SpriteMaterial({color: 0x0000ff});
+	  var spriteMaterial3 = new THREE.SpriteMaterial({map: healthTexture, color: 0x0000ff});
 	  staminaSprite = new THREE.Sprite(spriteMaterial3);
 	  staminaSprite.position.set(-(window.innerWidth/3.2),-(window.innerHeight/2.5) + 100,10);
-	  staminaSprite.scale.set(window.innerWidth/3,window.innerHeight/15,1);
+	  staminaSprite.scale.set(window.innerWidth/3,window.innerHeight/16,1);
 	  orthoScene.add(staminaSprite);
-	  var spriteMaterial4 = new THREE.SpriteMaterial({color: 0x000000});
+	  var spriteMaterial4 = new THREE.SpriteMaterial({map: healthBoxTexture, color: 0x000000});
 	  staminaSprite2 = new THREE.Sprite(spriteMaterial4);
 	  staminaSprite2.position.set(-(window.innerWidth/3.2),-(window.innerHeight/2.5) + 100,8);
-	  staminaSprite2.scale.set(window.innerWidth/3,window.innerHeight/15,1);
+	  staminaSprite2.scale.set(window.innerWidth/2.8,window.innerHeight/15,1);
 	  orthoScene.add(staminaSprite2);
+}
+
+function restartLevel(){ //Currently not finished.
+	level = 0;
+	resetChar();
+	resetCrate();
+	resetTraps();
+	health = 100;
+	damaged = true;
+	if(gameOverScreen){
+		gameOverScreen = false;
+		orthoScene.remove(bloodSprite);
+		orthoScene.remove(gameOverSprite);
+		orthoScene.remove(restartSprite);
+	}
+	level = 1;
+	
+	
+	
+}
+
+function resetChar(){
+	scene.remove(charMesh);
+	charMesh.remove(camera);
+	var temp = cloneBox(charMesh);
+	temp.visible = true;
+	charMesh = temp;
+	charMesh.position.set(5,1,0);
+	scene.add(charMesh);
+	camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
+	charMesh.add(camera);
+	charMesh.material.visible = false;
+	charMesh.setAngularFactor(new THREE.Vector3(0,0.1,0));
+	charMesh.addEventListener('collision', function(other_object,
+			relative_velocity, relative_rotation, contact_normal) {
+		if (other_object == trap || other_object == trap2) {
+			health -= 100;
+			damaged = true;
+		}
+		if(other_object == exit){
+			levelComplete();
+		}
+	});
+	charMesh.setDamping(0.1, 0.9);
+	moveableObjects.push(charMesh);
+	carrying = false;
+}
+
+function resetCrate(){
+	scene.remove(crate);
+	crate.position.set(9, 0 , -12);
+	scene.add(crate);
+}
+function resetTraps(){
+	scene.remove(trap2);
+	trap2.position.set(-20, 1.5, 24.5);
+	scene.add(trap2);
+	trap2.setAngularFactor(new THREE.Vector3(0,0,0));
+	triggered2 = false;
 }

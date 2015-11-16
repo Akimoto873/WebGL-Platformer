@@ -9,6 +9,9 @@ function generateLevel(){
 	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100,1,100), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xee2233, visible: false}), 0.9, 0.2), 0);
 	floor.position.y -= 2.25;
 	scene.add(floor);
+	roof = new Physijs.BoxMesh(new THREE.BoxGeometry(50,1,50), Physijs.createMaterial(new THREE.MeshBasicMaterial({map: roofTexture}), 0.9, 0.2), 0);
+	roof.position.y += 5;
+	scene.add(roof);
 	var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(4, 6, 0.2), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x22ee44}), 0.0, 0.1), 0);
 	wall1 = cloneBox(basicWall1);
 	wall1.position.z +=3.9;
@@ -239,7 +242,7 @@ function generateLevel(){
 	crate.position.z -= 12;
 	crate.addEventListener('collision', function(other_object,
 			relative_velocity, relative_rotation, contact_normal) {
-		if (other_object == trap || other_object == trap2left) {
+		if (other_object == trap || other_object == trap2) {
 			crate.setLinearVelocity(new THREE.Vector3(0,0,0));
 			scene.remove(crate);
 			crate.position.x = 9;
@@ -267,17 +270,17 @@ function generateLevel(){
 	tile2.position.z += 4
 	tile2.position.y -=2.55;
 	scene.add(tile2);
-	trap2left = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5, 6, 0.1), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x224444, visible: false}), 0.0, 0.1), 10);
-	trap2left.position.x -= 20;
-	trap2left.position.z += 24.5;
-	trap2left.position.y += 1.5;
-	scene.add(trap2left);
-	trap2left.setAngularFactor(new THREE.Vector3(0,0,0));
-	trap2left.setLinearFactor(new THREE.Vector3(0,0,1));
+	trap2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5, 6, 0.1), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x224444, visible: false}), 0.0, 0.1), 10);
+	trap2.position.x -= 20;
+	trap2.position.z += 24.5;
+	trap2.position.y += 1.5;
+	scene.add(trap2);
+	trap2.setAngularFactor(new THREE.Vector3(0,0,0));
+	trap2.setLinearFactor(new THREE.Vector3(0,0,1));
 	trapCaster2 = new THREE.Raycaster();
 	trapCaster2.set(tile2.position, new THREE.Vector3(0, 1,0));
 	exitSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2), exitMaterial, 0);
-	exitSign.position.x += 25;
+	exitSign.position.x += 24.5;
 	exitSign.position.z += 23.2;
 	exitSign.position.y += 3;
 	scene.add(exitSign);
@@ -286,6 +289,12 @@ function generateLevel(){
 	crushingSign.position.z += 16.5;
 	crushingSign.position.y += 3;
 	scene.add(crushingSign);
+	exit = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 6, 3), Physijs.createMaterial(new THREE.MeshPhongMaterial({color: 0x00ff00, emissive: 0x10ff10, shininess: 100, opacity: 0.5 })), 0);
+	exit.position.x += 25;
+	exit.position.z += 23.2;
+	scene.add(exit);
+	
+	
 	
 	
 	scene.traverse( function( node ) {
@@ -298,6 +307,7 @@ function generateLevel(){
 	    }
 
 	} );
+	
 	levelLoaded = true;
 	checkTick();
 }
