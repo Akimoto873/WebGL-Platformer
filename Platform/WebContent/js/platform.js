@@ -42,6 +42,7 @@ var gameOverTexture;
 var restartTexture;
 var gameOverScreen = false;
 var level = 1;
+var ambience;
 
 function main() {
 	init();
@@ -174,13 +175,33 @@ function init() {
 	    		pickup = true;
 	    	}
 	    }
+	    if(e.keyCode == 77){
+	    	if(e.type == 'keyup'){
+				if(ambience.volume != 0){
+					gameOverAudio.volume = 0;
+					ambience.volume = 0;
+				}
+				else{
+					gameOverAudio.volume = 0.5;
+					ambience.volume = 0.2;
+				}
+	    	}
+		}
 	};
 	
 	gameOverAudio = new Audio('audio/gameOver.mp3');
+	ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
+	ambience.volume = 0.2;
+	ambience.addEventListener('ended', function() {
+	    this.currentTime = 0;
+	    this.play();
+	}, false);
+	ambience.play();
 	
 	createOverlay();
 	 createChar();
 	 fallClock = new THREE.Clock();
+	 
 	 
 
 }
