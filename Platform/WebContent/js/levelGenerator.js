@@ -1,313 +1,187 @@
 /**
  * 
  */
-levelGenerator = function(){
+levelGenerator = function() {
 	generateLevel();
 }
 
-function generateLevel(){
-	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100,1,100), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xee2233, visible: false}), 0.9, 0.2), 0);
+function generateLevel() {
+	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false
+			}), 0.9, 0.2), 0);
 	floor.position.y -= 2.25;
 	scene.add(floor);
-	roof = new Physijs.BoxMesh(new THREE.BoxGeometry(50,1,50), Physijs.createMaterial(new THREE.MeshBasicMaterial({map: roofTexture}), 0.9, 0.2), 0);
+
+	roof = new Physijs.BoxMesh(new THREE.BoxGeometry(50, 1, 50), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				map : roofTexture
+			}), 0.9, 0.2), 0);
 	roof.position.y += 5;
 	scene.add(roof);
-	var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(4, 6, 0.2), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x22ee44}), 0.0, 0.1), 0);
-	wall1 = cloneBox(basicWall1);
-	wall1.position.z +=3.9;
-	wall1.scale.set(3.5,1,1);
-	wall1.position.x += 3.5;
-	scene.add(wall1);
-	wall2 = cloneBox(basicWall1);
-	wall2.position.x -= 0;
-	wall2.position.z += 7.4;
-	wall2.scale.set(3.5, 1, 1);
-	scene.add(wall2);
-	wall3 = cloneBox(basicWall1);
-	wall3.position.x += 2;
-	wall3.position.z -= 7.5;
-	scene.add(wall3);
-	wall4 = cloneBox(basicWall1);
-	wall4.position.x += 2;
-	wall4.position.z -= 15;
-	scene.add(wall4);
-	wall5 = cloneBox(basicWall1);
-	wall5.position.x += 7;
-	wall5.position.z -= 10.5;
-	wall5.scale.set(1.6, 1, 1);
-	scene.add(wall5);
-	wall6 = cloneBox(basicWall1);
-	wall6.position.x -= 10;
-	wall6.position.z -= 25;
-	wall6.scale.set(12, 1, 1);
-	scene.add(wall6);
-	wall7 = cloneBox(basicWall1);
-	wall7.position.x += 1.8;
-	wall7.position.z += 10.5;
-	scene.add(wall7);
-	wall8 = cloneBox(basicWall1);
-	wall8.position.x += 20;
-	wall8.position.z += 11;
-	wall8.scale.set(2.8,1,1);
-	scene.add(wall8);
-	wall9 = cloneBox(basicWall1);
-	wall9.position.x += 16.5;
-	wall9.position.z += 14.5;
-	wall9.scale.set(2.8, 1,1);
-	scene.add(wall9);
-	wall10 = cloneBox(basicWall1);
-	wall10.position.x += 18;
-	wall10.position.z += 18;
-	wall10.scale.set(3.5, 1,1);
-	scene.add(wall10);
-	wall11 = cloneBox(basicWall1);
-	wall11.position.x += 4;
-	wall11.position.z += 21.5;
-	wall11.scale.set(11, 1,1);
-	scene.add(wall11);
-	wall12 = cloneBox(basicWall1);
-	wall12.position.x += 0;
-	wall12.position.z += 25;
-	wall12.scale.set(15, 1,1);
-	scene.add(wall12);
-	wall13 = cloneBox(basicWall1);
-	wall13.position.x -= 5.2;
-	wall13.position.z += 14.5;
-	wall13.scale.set(1, 1,1);
-	scene.add(wall13);
-	wall14 = cloneBox(basicWall1);
-	wall14.position.x -= 5.4;
-	wall14.position.z += 18;
-	wall14.scale.set(2.8, 1,1);
-	scene.add(wall14);
-	wall15 = cloneBox(basicWall1);
-	wall15.position.x -= 24;
-	wall15.position.z += 21.5;
-	wall15.scale.set(1, 1,1);
-	scene.add(wall15);
-	wall16 = cloneBox(basicWall1);
-	wall16.position.x -= 12.5;
-	wall16.position.z += 7.5;
-	wall16.scale.set(1, 1,1);
-	scene.add(wall16);
-	wall17 = cloneBox(basicWall1);
-	wall17.position.x -= 16;
-	wall17.position.z -= 0;
-	wall17.scale.set(1, 1,1);
-	scene.add(wall17);
-	wall18 = cloneBox(basicWall1);
-	wall18.position.x -= 19.5;
-	wall18.position.z -= 4;
-	wall18.scale.set(1, 1,1);
-	scene.add(wall18);
-	wall19 = cloneBox(basicWall1);
-	wall19.position.x -= 12.5;
-	wall19.position.z -= 14;
-	wall19.scale.set(1, 1,1);
-	scene.add(wall19);
-	wall20 = cloneBox(basicWall1);
-	wall20.position.x -= 11;
-	wall20.position.z -= 17.8;
-	wall20.scale.set(1.8, 1,1);
-	scene.add(wall20);
-	wall20 = cloneBox(basicWall1);
-	wall20.position.x -= 18;
-	wall20.position.z -= 21.5;
-	wall20.scale.set(1.8, 1,1);
-	scene.add(wall20);
-	var basicWall2 = new Physijs.BoxMesh(new THREE.BoxGeometry(0.2, 6, 4), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444}), 0.0, 0.1), 0);
-	wall21 = cloneBox(basicWall2);
-	wall21.position.x -= 3.5;
-	wall21.position.z -= 12;
-	wall21.scale.set(1,1,8);
-	scene.add(wall21);
-	wall22 = cloneBox(basicWall2);
-	wall22.position.x -= 7;
-	wall22.position.z -= 3;
-	wall22.scale.set(1,1,9);
-	scene.add(wall22);
-	wall23 = cloneBox(basicWall2);
-	wall23.position.x -= 11;
-	wall23.position.z += 2;
-	wall23.scale.set(1,1,8);
-	scene.add(wall23);
-	wall24 = cloneBox(basicWall2);
-	wall24.position.x -= 11;
-	wall24.position.z -= 23.5;
-	wall24.scale.set(1,1,1);
-	scene.add(wall24);
-	wall25 = cloneBox(basicWall2);
-	wall25.position.x -= 14.5;
-	wall25.position.z += 16.2;
-	wall25.scale.set(1,1,2.5);
-	scene.add(wall25);
-	wall26 = cloneBox(basicWall2);
-	wall26.position.x -= 14.5;
-	wall26.position.z += 5.2;
-	wall26.scale.set(1,1,1);
-	scene.add(wall26);
-	wall27 = cloneBox(basicWall2);
-	wall27.position.x -= 14.5;
-	wall27.position.z -= 6.5;
-	wall27.scale.set(1,1,3.4);
-	scene.add(wall27);
-	wall28 = cloneBox(basicWall2);
-	wall28.position.x -= 14.5;
-	wall28.position.z -= 19.8;
-	wall28.scale.set(1,1,0.9);
-	scene.add(wall28);
-	wall29 = cloneBox(basicWall2);
-	wall29.position.x -= 18;
-	wall29.position.z += 10;
-	wall29.scale.set(1,1,5.5);
-	scene.add(wall29);
-	wall30 = cloneBox(basicWall2);
-	wall30.position.x -= 18;
-	wall30.position.z -= 11;
-	wall30.scale.set(1,1,3.5);
-	scene.add(wall30);
-	wall31 = cloneBox(basicWall2);
-	wall31.position.x -= 21.5;
-	wall31.position.z -= 0;
-	wall31.scale.set(1,1,10);
-	scene.add(wall31);
-	wall32 = cloneBox(basicWall2);
-	wall32.position.x -= 25;
-	wall32.position.z -= 0;
-	wall32.scale.set(1,1,12);
-	scene.add(wall32);
-	wall33 = cloneBox(basicWall2);
-	wall33.position.x -= 3.5;
-	wall33.position.z += 12;
-	wall33.scale.set(1,1,1);
-	scene.add(wall33);
-	wall34 = cloneBox(basicWall2);
-	wall34.position.x += 0;
-	wall34.position.z += 14.5;
-	wall34.scale.set(1,1,2);
-	scene.add(wall34);
-	wall35 = cloneBox(basicWall2);
-	wall35.position.x += 3.5;
-	wall35.position.z += 14.5;
-	wall35.scale.set(1,1,2);
-	scene.add(wall35);
-	wall36 = cloneBox(basicWall2);
-	wall36.position.x += 0;
-	wall36.position.z -= 11;
-	wall36.scale.set(1,1,2);
-	scene.add(wall36);
-	wall37 = cloneBox(basicWall2);
-	wall37.position.x += 4;
-	wall37.position.z -= 3.5;
-	wall37.scale.set(1,1,2);
-	scene.add(wall37);
-	wall38 = cloneBox(basicWall2);
-	wall38.position.x += 4;
-	wall38.position.z -= 20.5;
-	wall38.scale.set(1,1,3);
-	scene.add(wall38);
-	wall39 = cloneBox(basicWall2);
-	wall39.position.x += 7.5;
-	wall39.position.z += 12.5;
-	wall39.scale.set(1,1,2.8);
-	scene.add(wall39);
-	wall40 = cloneBox(basicWall2);
-	wall40.position.x += 7;
-	wall40.position.z -= 12.5;
-	wall40.scale.set(1,1,6);
-	scene.add(wall40);
-	wall41 = cloneBox(basicWall2);
-	wall41.position.x += 11;
-	wall41.position.z -= 10.5;
-	wall41.scale.set(1,1,5.5);
-	scene.add(wall41);
-	wall42 = cloneBox(basicWall2);
-	wall42.position.x += 11;
-	wall42.position.z += 9;
-	wall42.scale.set(1,1,2.5);
-	scene.add(wall42);
-	wall43 = cloneBox(basicWall2);
-	wall43.position.x += 14.5;
-	wall43.position.z -= 9;
-	wall43.scale.set(1,1,10);
-	scene.add(wall43);
-	wall44 = cloneBox(basicWall2);
-	wall44.position.x += 25;
-	wall44.position.z += 15.5;
-	wall44.scale.set(1,1,3);
-	scene.add(wall44);
-	crate = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5,1,1.5), crateMaterial, 15);
+//	roof.visible = false;
+	var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(4, 6, 0.2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44
+			}), 0.0, 0.1), 0);
+
+	addWall(basicWall1, 3.5, 3.9, 3.5, 1, 1);
+	addWall(basicWall1, 0, 7.4, 3.5, 1, 1);
+	addWall(basicWall1, 2, -7.5, 1, 1, 1);
+	addWall(basicWall1, 2, -15, 1, 1, 1);
+	addWall(basicWall1, 7, -10.5, 1.6, 1, 1);
+	addWall(basicWall1, -10, -25, 12, 1, 1);
+	addWall(basicWall1, 1.8, 10.5, 1, 1, 1);
+	addWall(basicWall1, 20, 11, 2.8, 1, 1);
+	addWall(basicWall1, 16.5, 14.5, 2.8, 1, 1);
+	addWall(basicWall1, 18, 18, 3.5, 1, 1);
+	addWall(basicWall1, 4, 21.5, 11, 1, 1);
+	addWall(basicWall1, 0, 25, 15, 1, 1);
+	addWall(basicWall1, -5.2, 14.5, 1, 1, 1);
+	addWall(basicWall1, -5.4, 18, 2.8, 1, 1);
+	addWall(basicWall1, -24, 21.5, 1, 1, 1);
+	addWall(basicWall1, -12.5, 7.5, 0.8, 1, 1);
+	addWall(basicWall1, -16.5, 0, 0.8, 1, 1);
+	addWall(basicWall1, -20, -4, 0.8, 1, 1);
+	addWall(basicWall1, -12.5, -14, 1, 1, 1);
+	addWall(basicWall1, -11, -17.8, 1.8, 1, 1);
+	addWall(basicWall1, -18, -21.5, 1.8, 1, 1);
+	var basicWall2 = new Physijs.BoxMesh(new THREE.BoxGeometry(0.2, 6, 4),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x554444
+			}), 0.0, 0.1), 0);
+	addWall(basicWall2, -3.5, -12, 1, 1, 8);
+	addWall(basicWall2, -7, -3, 1, 1, 9);
+	addWall(basicWall2, -11, 2, 1, 1, 8);
+	addWall(basicWall2, -11, -23.5, 1, 1, 1);
+	addWall(basicWall2, -14.5, 16.2, 1, 1, 2.5);
+	addWall(basicWall2, -14.5, 5.2, 1, 1, 1);
+	addWall(basicWall2, -14.5, -6.5, 1, 1, 3.4);
+	addWall(basicWall2, -14.5, -19.8, 1, 1, 0.9);
+	addWall(basicWall2, -18, 10, 1, 1, 5.5);
+	addWall(basicWall2, -18, -11, 1, 1, 3.5);
+	addWall(basicWall2, -21.5, 0, 1, 1, 10);
+	addWall(basicWall2, -25, 0, 1, 1, 12);
+	addWall(basicWall2, -3.5, 12, 1, 1, 1);
+	addWall(basicWall2, 0, 14.5, 1, 1, 2);
+	addWall(basicWall2, 3.5, 14.5, 1, 1, 2);
+	addWall(basicWall2, 0, -11, 1, 1, 2);
+	addWall(basicWall2, 4, -3.5, 1, 1, 2);
+	addWall(basicWall2, 4, -20.5, 1, 1, 3);
+	addWall(basicWall2, 7.5, 12.5, 1, 1, 2.8);
+	addWall(basicWall2, 7, -12.5, 1, 1, 6);
+	addWall(basicWall2, 11, -10.5, 1, 1, 5.5);
+	addWall(basicWall2, 11, 9, 1, 1, 2.5);
+	addWall(basicWall2, 14.5, -9, 1, 1, 10);
+	addWall(basicWall2, 25, 15.5, 1, 1, 3);
+	crate = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 1, 1.5),
+			crateMaterial, 15);
 	moveableObjects.push(crate);
 	crate.position.x += 9;
 	crate.position.z -= 12;
 	crate.addEventListener('collision', function(other_object,
 			relative_velocity, relative_rotation, contact_normal) {
 		if (other_object == trap || other_object == trap2) {
-			crate.setLinearVelocity(new THREE.Vector3(0,0,0));
+			crate.setLinearVelocity(new THREE.Vector3(0, 0, 0));
 			scene.remove(crate);
 			crate.position.x = 9;
 			crate.position.z = -12;
 			scene.add(crate);
-			
+
 		}
 	});
 	scene.add(crate);
-	tile = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444}), 0.0, 0.1), 0);
+	tile = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 8), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x554444
+			}), 0.0, 0.1), 0);
 	tile.position.x -= 9;
 	tile.position.y -= 2.55;
 	scene.add(tile);
-	trap = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 1, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444}), 0.0, 0.1), 100);
+	trap = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 1, 8), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x554444
+			}), 0.0, 0.1), 100);
 	trap.position.x -= 9;
 	trap.position.y += 4;
 	scene.add(trap);
 	trap.material.visible = false;
-	trap.setLinearFactor(new THREE.Vector3(0,0,0));
-	trap.setAngularFactor(new THREE.Vector3(0,0,0));
+	trap.setLinearFactor(new THREE.Vector3(0, 0, 0));
+	trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
 	trapCaster = new THREE.Raycaster();
-	trapCaster.set(new THREE.Vector3(tile.position.x, tile.position.y, tile.position.z + 2), new THREE.Vector3(0, 1, 0));
-	tile2 = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 3), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x554444}), 0.0, 0.1), 0);
+	trapCaster.set(new THREE.Vector3(tile.position.x, tile.position.y,
+			tile.position.z + 2), new THREE.Vector3(0, 1, 0));
+	tile2 = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 3), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x554444
+			}), 0.0, 0.1), 0);
 	tile2.position.x -= 20;
 	tile2.position.z += 4
-	tile2.position.y -=2.55;
+	tile2.position.y -= 2.55;
 	scene.add(tile2);
-	trap2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5, 6, 0.1), Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x224444, visible: false}), 0.0, 0.1), 10);
+	trap2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5, 6, 0.1), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x224444,
+				visible : false
+			}), 0.0, 0.1), 10);
 	trap2.position.x -= 20;
 	trap2.position.z += 24.5;
 	trap2.position.y += 1.5;
 	scene.add(trap2);
-	trap2.setAngularFactor(new THREE.Vector3(0,0,0));
-	trap2.setLinearFactor(new THREE.Vector3(0,0,1));
+	trap2.setAngularFactor(new THREE.Vector3(0, 0, 0));
+	trap2.setLinearFactor(new THREE.Vector3(0, 0, 1));
 	trapCaster2 = new THREE.Raycaster();
-	trapCaster2.set(tile2.position, new THREE.Vector3(0, 1,0));
-	exitSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2), exitMaterial, 0);
+	trapCaster2.set(tile2.position, new THREE.Vector3(0, 1, 0));
+	exitSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2),
+			exitMaterial, 0);
 	exitSign.position.x += 24.5;
 	exitSign.position.z += 23.2;
 	exitSign.position.y += 3;
 	scene.add(exitSign);
-	crushingSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2), crushingMaterial, 0);
+	crushingSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2),
+			crushingMaterial, 0);
 	crushingSign.position.x -= 10.6;
 	crushingSign.position.z += 16.5;
 	crushingSign.position.y += 3;
 	scene.add(crushingSign);
-	exit = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 6, 3), Physijs.createMaterial(new THREE.MeshPhongMaterial({color: 0x00ff00, emissive: 0x10ff10, shininess: 100, opacity: 0.5 })), 0);
+	exit = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 6, 3), Physijs
+			.createMaterial(new THREE.MeshPhongMaterial({
+				color : 0x00ff00,
+				emissive : 0x10ff10,
+				shininess : 100,
+				opacity : 0.5
+			})), 0);
 	exit.position.x += 25;
 	exit.position.z += 23.2;
 	scene.add(exit);
-	
-	
-	
-	
-	scene.traverse( function( node ) {
 
-	    if ( node instanceof Physijs.BoxMesh ) {
+	scene.traverse(function(node) {
 
-	        // insert your code here, for example:
-	        objects.push(node);
+		if (node instanceof Physijs.BoxMesh) {
 
-	    }
+			// insert your code here, for example:
+			objects.push(node);
 
-	} );
-	
+		}
+
+	});
+
 	levelLoaded = true;
 	checkTick();
+}
+
+function addWall(object, wallX, wallZ, wallScaleX, wallScaleY, wallScaleZ) {
+	wall = cloneBox(object);
+	wall.position.x += wallX;
+	wall.position.z += wallZ;
+	wall.scale.set(wallScaleX, wallScaleY, wallScaleZ);
+	scene.add(wall);
+}
+
+function cloneBox(object) {
+	var clone = new Physijs.BoxMesh(object.clone().geometry, object.material,
+			object.mass);
+	clone.visible = false;
+	return clone;
 }
