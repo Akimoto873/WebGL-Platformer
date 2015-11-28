@@ -2,7 +2,72 @@
  * 
  */
 
+
+
+
+function createOverlay() {
+	
+
+	healthTexture = textureLoader.load('images/health.jpg');
+	healthBoxTexture = textureLoader.load('images/healthBox.png');
+	
+
+	
+	overlayContainer = document.createElement('div');
+	document.body.appendChild(overlayContainer);
+
+	orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2,
+			window.innerWidth / 2, window.innerHeight / 2, window.innerHeight
+					/ -2, -10, 1000);
+	orthoCamera.position.x = 0;
+	orthoCamera.position.y = 0;
+	orthoCamera.position.z = 0;
+
+	orthoScene = new THREE.Scene();
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : healthTexture,
+		color : 0x00ff00
+	});
+	healthSprite = new THREE.Sprite(spriteMaterial);
+	healthSprite.position.set(-(window.innerWidth / 3.2),
+			-(window.innerHeight / 2) + 100, 10);
+	healthSprite.scale.set(window.innerWidth / 3, window.innerHeight / 16, 1);
+	orthoScene.add(healthSprite);
+	var spriteMaterial2 = new THREE.SpriteMaterial({
+		map : healthBoxTexture,
+		color : 0x000000
+	});
+	healthSprite2 = new THREE.Sprite(spriteMaterial2);
+	healthSprite2.position.set(-(window.innerWidth / 3.2),
+			-(window.innerHeight / 2) + 100, 8);
+	healthSprite2.scale
+			.set(window.innerWidth / 2.8, window.innerHeight / 15, 1);
+	orthoScene.add(healthSprite2);
+	var spriteMaterial3 = new THREE.SpriteMaterial({
+		map : healthTexture,
+		color : 0x0000ff
+	});
+	staminaSprite = new THREE.Sprite(spriteMaterial3);
+	staminaSprite.position.set(-(window.innerWidth / 3.2),
+			-(window.innerHeight / 2.5) + 100, 10);
+	staminaSprite.scale.set(window.innerWidth / 3, window.innerHeight / 16, 1);
+	orthoScene.add(staminaSprite);
+	var spriteMaterial4 = new THREE.SpriteMaterial({
+		map : healthBoxTexture,
+		color : 0x000000
+	});
+	staminaSprite2 = new THREE.Sprite(spriteMaterial4);
+	staminaSprite2.position.set(-(window.innerWidth / 3.2),
+			-(window.innerHeight / 2.5) + 100, 8);
+	staminaSprite2.scale.set(window.innerWidth / 2.8, window.innerHeight / 15,
+			1);
+	orthoScene.add(staminaSprite2);
+}
+
 function showGameOver() {
+	bloodTexture = textureLoader.load('images/blood.jpg');
+	gameOverTexture = textureLoader.load('images/gameOver.jpg');
+	restartTexture = textureLoader.load('images/restart.jpg');
 	var bloodMaterial = new THREE.SpriteMaterial({
 		map : bloodTexture,
 		opacity : 0.1

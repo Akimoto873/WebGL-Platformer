@@ -10,7 +10,7 @@ function generateLevel() {
 			.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0xee2233,
 				visible : false
-			}), 0.9, 0.2), 0);
+			}), 0.99, 0.2), 0);
 	floor.position.y -= 2.25;
 	scene.add(floor);
 
@@ -92,12 +92,12 @@ function generateLevel() {
 		}
 	});
 	scene.add(crate);
-	tile = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 8), Physijs
+	tile = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 4), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0x554444
 			}), 0.0, 0.1), 0);
 	tile.position.x -= 9;
-	tile.position.y -= 2.55;
+	tile.position.y -= 1.8;
 	scene.add(tile);
 	trap = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 1, 8), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
@@ -184,4 +184,8 @@ function cloneBox(object) {
 			object.mass);
 	clone.visible = false;
 	return clone;
+}
+
+function generateLevel2(){
+	
 }

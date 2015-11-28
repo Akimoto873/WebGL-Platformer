@@ -43,6 +43,9 @@ var restartTexture;
 var gameOverScreen = false;
 var level = 1;
 var ambience;
+var textureLoader;
+var deltaT;
+var timerNotRunning = true;
 
 function main() {
 	init();
@@ -50,17 +53,15 @@ function main() {
 
 function tick() {
 	if (level == 1) {
-		scene.simulate();
+		
 		stats.update();
 		// updateCamera(); //removed since camera is now attached to character.
 		renderer.clear();
 		renderer.render(scene, camera);
 		renderer.clearDepth();
 		renderer.render(orthoScene, orthoCamera);
-		checkKeys();
-		checkMovement();
-		checkChangesToHUD();
-		resetValues();
+		
+		
 	} else if (level == 2) {
 		scene.simulate();
 		stats.update();
@@ -84,7 +85,13 @@ function init() {
 	scene.fog = new THREE.Fog(0x202020, 10, 100);
 	scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
 	scene.addEventListener('update', function() {
-		scene.simulate(); // simulate on every scene update
+		
+		scene.simulate();
+		checkKeys();
+		checkMovement();
+		checkChangesToHUD();
+		resetValues();
+		
 	});
 
 	keyboard = new THREEx.KeyboardState();
@@ -142,12 +149,6 @@ function init() {
 	roofTexture = textureLoader.load('images/concrete.jpg');
 	roofTexture.wrapT = roofTexture.wrapS = THREE.RepeatWrapping;
 	roofTexture.repeat.set(20, 20);
-	healthTexture = textureLoader.load('images/health.jpg');
-	healthBoxTexture = textureLoader.load('images/healthBox.png');
-	bloodTexture = textureLoader.load('images/blood.jpg');
-	gameOverTexture = textureLoader.load('images/gameOver.jpg');
-	restartTexture = textureLoader.load('images/restart.jpg');
-
 	generator = new levelGenerator();
 
 	window.addEventListener('resize', onWindowResize, false);
@@ -185,6 +186,13 @@ function init() {
 				}
 			}
 		}
+		if((e.keyCode == 87 || e.keyCode == 83 || e.keyCode == 69 || e.keyCode == 81) && e.type == 'keyup'){
+			if(!keyMap[87] && !keyMap[83] && !keyMap[69] && !keyMap[81]){
+				var oldY = charMesh.getLinearVelocity().y;
+				charMesh.setLinearVelocity(new THREE.Vector3(0,oldY,0));
+			}
+		}
+		
 	};
 
 	gameOverAudio = new Audio('audio/gameOver.mp3');
@@ -230,7 +238,7 @@ function createChar() {
 	charMesh = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 3, 1), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0xeeff33
-			}), .95, .1), 10);
+			}), 1, .1), 10);
 	charMesh.position.y += 1;
 	charMesh.position.x += 5;
 
@@ -252,11 +260,12 @@ function createChar() {
 			levelComplete();
 		}
 	});
-	charMesh.setDamping(0.1, 0.9);
+//	charMesh.setDamping(0.1, 0.9);
 
 	charCaster = new THREE.Raycaster();
 	moveableObjects.push(charMesh);
 	charLoaded = true;
+	scene.simulate();
 	checkTick();
 
 }
@@ -286,57 +295,7 @@ function levelComplete() {
 	restartLevel();
 }
 
-function createOverlay() {
-	overlayContainer = document.createElement('div');
-	document.body.appendChild(overlayContainer);
 
-	orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2,
-			window.innerWidth / 2, window.innerHeight / 2, window.innerHeight
-					/ -2, -10, 1000);
-	orthoCamera.position.x = 0;
-	orthoCamera.position.y = 0;
-	orthoCamera.position.z = 0;
-
-	orthoScene = new THREE.Scene();
-	var spriteMaterial = new THREE.SpriteMaterial({
-		map : healthTexture,
-		color : 0x00ff00
-	});
-	healthSprite = new THREE.Sprite(spriteMaterial);
-	healthSprite.position.set(-(window.innerWidth / 3.2),
-			-(window.innerHeight / 2) + 100, 10);
-	healthSprite.scale.set(window.innerWidth / 3, window.innerHeight / 16, 1);
-	orthoScene.add(healthSprite);
-	var spriteMaterial2 = new THREE.SpriteMaterial({
-		map : healthBoxTexture,
-		color : 0x000000
-	});
-	healthSprite2 = new THREE.Sprite(spriteMaterial2);
-	healthSprite2.position.set(-(window.innerWidth / 3.2),
-			-(window.innerHeight / 2) + 100, 8);
-	healthSprite2.scale
-			.set(window.innerWidth / 2.8, window.innerHeight / 15, 1);
-	orthoScene.add(healthSprite2);
-	var spriteMaterial3 = new THREE.SpriteMaterial({
-		map : healthTexture,
-		color : 0x0000ff
-	});
-	staminaSprite = new THREE.Sprite(spriteMaterial3);
-	staminaSprite.position.set(-(window.innerWidth / 3.2),
-			-(window.innerHeight / 2.5) + 100, 10);
-	staminaSprite.scale.set(window.innerWidth / 3, window.innerHeight / 16, 1);
-	orthoScene.add(staminaSprite);
-	var spriteMaterial4 = new THREE.SpriteMaterial({
-		map : healthBoxTexture,
-		color : 0x000000
-	});
-	staminaSprite2 = new THREE.Sprite(spriteMaterial4);
-	staminaSprite2.position.set(-(window.innerWidth / 3.2),
-			-(window.innerHeight / 2.5) + 100, 8);
-	staminaSprite2.scale.set(window.innerWidth / 2.8, window.innerHeight / 15,
-			1);
-	orthoScene.add(staminaSprite2);
-}
 
 function restartLevel() { // Currently not finished.
 	level = 0;

@@ -13,11 +13,15 @@ var strafeRight = false;
 var pickupThisFrame = false;
 
 function checkKeys() {
+	if(timerNotRunning){
+		fpsTimer = new THREE.Clock();
+		timerNotRunning = false;
+	}
 	if (keyMap[87]) {
 		if (keyMap[16]
-				&& stamina > 0
-				&& Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2)
-						+ Math.pow(charMesh.getLinearVelocity().z, 2)) < 8) {
+				&& stamina > 0 && Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2)
+						+ Math.pow(charMesh.getLinearVelocity().z, 2)) < 8
+				) {
 			runForward = true;
 		} else if (Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2)
 				+ Math.pow(charMesh.getLinearVelocity().z, 2)) < 4) {
@@ -70,12 +74,23 @@ function checkKeys() {
 
 function checkMovement() {
 	
+//	var oldVelocityVector = charMesh.getLinearVelocity();
+//	var oldVelocity = Math.sqrt(Math.pow(oldVelocityVector.x, 2) + Math.pow(oldVelocityVector.z, 2));
+//	var oldVelocityRun = oldVelocity;
+//	if(oldVelocityRun > 8){
+//		oldVelocityRun = 8;
+//	}
+//	if(oldVelocity > 4){
+//		oldVelocity = 4;
+//	}
+//	var force = 10*(4 - oldVelocity)/deltaT; //Force needed this frame to simulate setlinearvelocity
+//	var runForce = 10*(8 - oldVelocityRun)/deltaT;
 	if (runForward) {
 		var rotationMatrix = new THREE.Matrix4();
 		rotationMatrix.extractRotation(charMesh.matrix);
-		var forceVector = new THREE.Vector3(0, 0, 200);
+		var forceVector = new THREE.Vector3(0, 0, 200 );
 		var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-		var oldVelocity = charMesh.getLinearVelocity();
+		var oldVelocityVector = charMesh.getLinearVelocity();
 		charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
 				finalForceVector.z));
 		stamina -= 2;
@@ -84,7 +99,7 @@ function checkMovement() {
 		rotationMatrix.extractRotation(charMesh.matrix);
 		var forceVector = new THREE.Vector3(0, 0, 200);
 		var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-		var oldVelocity = charMesh.getLinearVelocity();
+		
 		charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
 				finalForceVector.z));
 		
@@ -96,7 +111,7 @@ function checkMovement() {
 		rotationMatrix.extractRotation(charMesh.matrix);
 		var forceVector = new THREE.Vector3(0, 0, -200);
 		var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-		var oldVelocity = charMesh.getLinearVelocity();
+		var oldVelocityVector = charMesh.getLinearVelocity();
 		charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
 				finalForceVector.z));
 
@@ -119,7 +134,7 @@ function checkMovement() {
 		rotationMatrix.extractRotation(charMesh.matrix);
 		var forceVector = new THREE.Vector3(-200, 0, 0);
 		var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-		var oldVelocity = charMesh.getLinearVelocity();
+		var oldVelocityVector = charMesh.getLinearVelocity();
 		charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
 				finalForceVector.z));
 	}
@@ -129,7 +144,7 @@ function checkMovement() {
 		rotationMatrix.extractRotation(charMesh.matrix);
 		var forceVector = new THREE.Vector3(200, 0, 0);
 		var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-		var oldVelocity = charMesh.getLinearVelocity();
+		var oldVelocityVector = charMesh.getLinearVelocity();
 		charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
 				finalForceVector.z));
 	}
@@ -170,17 +185,18 @@ function checkMovement() {
 	checkTraps();
 	checkFallDmg();
 
-	if (health < 1) {
+	if (health < 1 && !gameOverScreen) {
 		showGameOver();
-		health = 100;
 	}
+	
+	deltaT = fpsTimer.getDelta();
 
 }
 
 function checkTraps() {
-	var intersects = trapCaster.intersectObjects(moveableObjects);
+	
 
-	if (intersects.length > 0) {
+	if (charMesh._physijs.touches.indexOf(tile._physijs.id) === 1 || crate._physijs.touches.indexOf(tile._physijs.id) === 1) {
 		if (!triggered) {
 			trap.setLinearFactor(new THREE.Vector3(0, 1, 0));
 			trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
@@ -200,7 +216,7 @@ function checkTraps() {
 		if (applyForce) {
 			trap.applyCentralForce(new THREE.Vector3(0, 1100, 0));
 		}
-		if (intersects[0].distance > 6 && trapTime.getElapsedTime() > 2) {
+		if (intersects[0].distance > 5 && trapTime.getElapsedTime() > 2) {
 			trap.setLinearVelocity(new THREE.Vector3(0, 0, 0));
 			trap.setLinearFactor(new THREE.Vector3(0, 0, 0));
 			applyForce = false;
