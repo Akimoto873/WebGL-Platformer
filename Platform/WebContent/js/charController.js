@@ -40,11 +40,6 @@ function checkKeys() {
 			walkBackward = true;
 		}
 	}
-	if (keyMap[32]) { // Space
-		if (!airborne) {
-			jump = true;
-		}
-	}
 	if (keyMap[65]) { // A
 		counterClockwiseRotation = 2; // charMesh.setAngularVelocity(new
 										// THREE.Vector3(0, 1.5, 0));
@@ -122,11 +117,13 @@ function checkMovement() {
 
 	}
 	if (jump) { // Space
-		airborne = true;
-		airTime = new THREE.Clock();
-		charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
-		// health -= 10;
-		// damaged = true; //for testing purposes
+		if(airborne1 || airborne2){
+			airTime = new THREE.Clock();
+			charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
+			stamina -= 20;
+			// health -= 10;
+			// damaged = true; //for testing purposes
+		}
 
 	}
 
@@ -253,11 +250,12 @@ function checkTraps() {
 function checkFallDmg() {
 	charCaster.set(charMesh.position, new THREE.Vector3(0, -1, 0));
 	var intersects = charCaster.intersectObjects(objects);
-	if (airborne && airTime.getElapsedTime() > 1) { // check for landing
+	if ((airborne1 || airborne2) && airTime.getElapsedTime() > 1) { // check for landing
 
 		for (var i = 0; i < intersects.length; i++) {
 			if (intersects[i].distance < 10) {
-				airborne = false;
+				airborne1 = false;
+				airborne2 = false;
 				airTime.stop();
 
 			}

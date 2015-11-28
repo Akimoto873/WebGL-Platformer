@@ -10,7 +10,8 @@ var charMesh;
 var controls;
 var stats;
 var container;
-var airborne = false;
+var airborne1 = false;
+var airborne2 = false;
 var controllingChar = true;
 var controllingCrane = false;
 var keyMap = [];
@@ -187,6 +188,15 @@ function init() {
 		keyMap[e.keyCode] = e.type == 'keydown';
 		if (e.keyCode == 32) {
 			e.preventDefault();
+			if(e.type == 'keyup' && !airborne2){
+				if(!airborne1){
+					airborne1 = true;
+				}
+				else{
+					airborne2 = true;
+				}
+				jump = true;
+			}
 		}
 		if(e.keyCode == 27){
 			if(e.type == 'keyup'){
