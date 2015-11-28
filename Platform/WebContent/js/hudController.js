@@ -4,7 +4,7 @@
 
 
 
-
+//Creates the health and stamina bars.
 function createOverlay() {
 	
 
@@ -57,6 +57,7 @@ function createOverlay() {
 	orthoScene.add(staminaSprite2);
 }
 
+//Shows the game over screen on death.
 function showGameOver() {
 	bloodTexture = textureLoader.load('images/blood.jpg');
 	gameOverTexture = textureLoader.load('images/gameOver.jpg');
@@ -91,6 +92,7 @@ function showGameOver() {
 	gameOverAudio.play();
 }
 
+//Scales the health and stamina bars based on health and stamina remaining.
 function checkChangesToHUD() {
 
 	staminaSprite.scale.set(
@@ -128,13 +130,14 @@ function checkChangesToHUD() {
 
 }
 
+//removes the menu
 function removeMenu(){
 	menu = false;
 	menuSprite.visible = false;
 	playSprite.visible = false;
 	optionsSprite.visible = false;
 }
-
+//shows the menu
 function showMenu(){
 	menu = true;
 	menuSprite.visible = true;

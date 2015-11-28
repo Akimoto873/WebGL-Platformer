@@ -2,7 +2,7 @@
  * 
  */
 
-
+//Generates level 1.
 function generateLevel1() {
 	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
@@ -76,8 +76,9 @@ function generateLevel1() {
 	crate = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 1, 1.5),
 			crateMaterial, 15);
 	moveableObjects.push(crate);
-	crate.position.x += 9;
-	crate.position.z -= 12;
+	crate.position.x = cratePosition.x;
+	crate.position.y = cratePosition.y;
+	crate.position.z = cratePosition.z;
 	crate.addEventListener('collision', function(other_object,
 			relative_velocity, relative_rotation, contact_normal) {
 		if (other_object == trap || other_object == trap2) {
@@ -168,7 +169,7 @@ function generateLevel1() {
 	levelLoaded = true;
 	checkTick();
 }
-
+//Adds a new wall with the specified position and scale
 function addWall(object, wallX, wallZ, wallScaleX, wallScaleY, wallScaleZ) {
 	wall = cloneBox(object);
 	wall.position.x += wallX;
@@ -177,6 +178,7 @@ function addWall(object, wallX, wallZ, wallScaleX, wallScaleY, wallScaleZ) {
 	scene.add(wall);
 }
 
+//Clones a physijs boxmesh
 function cloneBox(object) {
 	var clone = new Physijs.BoxMesh(object.clone().geometry, object.material,
 			object.mass);
@@ -184,6 +186,19 @@ function cloneBox(object) {
 	return clone;
 }
 
-function generateLevel2(){
-	
+//Generates level 3 (testlevel).
+function generateLevel3(){
+	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : true, opacity: 0.5
+			}), 0.99, 0.2), 0);
+	floor.position.y -= 2.25;
+	scene.add(floor);
+	crate = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 2, 3),
+			crateMaterial, 15);
+	moveableObjects.push(crate);
+	crate.position.x += 9;
+	crate.position.z -= 12;
+	scene.add(crate);
 }

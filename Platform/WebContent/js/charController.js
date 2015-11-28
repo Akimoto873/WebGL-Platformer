@@ -11,27 +11,30 @@ var clockwiseRotation = 0;
 var strafeLeft = false;
 var strafeRight = false;
 var pickupThisFrame = false;
+var force = 300;
 
+
+//checks keyinputs on every loop turn.
 function checkKeys() {
 	if(timerNotRunning){
-		fpsTimer = new THREE.Clock();
+		
 		timerNotRunning = false;
 	}
-	if (keyMap[87]) {
-		if (keyMap[16]
+	if (keyMap[87]) { //W
+		if (keyMap[16] //Shift = run
 				&& stamina > 0 && Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2)
 						+ Math.pow(charMesh.getLinearVelocity().z, 2)) < 8
 				) {
 			runForward = true;
-		} else if (Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2)
+		} else if (Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) //else walk
 				+ Math.pow(charMesh.getLinearVelocity().z, 2)) < 4) {
 			walkForward = true;
 		}
 	}
-	if (!keyMap[16] && stamina < 200) {
+	if (!keyMap[16] && stamina < 200) { //if not running. Regen stamina.
 		stamina += 1;
 	}
-	if (keyMap[83]) { // S
+	if (keyMap[83]) { // S - walk backwards
 		if (Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2)
 				+ Math.pow(charMesh.getLinearVelocity().z, 2)) < 4) {
 			walkBackward = true;
@@ -43,35 +46,37 @@ function checkKeys() {
 		}
 	}
 	if (keyMap[65]) { // A
-		counterClockwiseRotation = 1.5; // charMesh.setAngularVelocity(new
+		counterClockwiseRotation = 2; // charMesh.setAngularVelocity(new
 										// THREE.Vector3(0, 1.5, 0));
 
 	}
 	if (keyMap[68]) { // D
-		clockwiseRotation = -1.5; // charMesh.setAngularVelocity(new
+		clockwiseRotation = -2; // charMesh.setAngularVelocity(new
 									// THREE.Vector3(0, -1.5, 0));
 	}
 
-	if (keyMap[69]) { // E
+	if (keyMap[69]) { // Q - strafe
 		if (Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2)
 				+ Math.pow(charMesh.getLinearVelocity().z, 2)) < 4) {
 			strafeLeft = true;
 		}
 	}
 
-	if (keyMap[81]) { // E
+	if (keyMap[81]) { // E - strafe
 
 		if (Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2)
 				+ Math.pow(charMesh.getLinearVelocity().z, 2)) < 4) {
 			strafeRight = true;
 		}
 	}
-	if (keyMap[82] && gameOverScreen) {
+	if (keyMap[82] && gameOverScreen) { //Restart level is dead and R is pressed.
 		restartLevel();
 	}
 
 }
 
+
+//Handles all character movement.
 function checkMovement() {
 	
 //	var oldVelocityVector = charMesh.getLinearVelocity();
@@ -88,7 +93,7 @@ function checkMovement() {
 	if (runForward) {
 		var rotationMatrix = new THREE.Matrix4();
 		rotationMatrix.extractRotation(charMesh.matrix);
-		var forceVector = new THREE.Vector3(0, 0, 200 );
+		var forceVector = new THREE.Vector3(0, 0, force );
 		var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
 		var oldVelocityVector = charMesh.getLinearVelocity();
 		charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
@@ -97,7 +102,7 @@ function checkMovement() {
 	} else if (walkForward) {
 		var rotationMatrix = new THREE.Matrix4();
 		rotationMatrix.extractRotation(charMesh.matrix);
-		var forceVector = new THREE.Vector3(0, 0, 200);
+		var forceVector = new THREE.Vector3(0, 0, force);
 		var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
 		
 		charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
@@ -109,7 +114,7 @@ function checkMovement() {
 
 		var rotationMatrix = new THREE.Matrix4();
 		rotationMatrix.extractRotation(charMesh.matrix);
-		var forceVector = new THREE.Vector3(0, 0, -200);
+		var forceVector = new THREE.Vector3(0, 0, -force);
 		var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
 		var oldVelocityVector = charMesh.getLinearVelocity();
 		charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
@@ -132,7 +137,7 @@ function checkMovement() {
 
 		var rotationMatrix = new THREE.Matrix4();
 		rotationMatrix.extractRotation(charMesh.matrix);
-		var forceVector = new THREE.Vector3(-200, 0, 0);
+		var forceVector = new THREE.Vector3(-force, 0, 0);
 		var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
 		var oldVelocityVector = charMesh.getLinearVelocity();
 		charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
@@ -142,7 +147,7 @@ function checkMovement() {
 	if (strafeRight) { // E
 		var rotationMatrix = new THREE.Matrix4();
 		rotationMatrix.extractRotation(charMesh.matrix);
-		var forceVector = new THREE.Vector3(200, 0, 0);
+		var forceVector = new THREE.Vector3(force, 0, 0);
 		var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
 		var oldVelocityVector = charMesh.getLinearVelocity();
 		charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
@@ -189,34 +194,37 @@ function checkMovement() {
 		showGameOver();
 	}
 	
-	deltaT = fpsTimer.getDelta();
+	
 
 }
 
+//Checks if traps are triggered, and handles what happens then.
 function checkTraps() {
 	
 
 	if (charMesh._physijs.touches.indexOf(tile._physijs.id) === 1 || crate._physijs.touches.indexOf(tile._physijs.id) === 1) {
 		if (!triggered) {
-			trap.setLinearFactor(new THREE.Vector3(0, 1, 0));
-			trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
 			scene.remove(trap);
 			scene.add(trap);
+			trap.setLinearFactor(new THREE.Vector3(0, 1, 0));
 			trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
 			triggered = true;
 			trapTime = new THREE.Clock();
+			
 		}
 	}
 	if (triggered) {
-		var intersects = trapCaster.intersectObject(trap);
+		log(applyForce);
+		log(trap.position.y);
 
-		if (intersects[0].distance < 1) {
+		if (trap.position.y < 2) {
 			applyForce = true;
 		}
 		if (applyForce) {
 			trap.applyCentralForce(new THREE.Vector3(0, 1100, 0));
+			
 		}
-		if (intersects[0].distance > 5 && trapTime.getElapsedTime() > 2) {
+		if (trap.position.y > 4 && trapTime.getElapsedTime() > 2) {
 			trap.setLinearVelocity(new THREE.Vector3(0, 0, 0));
 			trap.setLinearFactor(new THREE.Vector3(0, 0, 0));
 			applyForce = false;
@@ -241,6 +249,7 @@ function checkTraps() {
 	}
 }
 
+//Checks if the character should take fall dmg.
 function checkFallDmg() {
 	charCaster.set(charMesh.position, new THREE.Vector3(0, -1, 0));
 	var intersects = charCaster.intersectObjects(objects);
@@ -266,6 +275,7 @@ function checkFallDmg() {
 	}
 }
 
+//resets all values before next run through.
 function resetValues() {
 	runForward = false;
 	walkForward = false;

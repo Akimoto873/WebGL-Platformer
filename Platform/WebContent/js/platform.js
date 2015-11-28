@@ -47,11 +47,14 @@ var textureLoader;
 var deltaT;
 var timerNotRunning = true;
 var menu = false;
+var charMeshPosition = new THREE.Vector3(5, 1, 0); //for debugging purposes
+var cratePosition = new THREE.Vector3(9, 1, -12);
 
 function main() {
 	init();
 }
 
+//Game Loop
 function tick() {
 	if (level == 1) {
 		
@@ -78,20 +81,22 @@ function tick() {
 	requestAnimationFrame(tick);
 }
 
+
+//Initate 
 function init() {
 	Physijs.scripts.worker = 'lib/physijs_worker.js';
 	Physijs.scripts.ammo = 'http://gamingJS.com/ammo.js';
 
-	scene = new Physijs.Scene();
+	scene = new Physijs.Scene({fixedTimeStep: 1/60});
 	scene.fog = new THREE.Fog(0x202020, 10, 100);
 	scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
 	scene.addEventListener('update', function() {
-		
-		scene.simulate();
 		checkKeys();
 		checkMovement();
 		checkChangesToHUD();
 		resetValues();
+		scene.simulate();
+		
 		
 	});
 	
@@ -175,6 +180,8 @@ function init() {
 	stats.domElement.style.zIndex = 100;
 	container.appendChild(stats.domElement);
 
+	
+	//Key event handler
 	onkeydown = onkeyup = function(e) {
 		e = e || event; // to deal with IE
 		keyMap[e.keyCode] = e.type == 'keydown';
@@ -216,11 +223,11 @@ function init() {
 		
 	};
 	
+	//Mouseclick event handler
 	renderer.domElement.addEventListener('click', function(e){
 		e = e || event;
 		var xPos = e.clientX;
 		var yPos = e.clientY;
-		log(xPos + " " + yPos);
 		if(menu && xPos < window.innerWidth / 2 + window.innerWidth / 16 && xPos > window.innerWidth / 2 -window.innerWidth / 16 && yPos < window.innerHeight / 2 - 50 + window.innerHeight / 30 && yPos > window.innerHeight / 2 - 50 - window.innerHeight / 30){
 			removeMenu();
 			
@@ -243,6 +250,7 @@ function init() {
 
 }
 
+//Called when level1 model is loaded.
 function level1loadedCallback(geometry, materials) {
 	levelMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
 		map : level1Texture
@@ -253,6 +261,7 @@ function level1loadedCallback(geometry, materials) {
 	// tick();
 }
 
+//Called when trap model is loaded.
 function trapLoadedCallback(geometry) {
 	trapBase = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
 		map : trapTexture
@@ -267,13 +276,15 @@ function trapLoadedCallback(geometry) {
 	trap2.add(trap2Mesh);
 }
 
+//Creates the character mesh
 function createChar() {
 	charMesh = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 3, 1), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0xeeff33
 			}), 1, .1), 10);
-	charMesh.position.y += 1;
-	charMesh.position.x += 5;
+	charMesh.position.x = charMeshPosition.x;
+	charMesh.position.y = charMeshPosition.y;
+	charMesh.position.z = charMeshPosition.z;
 
 	scene.add(charMesh);
 	if (charCam) {
@@ -304,7 +315,7 @@ function createChar() {
 }
 
 
-
+//Checks if everything is loaded, and starts the tick loop if it is.
 function checkTick() {
 	if (charLoaded && levelLoaded) {
 		tick();
@@ -318,20 +329,38 @@ function onWindowResize() {
 
 }
 
+//debug help
 function log(param) {
 	setTimeout(function() {
 		throw new Error("Debug: " + param)
 	}, 0)
 }
 
+//Called when the level is complete. Starts next level
 function levelComplete() {
-	restartLevel();
+	level = 0;
+	scene = new Physijs.Scene();
+	scene.fog = new THREE.Fog(0x202020, 10, 100);
+	scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
+	scene.addEventListener('update', function() {
+		
+		scene.simulate();
+		checkKeys();
+		checkMovement();
+		checkChangesToHUD();
+		resetValues();
+		
+	});
+	generateLevel3(); //For testing.
+	resetChar();
+	level = 2;
 }
 
 
-
+//restarts the level (after death for example).
 function restartLevel() { // Currently not finished.
 	level = 0;
+	scene.remove(charMesh);
 	resetChar();
 	resetCrate();
 	resetTraps();
@@ -347,13 +376,15 @@ function restartLevel() { // Currently not finished.
 
 }
 
+//Resets the character mesh.
 function resetChar() {
-	scene.remove(charMesh);
 	charMesh.remove(camera);
 	var temp = cloneBox(charMesh);
 	temp.visible = true;
 	charMesh = temp;
-	charMesh.position.set(5, 1, 0);
+	charMesh.position.x = charMeshPosition.x;
+	charMesh.position.y = charMeshPosition.y;
+	charMesh.position.z = charMeshPosition.z;
 	scene.add(charMesh);
 	camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
 	charMesh.add(camera);
@@ -374,11 +405,14 @@ function resetChar() {
 	carrying = false;
 }
 
+//Resets the crate.
 function resetCrate() {
 	scene.remove(crate);
 	crate.position.set(9, 0, -12);
 	scene.add(crate);
 }
+
+//resets the traps
 function resetTraps() {
 	scene.remove(trap2);
 	trap2.position.set(-20, 1.5, 24.5);
@@ -387,6 +421,7 @@ function resetTraps() {
 	triggered2 = false;
 }
 
+//Creates the menu
 function createWelcome(){
 	menuTexture = textureLoader.load('images/testMenu.jpg');
 	playTexture = textureLoader.load('images/testPlay.jpg');
