@@ -152,19 +152,37 @@ function checkMovement() {
 	}
 
 	if (pickup) {
-		if (!carrying) {
-			var distance = new THREE.Vector3();
-			distance.subVectors(charMesh.position, crate.position);
-			if (distance.length() < 3) {
-				scene.remove(crate);
-				crate.position.x = 0;
-				crate.position.y = -1;
-				crate.position.z = 0;
-				charMesh.add(crate);
-				crate.position.z += 1;
-				carrying = true;
-				pickupThisFrame = true;
-			}
+		
+			for (var i = 0; i < pickUpItems.length; i++){
+				var distance = new THREE.Vector3();
+				distance.subVectors(charMesh.position, pickUpItems[i].position);
+				if (distance.length() < 3) {
+					scene.remove(pickUpItems[i]);
+					if(pickUpItems[i] == crate && !carrying) {
+						crate.position.x = 0;
+						crate.position.y = -1;
+						crate.position.z = 0;
+						charMesh.add(crate);
+						crate.position.z += 1;
+						carrying = true;
+						pickupThisFrame = true;
+						i = pickUpItems.length + 1;
+						pickUpItems.splice(i, 1);
+					}
+					else if(pickUpItems[i] == cones){
+						pickUpItems.splice(i, 1);
+						carriedCones += 5;
+						i = pickUpItems.length + 1;
+					}
+					else {
+						pickUpItems.splice(i, 1);
+						carriedCones += 1;
+						log(carriedCones);
+						i = pickUpItems.length + 1;
+					}
+					
+					
+				}
 		}
 
 		if (carrying && !pickupThisFrame) {
@@ -178,6 +196,7 @@ function checkMovement() {
 			crate.position.y = oldPosition.y - 1;
 			crate.position.z = oldPosition.z + finalPosition.z;
 			scene.add(crate);
+			pickUpItems.push(crate);
 			carrying = false;
 
 		}
@@ -270,6 +289,24 @@ function checkFallDmg() {
 				fallClock = new THREE.Clock();
 			}
 		}
+	}
+}
+
+function dropCone(){
+	if (carriedCones > 0){
+		carriedCones -= 1;
+		var rotationMatrix = new THREE.Matrix4();
+		rotationMatrix.extractRotation(charMesh.matrix);
+		var positionDiff = new THREE.Vector3(0, 0, 1);
+		var finalPosition = positionDiff.applyMatrix4(rotationMatrix);
+		var oldPosition = charMesh.position
+		var cone = new Physijs.BoxMesh(coneGeometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xff8800}), 1, .1), 5);
+		cone.scale.set(0.2, 0.2, 0.2);
+		cone.position.x = oldPosition.x + finalPosition.x;
+		cone.position.y = oldPosition.y - 1;
+		cone.position.z = oldPosition.z + finalPosition.z;
+		scene.add(cone);
+		pickUpItems.push(cone);
 	}
 }
 

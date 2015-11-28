@@ -50,6 +50,10 @@ var timerNotRunning = true;
 var menu = false;
 var charMeshPosition = new THREE.Vector3(5, 1, 0); //for debugging purposes
 var cratePosition = new THREE.Vector3(9, 1, -12);
+var cone;
+var carriedCones = 0;
+var pickUpItems = [];
+var coneGeometry;
 
 function main() {
 	init();
@@ -150,6 +154,8 @@ function init() {
 	// loader.load('models/char.js', characterLoadedCallback);
 	loader.load('models/level_01.js', level1loadedCallback);
 	loader.load('models/trap.js', trapLoadedCallback);
+	loader.load('models/cone.js', coneLoadedCallback);
+	loader.load('models/cones.js', conesLoadedCallback);
 
 	var crateTexture = textureLoader.load('images/crate.jpg');
 	crateMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
@@ -231,6 +237,10 @@ function init() {
 			}
 		}
 		
+		if(e.keyCode == 71 && e.type == 'keyup'){
+			dropCone();
+		}
+		
 	};
 	
 	//Mouseclick event handler
@@ -284,6 +294,19 @@ function trapLoadedCallback(geometry) {
 	trap2Mesh.rotation.x += Math.PI / 2;
 	trap2Mesh.scale.set(0.1, 0.1, 0.08);
 	trap2.add(trap2Mesh);
+}
+
+function coneLoadedCallback(geometry){
+	coneGeometry = geometry;
+}
+
+function conesLoadedCallback(geometry){
+	cones = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xff8800}), 1, .1), 10);
+	cones.position.z -= 5;
+	cones.position.y += 1;
+	cones.scale.set(0.2, 0.2, 0.2);
+	scene.add(cones);
+	pickUpItems.push(cones);
 }
 
 //Creates the character mesh

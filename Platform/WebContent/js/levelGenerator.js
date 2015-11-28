@@ -91,6 +91,7 @@ function generateLevel1() {
 		}
 	});
 	scene.add(crate);
+	pickUpItems.push(crate);
 	tile = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 4), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0x554444
@@ -198,6 +199,7 @@ function generateLevel3(){
 	crate = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 2, 3),
 			crateMaterial, 15);
 	moveableObjects.push(crate);
+	pickUpItems.push(crate);
 	crate.position.x += 9;
 	crate.position.z -= 12;
 	scene.add(crate);
