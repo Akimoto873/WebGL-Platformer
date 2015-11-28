@@ -46,6 +46,7 @@ var ambience;
 var textureLoader;
 var deltaT;
 var timerNotRunning = true;
+var menu = false;
 
 function main() {
 	init();
@@ -93,6 +94,16 @@ function init() {
 		resetValues();
 		
 	});
+	
+	
+	orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2,
+			window.innerWidth / 2, window.innerHeight / 2, window.innerHeight
+					/ -2, -10, 1000);
+	orthoCamera.position.x = 0;
+	orthoCamera.position.y = 0;
+	orthoCamera.position.z = 0;
+
+	orthoScene = new THREE.Scene();
 
 	keyboard = new THREEx.KeyboardState();
 
@@ -149,7 +160,7 @@ function init() {
 	roofTexture = textureLoader.load('images/concrete.jpg');
 	roofTexture.wrapT = roofTexture.wrapS = THREE.RepeatWrapping;
 	roofTexture.repeat.set(20, 20);
-	generator = new levelGenerator();
+	generateLevel1();
 
 	window.addEventListener('resize', onWindowResize, false);
 
@@ -169,6 +180,16 @@ function init() {
 		keyMap[e.keyCode] = e.type == 'keydown';
 		if (e.keyCode == 32) {
 			e.preventDefault();
+		}
+		if(e.keyCode == 27){
+			if(e.type == 'keyup'){
+				if(menu){
+					removeMenu();
+				}
+				else{
+					showMenu();
+				}
+			}
 		}
 		if (e.keyCode == 70) {
 			if (e.type == 'keyup') {
@@ -194,6 +215,17 @@ function init() {
 		}
 		
 	};
+	
+	renderer.domElement.addEventListener('click', function(e){
+		e = e || event;
+		var xPos = e.clientX;
+		var yPos = e.clientY;
+		log(xPos + " " + yPos);
+		if(menu && xPos < window.innerWidth / 2 + window.innerWidth / 16 && xPos > window.innerWidth / 2 -window.innerWidth / 16 && yPos < window.innerHeight / 2 - 50 + window.innerHeight / 30 && yPos > window.innerHeight / 2 - 50 - window.innerHeight / 30){
+			removeMenu();
+			
+		}
+	});
 
 	gameOverAudio = new Audio('audio/gameOver.mp3');
 	ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
@@ -206,6 +238,7 @@ function init() {
 
 	createOverlay();
 	createChar();
+	createWelcome();
 	fallClock = new THREE.Clock();
 
 }
@@ -352,4 +385,40 @@ function resetTraps() {
 	scene.add(trap2);
 	trap2.setAngularFactor(new THREE.Vector3(0, 0, 0));
 	triggered2 = false;
+}
+
+function createWelcome(){
+	menuTexture = textureLoader.load('images/testMenu.jpg');
+	playTexture = textureLoader.load('images/testPlay.jpg');
+	optionsTexture = textureLoader.load('images/testOptions.jpg');
+	
+
+	
+	overlayContainer = document.createElement('div');
+	document.body.appendChild(overlayContainer);
+
+	
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : menuTexture
+	});
+	menuSprite = new THREE.Sprite(spriteMaterial);
+	menuSprite.position.set(0,0 , -100);
+	menuSprite.scale.set(window.innerWidth / 2, window.innerHeight / 1.5, 1);
+	orthoScene.add(menuSprite);
+	
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : playTexture
+	});
+	playSprite = new THREE.Sprite(spriteMaterial);
+	playSprite.position.set(0,50 , -80);
+	playSprite.scale.set(window.innerWidth / 8, window.innerHeight / 15, 1);
+	orthoScene.add(playSprite);
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : optionsTexture
+	});
+	optionsSprite = new THREE.Sprite(spriteMaterial);
+	optionsSprite.position.set(0,-10 , -80);
+	optionsSprite.scale.set(window.innerWidth / 8, window.innerHeight / 15, 1);
+	orthoScene.add(optionsSprite);
+	menu = true;
 }

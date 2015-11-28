@@ -16,14 +16,7 @@ function createOverlay() {
 	overlayContainer = document.createElement('div');
 	document.body.appendChild(overlayContainer);
 
-	orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2,
-			window.innerWidth / 2, window.innerHeight / 2, window.innerHeight
-					/ -2, -10, 1000);
-	orthoCamera.position.x = 0;
-	orthoCamera.position.y = 0;
-	orthoCamera.position.z = 0;
-
-	orthoScene = new THREE.Scene();
+	
 	var spriteMaterial = new THREE.SpriteMaterial({
 		map : healthTexture,
 		color : 0x00ff00
@@ -133,4 +126,18 @@ function checkChangesToHUD() {
 		}
 	}
 
+}
+
+function removeMenu(){
+	menu = false;
+	menuSprite.visible = false;
+	playSprite.visible = false;
+	optionsSprite.visible = false;
+}
+
+function showMenu(){
+	menu = true;
+	menuSprite.visible = true;
+	playSprite.visible = true;
+	optionsSprite.visible = true;
 }

@@ -1,11 +1,9 @@
 /**
  * 
  */
-levelGenerator = function() {
-	generateLevel();
-}
 
-function generateLevel() {
+
+function generateLevel1() {
 	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0xee2233,
