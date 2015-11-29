@@ -79,17 +79,7 @@ function generateLevel1() {
 	crate.position.x = cratePosition.x;
 	crate.position.y = cratePosition.y;
 	crate.position.z = cratePosition.z;
-	crate.addEventListener('collision', function(other_object,
-			relative_velocity, relative_rotation, contact_normal) {
-		if (other_object == trap || other_object == trap2) {
-			crate.setLinearVelocity(new THREE.Vector3(0, 0, 0));
-			scene.remove(crate);
-			crate.position.x = 9;
-			crate.position.z = -12;
-			scene.add(crate);
-
-		}
-	});
+	
 	scene.add(crate);
 	pickUpItems.push(crate);
 	tile = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 4), Physijs
@@ -105,6 +95,23 @@ function generateLevel1() {
 			}), 0.0, 0.1), 100);
 	trap.position.x -= 9;
 	trap.position.y += 4;
+	trap.addEventListener('collision', function(other_object,
+			relative_velocity, relative_rotation, contact_normal) {
+		if (other_object == crate){
+			crate.setLinearVelocity(new THREE.Vector3(0, 0, 0));
+			scene.remove(crate);
+			crate.position.x = 9;
+			crate.position.z = -12;
+			scene.add(crate);
+
+		}
+		for(var i = 0; i < pickUpItems.length; i++){
+			if( other_object == pickUpItems[i]) {
+				scene.remove(pickUpItems[i]);
+		}
+		
+		}
+	});
 	scene.add(trap);
 	trap.material.visible = false;
 	trap.setLinearFactor(new THREE.Vector3(0, 0, 0));
