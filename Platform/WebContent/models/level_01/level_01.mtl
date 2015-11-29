@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 10.11.2015 19:23:24
+# File Created: 29.11.2015 05:12:09
 
-newmtl Material__27
+newmtl Texture_Level1
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -12,5 +12,5 @@ newmtl Material__27
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka level_1_texture.png
-	map_Kd level_1_texture.png
+	map_Ka level_01_diffuse.png
+	map_Kd level_01_diffuse.png

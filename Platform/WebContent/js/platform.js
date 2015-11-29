@@ -107,14 +107,13 @@ function init() {
 
 	orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2,
             window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10, 1000);
-	orthoCamera.position.set(0, 0, 0);
-
-	orthoScene = new THREE.Scene();
+	
+        orthoScene = new THREE.Scene();
 
 	keyboard = new THREEx.KeyboardState();
 
 	// Camera
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 10000);
+	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 30000);
 
 	if (!charCam) {
 		camera.position.y += 15;
