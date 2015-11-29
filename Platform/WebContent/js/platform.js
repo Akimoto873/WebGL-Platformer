@@ -67,7 +67,9 @@ function main() {
 //Game Loop
 function tick() {
     if (level == 1) {
+    	if(!menu){
             scene.simulate();
+    	}
             stats.update();
             // updateCamera(); //removed since camera is now attached to character.
             renderer.clear();
@@ -101,11 +103,15 @@ function init() {
     scene.fog = new THREE.Fog(0x202020, 10, 100);
     scene.setGravity(new THREE.Vector3(0, -20, 0)); // set gravity
     scene.addEventListener('update', function() {
+    	if(!menu){
             checkKeys();
             checkMovement();
+    	}
             checkChangesToHUD();
             resetValues();
+        if(!menu){
             scene.simulate();
+        }
 
 
     });
@@ -242,6 +248,9 @@ function init() {
             if(e.keyCode == 71 && e.type == 'keyup'){
                     dropCone();
             }
+            if(e.keyCode == 82 && e.type == 'keyup'){
+            	restartLevel();
+            }
             
             // TEMP DEBUG KEY: 2 
             // Change to level 2
@@ -325,7 +334,7 @@ function coneLoadedCallback(geometry){
 
 function conesLoadedCallback(geometry){
 	cones = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xff8800}), 1, .1), 10);
-	cones.position.z -= 5;
+	cones.position.z = -5;
 	cones.position.y += 1;
 	cones.scale.set(0.2, 0.2, 0.2);
 	scene.add(cones);
@@ -428,6 +437,8 @@ function restartLevel() { // Currently not finished.
             orthoScene.remove(gameOverSprite);
             orthoScene.remove(restartSprite);
     }
+    carriedCones = 0;
+    resetCones();
     level = 1;
 }
 
@@ -466,6 +477,27 @@ function resetCrate() {
     scene.remove(crate);
     crate.position.set(9, 0, -12);
     scene.add(crate);
+}
+
+//Resets the cones
+function resetCones(){
+	for(var i = pickUpItems.length - 1; i > 0; i--){
+		scene.remove(pickUpItems[i]);
+		pickUpItems.splice(i,1);
+	}
+	var clone = new Physijs.BoxMesh(cones.clone().geometry, cones.material,
+			cones.mass);
+	clone.position.x = 0;
+	clone.position.z = -5;
+	clone.position.y = 10;
+	clone.rotation.z = 0;
+	clone.rotation.y = 0;
+	clone.rotation.x = 0;
+	clone.scale.set(0.2, 0.2, 0.2);
+	cones = clone;
+	scene.add(cones);
+	pickUpItems.push(cones);
+	
 }
 
 //resets the traps
