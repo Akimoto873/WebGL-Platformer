@@ -104,38 +104,28 @@ function init() {
 		
 		
 	});
-	
-	
+
 	orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2,
-			window.innerWidth / 2, window.innerHeight / 2, window.innerHeight
-					/ -2, -10, 1000);
-	orthoCamera.position.x = 0;
-	orthoCamera.position.y = 0;
-	orthoCamera.position.z = 0;
+            window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10, 1000);
+	orthoCamera.position.set(0, 0, 0);
 
 	orthoScene = new THREE.Scene();
 
 	keyboard = new THREEx.KeyboardState();
 
 	// Camera
-
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth
-			/ window.innerHeight, 0.01, 10000);
+	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 10000);
 
 	if (!charCam) {
-
 		camera.position.y += 15;
-
 		controls = new THREE.OrbitControls(camera);
 	}
 
 	// Lights
-
 	ambientLight = new THREE.AmbientLight(0x606060);
 	scene.add(ambientLight);
 
-	// renderer
-
+	// Renderer
 	renderer = new THREE.WebGLRenderer({
 		antialias : true,
 		alpha : true
@@ -146,13 +136,20 @@ function init() {
 
 	textureLoader = new THREE.TextureLoader();
 
-	level1Texture = textureLoader.load('images/level_1_texture2.jpg');
+	// level1Texture = textureLoader.load('images/level_1_texture2.jpg');
 	trapTexture = textureLoader.load('images/crushers.jpg');
 
-	var loader = new THREE.JSONLoader();
+        // OBJ MTL Loader
+        THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
+        var objLoader = new THREE.OBJMTLLoader();
 
-	// loader.load('models/char.js', characterLoadedCallback);
-	loader.load('models/level_01.js', level1loadedCallback);
+        // Load Level 1
+        objLoader.load('models/level_01/level_01.obj', 'models/level_01/level_01.mtl', level1LoadedCallback);
+
+        // JSON Loader
+        var loader = new THREE.JSONLoader();
+        // loader.load('models/char.js', characterLoadedCallback);
+        // loader.load('models/level_01.js', level1loadedCallback);
 	loader.load('models/trap.js', trapLoadedCallback);
 	loader.load('models/cone.js', coneLoadedCallback);
 	loader.load('models/cones.js', conesLoadedCallback);
@@ -267,9 +264,31 @@ function init() {
 	createChar();
 	createWelcome();
 	fallClock = new THREE.Clock();
-
 }
 
+
+// Called when level 1 model is loaded.
+function level1LoadedCallback(object)
+{
+    // Add shadows
+    object.traverse(function (node) {
+        if (node instanceof THREE.Mesh) 
+        {
+            node.castShadow = true;
+            node.receiveShadow = true;
+        }
+    });
+
+    // Set position and scale
+    object.scale.set(1, 1.8, 1);
+    object.position.y += 1.4;
+
+    // Add to scene
+    scene.add(object);
+}
+
+
+/*
 //Called when level1 model is loaded.
 function level1loadedCallback(geometry, materials) {
 	levelMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
@@ -280,6 +299,7 @@ function level1loadedCallback(geometry, materials) {
 	scene.add(levelMesh);
 	// tick();
 }
+*/
 
 //Called when trap model is loaded.
 function trapLoadedCallback(geometry) {
@@ -365,8 +385,8 @@ function onWindowResize() {
 //debug help
 function log(param) {
 	setTimeout(function() {
-		throw new Error("Debug: " + param)
-	}, 0)
+		throw new Error("Debug: " + param);
+	}, 0);
 }
 
 //Called when the level is complete. Starts next level

@@ -2,7 +2,7 @@
  * 
  */
 
-//Generates level 1.
+// Generates level 1.
 function generateLevel1() {
 	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
@@ -170,6 +170,7 @@ function generateLevel1() {
 	levelLoaded = true;
 	checkTick();
 }
+
 //Adds a new wall with the specified position and scale
 function addWall(object, wallX, wallZ, wallScaleX, wallScaleY, wallScaleZ) {
 	wall = cloneBox(object);
