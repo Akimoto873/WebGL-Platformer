@@ -162,7 +162,6 @@ function generateLevel1() {
 
 			// insert your code here, for example:
 			objects.push(node);
-
 		}
 
 	});
@@ -173,24 +172,47 @@ function generateLevel1() {
 
 // Generates level 2
 function generateLevel2(){
-	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
-			.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0xee2233,
-				visible : true, opacity: 1
-			}), 0.99, 0.2), 0);
-                        
-	floor.position.y -= 2.25;
-	scene.add(floor);
+    // OBJ MTL Loader
+    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
+    var objLoader = new THREE.OBJMTLLoader();
+
+    // Load Level 2
+    objLoader.load('models/level_02/level_02.obj', 'models/level_02/level_02.mtl', level2LoadedCallback);
+    // objLoader.load('models/level_01/level_01.obj', 'models/level_01/level_01.mtl', level2LoadedCallback);
+    // Collision
+    floor = new Physijs.BoxMesh(new THREE.BoxGeometry(130, 1, 130), Physijs
+                    .createMaterial(new THREE.MeshBasicMaterial({
+                            color : 0xee2233,
+                            visible : true, opacity: 1
+                    }), 0.99, 0.2), 0);
+
+    floor.position.y = -0.5;
+    scene.add(floor);
         
-        /*
-	crate = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 2, 3),
-			crateMaterial, 15);
-	moveableObjects.push(crate);
-	pickUpItems.push(crate);
-	crate.position.x += 9;
-	crate.position.z -= 12;
-	scene.add(crate);
-        */
+    // Lights
+    var ambientLight = new THREE.AmbientLight(0xffffff);
+    scene.add(ambientLight);
+        
+}
+
+// Called when level 1 model is loaded.
+function level2LoadedCallback(object)
+{
+    // Add shadows
+    object.traverse(function (node) {
+        if (node instanceof THREE.Mesh) 
+        {
+            node.castShadow = true;
+            node.receiveShadow = true;
+        }
+    });
+
+    // Set position and scale
+    object.scale.set(1, 1, 1);
+    // object.position.y += 1.4;
+
+    // Add to scene
+    scene.add(object);
 }
 
 //Adds a new wall with the specified position and scale

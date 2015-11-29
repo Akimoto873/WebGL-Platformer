@@ -167,6 +167,8 @@ function init() {
     roofTexture = textureLoader.load('images/concrete.jpg');
     roofTexture.wrapT = roofTexture.wrapS = THREE.RepeatWrapping;
     roofTexture.repeat.set(20, 20);
+    
+    // Create level 1
     generateLevel1();
 
     window.addEventListener('resize', onWindowResize, false);
@@ -219,6 +221,8 @@ function init() {
                             pickup = true;
                     }
             }
+            
+            // M to toggle music
             if (e.keyCode == 77) {
                     if (e.type == 'keyup') {
                             if (ambience.volume != 0) {
@@ -241,7 +245,8 @@ function init() {
                     dropCone();
             }
             
-            // TEMP DEBUG KEY - Change to level 2:
+            // TEMP DEBUG KEY: 2 
+            // Change to level 2
             if(e.keyCode == 50 && e.type == 'keyup'){
                 level = 0;
                 scene = new Physijs.Scene();
@@ -276,10 +281,12 @@ function init() {
 
     gameOverAudio = new Audio('audio/gameOver.mp3');
     ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
-    ambience.volume = 0.2;
+    
+    /* TODO: DEBUG: TURNED OFF MUSIC WHILE WORKING ON THE GAME */
+    ambience.volume = 0;
     ambience.addEventListener('ended', function() {
-            this.currentTime = 0;
-            this.play();
+        this.currentTime = 0; 
+        this.play();
     }, false);
     ambience.play();
 
@@ -452,84 +459,87 @@ function restartLevel() { // Currently not finished.
 
 }
 
-//Resets the character mesh.
+// Resets the character mesh.
 function resetChar() {
-	charMesh.remove(camera);
-	var temp = cloneBox(charMesh);
-	temp.visible = true;
-	charMesh = temp;
-	charMesh.position.x = charMeshPosition.x;
-	charMesh.position.y = charMeshPosition.y;
-	charMesh.position.z = charMeshPosition.z;
-	scene.add(charMesh);
-	camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
-	charMesh.add(camera);
-	charMesh.material.visible = false;
-	charMesh.setAngularFactor(new THREE.Vector3(0, 0.1, 0));
-	charMesh.addEventListener('collision', function(other_object,
-			relative_velocity, relative_rotation, contact_normal) {
-		if (other_object == trap || other_object == trap2) {
-			health -= 100;
-			damaged = true;
-		}
-		if (other_object == exit) {
-			levelComplete();
-		}
-	});
-	charMesh.setDamping(0.1, 0.9);
-	moveableObjects.push(charMesh);
-	carrying = false;
+    charMesh.remove(camera);
+    var temp = cloneBox(charMesh);
+    temp.visible = true;
+    charMesh = temp;
+    charMesh.position.x = charMeshPosition.x;
+    charMesh.position.y = charMeshPosition.y;
+    charMesh.position.z = charMeshPosition.z;
+    scene.add(charMesh);
+    camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
+    charMesh.add(camera);
+    charMesh.material.visible = false;
+    charMesh.setAngularFactor(new THREE.Vector3(0, 0.1, 0));
+    charMesh.addEventListener('collision', function(other_object,
+                    relative_velocity, relative_rotation, contact_normal) {
+            if (other_object == trap || other_object == trap2) {
+                    health -= 100;
+                    damaged = true;
+            }
+            if (other_object == exit) {
+                    levelComplete();
+            }
+    });
+    charMesh.setDamping(0.1, 0.9);
+    moveableObjects.push(charMesh);
+    carrying = false;
 }
 
 //Resets the crate.
 function resetCrate() {
-	scene.remove(crate);
-	crate.position.set(9, 0, -12);
-	scene.add(crate);
+    scene.remove(crate);
+    crate.position.set(9, 0, -12);
+    scene.add(crate);
 }
 
 //resets the traps
 function resetTraps() {
-	scene.remove(trap2);
-	trap2.position.set(-20, 1.5, 24.5);
-	scene.add(trap2);
-	trap2.setAngularFactor(new THREE.Vector3(0, 0, 0));
-	triggered2 = false;
+    scene.remove(trap2);
+    trap2.position.set(-20, 1.5, 24.5);
+    scene.add(trap2);
+    trap2.setAngularFactor(new THREE.Vector3(0, 0, 0));
+    triggered2 = false;
 }
 
-//Creates the menu
+// Creates the menu
 function createWelcome(){
-	menuTexture = textureLoader.load('images/testMenu.jpg');
-	playTexture = textureLoader.load('images/testPlay.jpg');
-	optionsTexture = textureLoader.load('images/testOptions.jpg');
-	
+    // Create Menu container
+    overlayContainer = document.createElement('div');
+    document.body.appendChild(overlayContainer);
+        
+    // Textures
+    menuTexture = textureLoader.load('images/testMenu.jpg');
+    playTexture = textureLoader.load('images/testPlay.jpg');
+    optionsTexture = textureLoader.load('images/testOptions.jpg');
 
-	
-	overlayContainer = document.createElement('div');
-	document.body.appendChild(overlayContainer);
+    // Menu Sprite
+    var spriteMaterial = new THREE.SpriteMaterial({
+        map : menuTexture
+    });
+    menuSprite = new THREE.Sprite(spriteMaterial);
+    menuSprite.position.set(0,0 , -100);
+    menuSprite.scale.set(window.innerWidth / 2, window.innerHeight / 1.5, 1);
+    orthoScene.add(menuSprite);
 
-	
-	var spriteMaterial = new THREE.SpriteMaterial({
-		map : menuTexture
-	});
-	menuSprite = new THREE.Sprite(spriteMaterial);
-	menuSprite.position.set(0,0 , -100);
-	menuSprite.scale.set(window.innerWidth / 2, window.innerHeight / 1.5, 1);
-	orthoScene.add(menuSprite);
-	
-	var spriteMaterial = new THREE.SpriteMaterial({
-		map : playTexture
-	});
-	playSprite = new THREE.Sprite(spriteMaterial);
-	playSprite.position.set(0,50 , -80);
-	playSprite.scale.set(window.innerWidth / 8, window.innerHeight / 15, 1);
-	orthoScene.add(playSprite);
-	var spriteMaterial = new THREE.SpriteMaterial({
-		map : optionsTexture
-	});
-	optionsSprite = new THREE.Sprite(spriteMaterial);
-	optionsSprite.position.set(0,-10 , -80);
-	optionsSprite.scale.set(window.innerWidth / 8, window.innerHeight / 15, 1);
-	orthoScene.add(optionsSprite);
-	menu = true;
+    // "Play" Sprite Text
+    var spriteMaterial = new THREE.SpriteMaterial({
+        map : playTexture
+    });
+    playSprite = new THREE.Sprite(spriteMaterial);
+    playSprite.position.set(0,50 , -80);
+    playSprite.scale.set(window.innerWidth / 8, window.innerHeight / 15, 1);
+    orthoScene.add(playSprite);
+
+    // "Options" Sprite Text
+    var spriteMaterial = new THREE.SpriteMaterial({
+        map : optionsTexture
+    });
+    optionsSprite = new THREE.Sprite(spriteMaterial);
+    optionsSprite.position.set(0,-10 , -80);
+    optionsSprite.scale.set(window.innerWidth / 8, window.innerHeight / 15, 1);
+    orthoScene.add(optionsSprite);
+    menu = true;
 }
