@@ -7,7 +7,7 @@ var clockwiseRotation = 0;
 var strafeLeft = false;
 var strafeRight = false;
 var pickupThisFrame = false;
-var force = 300;
+var force = 4;
 var forwardForce;
 var sideForce;
 var walkSpeed = 4;
@@ -90,12 +90,14 @@ function checkMovement() {
     var currentVelocity = Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) 
             + Math.pow(charMesh.getLinearVelocity().z, 2));
     var maxSpeed = 4;
+    force = 4;
     if(runForward){
     	maxSpeed = 8;
+    	force = 8;
     }
     if(currentVelocity < maxSpeed){
 	    var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-	    charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
+	    charMesh.setLinearVelocity(new THREE.Vector3(finalForceVector.x, oldVelocityVector.y,
 	                   finalForceVector.z));
     }
     
@@ -106,7 +108,7 @@ function checkMovement() {
         		waitForKeyUp = true;
         	}
             airTime = new THREE.Clock();
-            charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
+            charMesh.applyCentralImpulse(new THREE.Vector3(0, 80, 0));
             stamina -= 20;
             // health -= 10;
             // damaged = true; //for testing purposes
@@ -238,10 +240,10 @@ function checkTraps() {
 function checkFallDmg() {
     charCaster.set(charMesh.position, new THREE.Vector3(0, -1, 0));
     var intersects = charCaster.intersectObjects(objects);
-    if ((airborne1 || airborne2) && airTime.getElapsedTime() > 1) { // check for landing
+    if ((airborne1 || airborne2) && airTime.getElapsedTime() > 0.5) { // check for landing
 
             for (var i = 0; i < intersects.length; i++) {
-                    if (intersects[i].distance < 1.5) {
+                    if (intersects[i].distance < 1.6) {
                             airborne1 = false;
                             airborne2 = false;
                             airTime.stop();

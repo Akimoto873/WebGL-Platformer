@@ -99,7 +99,7 @@ function init() {
 
     scene = new Physijs.Scene({fixedTimeStep: 1/60});
     scene.fog = new THREE.Fog(0x202020, 10, 100);
-    scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
+    scene.setGravity(new THREE.Vector3(0, -20, 0)); // set gravity
     scene.addEventListener('update', function() {
             checkKeys();
             checkMovement();
