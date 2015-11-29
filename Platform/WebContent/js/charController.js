@@ -12,9 +12,6 @@ var force = 300;
 
 //checks keyinputs on every loop turn.
 function checkKeys() {
-    if(timerNotRunning){
-            timerNotRunning = false;
-    }
 
     // W
     if (keyMap[87]) { 
@@ -90,13 +87,19 @@ function checkMovement() {
 //	}
 //	var force = 10*(4 - oldVelocity)/deltaT; //Force needed this frame to simulate setlinearvelocity
 //	var runForce = 10*(8 - oldVelocityRun)/deltaT;
+   
+	
+	//Get rotation and velocity of character
+	var rotationMatrix = new THREE.Matrix4();
+    rotationMatrix.extractRotation(charMesh.matrix);
+    var oldVelocityVector = charMesh.getLinearVelocity();
+    
     // W + shift is pressed
     if (runForward) {
-            var rotationMatrix = new THREE.Matrix4();
-            rotationMatrix.extractRotation(charMesh.matrix);
+            
             var forceVector = new THREE.Vector3(0, 0, force );
             var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-            var oldVelocityVector = charMesh.getLinearVelocity();
+           
             charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0,
                             finalForceVector.z));
             stamina -= 2;
@@ -104,8 +107,6 @@ function checkMovement() {
     
     // W is pressed
     else if (walkForward) {
-        var rotationMatrix = new THREE.Matrix4();
-        rotationMatrix.extractRotation(charMesh.matrix);
         var forceVector = new THREE.Vector3(0, 0, force);
         var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
         charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0, finalForceVector.z));
@@ -113,11 +114,8 @@ function checkMovement() {
 
     // S is pressed
     if (walkBackward) { 
-        var rotationMatrix = new THREE.Matrix4();
-        rotationMatrix.extractRotation(charMesh.matrix);
         var forceVector = new THREE.Vector3(0, 0, -force);
         var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-        var oldVelocityVector = charMesh.getLinearVelocity();
         charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0, finalForceVector.z));
     }
     
@@ -140,21 +138,15 @@ function checkMovement() {
     // Q is pressed
     if (strafeLeft) { 
 
-        var rotationMatrix = new THREE.Matrix4();
-        rotationMatrix.extractRotation(charMesh.matrix);
         var forceVector = new THREE.Vector3(-force, 0, 0);
         var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-        var oldVelocityVector = charMesh.getLinearVelocity();
         charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0, finalForceVector.z));
     }
 
     // E is pressed
     if (strafeRight) { 
-        var rotationMatrix = new THREE.Matrix4();
-        rotationMatrix.extractRotation(charMesh.matrix);
         var forceVector = new THREE.Vector3(force, 0, 0);
         var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
-        var oldVelocityVector = charMesh.getLinearVelocity();
         charMesh.applyCentralForce(new THREE.Vector3(finalForceVector.x, 0, finalForceVector.z));
     }
 
@@ -193,8 +185,6 @@ function checkMovement() {
         
         if (carrying && !pickupThisFrame) {
             charMesh.remove(crate);
-            var rotationMatrix = new THREE.Matrix4();
-            rotationMatrix.extractRotation(charMesh.matrix);
             var positionDiff = new THREE.Vector3(0, 0, 1);
             var finalPosition = positionDiff.applyMatrix4(rotationMatrix);
             var oldPosition = charMesh.position
@@ -273,7 +263,7 @@ function checkFallDmg() {
     if ((airborne1 || airborne2) && airTime.getElapsedTime() > 1) { // check for landing
 
             for (var i = 0; i < intersects.length; i++) {
-                    if (intersects[i].distance < 10) {
+                    if (intersects[i].distance < 1.5) {
                             airborne1 = false;
                             airborne2 = false;
                             airTime.stop();

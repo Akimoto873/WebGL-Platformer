@@ -45,8 +45,6 @@ var gameOverScreen = false;
 var level = 1;
 var ambience;
 var textureLoader;
-var deltaT;
-var timerNotRunning = true;
 var menu = false;
 var charMeshPosition = new THREE.Vector3(5, 1, 0); //for debugging purposes
 var cratePosition = new THREE.Vector3(9, 1, -12);
@@ -194,11 +192,13 @@ function init() {
 			if(e.type == 'keydown' && !airborne2){
 				if(!airborne1){
 					airborne1 = true;
+					jump = true;
 				}
 				else if (!waitForKeyUp){
 					airborne2 = true;
+					jump = true;
 				}
-				jump = true;
+				
 			}
 			else if(e.type == 'keyup' && waitForKeyUp){
 				waitForKeyUp = false;
@@ -337,7 +337,7 @@ function createChar() {
 	charMesh = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 3, 1), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0xeeff33
-			}), 1, .1), 10);
+			}), 0.5, .1), 10);
 	charMesh.position.x = charMeshPosition.x;
 	charMesh.position.y = charMeshPosition.y;
 	charMesh.position.z = charMeshPosition.z;

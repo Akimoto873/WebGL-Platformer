@@ -8,7 +8,7 @@ function generateLevel1() {
 			.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0xee2233,
 				visible : false
-			}), 0.99, 0.2), 0);
+			}), 1, 0.2), 0);
 	floor.position.y -= 2.25;
 	scene.add(floor);
 
