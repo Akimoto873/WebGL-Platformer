@@ -48,6 +48,11 @@ function createOverlay()
     staminaSprite2.position.set(-(window.innerWidth / 3.2), -(window.innerHeight / 2.5) + 100, 8);
     staminaSprite2.scale.set(window.innerWidth / 2.8, window.innerHeight / 15, 1);
     orthoScene.add(staminaSprite2);
+    
+    staminaSprite.visible = false;
+	healthSprite.visible = false;
+	staminaSprite2.visible = false;
+	healthSprite2.visible = false;
 }
 
 /* Shows the game over screen on death */
@@ -95,6 +100,18 @@ function showGameOver() {
 
 // Scales the health and stamina bars based on health and stamina remaining.
 function checkChangesToHUD() {
+	if(menu){
+		staminaSprite.visible = false;
+		healthSprite.visible = false;
+		staminaSprite2.visible = false;
+		healthSprite2.visible = false;
+	}
+	else{
+		staminaSprite.visible = true;
+		healthSprite.visible = true;
+		staminaSprite2.visible = true;
+		healthSprite2.visible = true;
+	}
     staminaSprite.scale.set((Math.abs(stamina) / 200) * (window.innerWidth / 3), window.innerHeight / 16, 1);
     staminaSprite.position.x = (-window.innerWidth / 3.2) - (1 - Math.abs(stamina / 200)) * (window.innerWidth / 6.0);
 
@@ -130,12 +147,16 @@ function checkChangesToHUD() {
     }
 }
 
-// Removes the menu
+//Removes the menu
 function removeMenu(){
     menu = false;
     menuSprite.visible = false;
     playSprite.visible = false;
     optionsSprite.visible = false;
+    controlsSprite.visible = false;
+    controlsScreenSprite.visible = false;
+    backSprite.visible = false;
+    controls = false;
 }
 
 // Shows the menu
@@ -144,4 +165,25 @@ function showMenu(){
     menuSprite.visible = true;
     playSprite.visible = true;
     optionsSprite.visible = true;
+    controlsSprite.visible = true;
+}
+
+function showControls(){
+	menuSprite.visible = false;
+	playSprite.visible = false;
+    optionsSprite.visible = false;
+    controlsSprite.visible = false;
+    controlsScreenSprite.visible = true;
+    backSprite.visible = true;
+    controls = true;
+}
+
+function backToMenu(){
+	menuSprite.visible = true;
+	playSprite.visible = true;
+    optionsSprite.visible = true;
+    controlsSprite.visible = true;
+    controlsScreenSprite.visible = false;
+    backSprite.visible = false;
+    controls = false;
 }

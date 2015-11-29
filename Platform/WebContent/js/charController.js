@@ -177,7 +177,6 @@ function checkMovement() {
                 else {
                         pickUpItems.splice(i, 1);
                         carriedCones += 1;
-                        log(carriedCones);
                         i = pickUpItems.length + 1;
                 }
             }
@@ -208,20 +207,33 @@ function checkMovement() {
 
 //Checks if traps are triggered, and handles what happens then.
 function checkTraps() {
-    if (charMesh._physijs.touches.indexOf(tile._physijs.id) === 1 || crate._physijs.touches.indexOf(tile._physijs.id) === 1) {
-        if (!triggered) {
-            scene.remove(trap);
-            scene.add(trap);
-            trap.setLinearFactor(new THREE.Vector3(0, 1, 0));
-            trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
-            triggered = true;
-            trapTime = new THREE.Clock();
+	for(var i = 0;  i < moveableObjects.length; i++){
+	    if (moveableObjects[i]._physijs.touches.indexOf(tile._physijs.id) === 1) {
+	        if (!triggered) {
+	            scene.remove(trap);
+	            scene.add(trap);
+	            trap.setLinearFactor(new THREE.Vector3(0, 1, 0));
+	            trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
+	            triggered = true;
+	            trapTime = new THREE.Clock();
 
-        }
+	        }
+	    }
+    }
+	for(var i = 0;  i < pickUpItems.length; i++){
+	    if (pickUpItems[i]._physijs.touches.indexOf(tile._physijs.id) === 1) {
+	        if (!triggered) {
+	            scene.remove(trap);
+	            scene.add(trap);
+	            trap.setLinearFactor(new THREE.Vector3(0, 1, 0));
+	            trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
+	            triggered = true;
+	            trapTime = new THREE.Clock();
+
+	        }
+	    }
     }
     if (triggered) {
-        log(applyForce);
-        log(trap.position.y);
 
         if (trap.position.y < 2) {
                 applyForce = true;
