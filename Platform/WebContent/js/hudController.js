@@ -100,7 +100,7 @@ function checkChangesToHUD() {
 
     // If you have been hurt, we update the apperance of your health
     if (damaged) {
-        // Update the size of the health bar according to your health
+        // Update the size of the health bar according to your amount of health
         healthSprite.scale.set((Math.abs(health) / 100) * (window.innerWidth / 3), window.innerHeight / 16, 1);
         healthSprite.position.x = (-window.innerWidth / 3.2) - (1 - Math.abs(health / 100)) * (window.innerWidth / 6.0);
         
@@ -115,6 +115,7 @@ function checkChangesToHUD() {
                 healthSprite.material.color.setHex(0xff0000);   // Red
         }
         
+        // Set damaged to false to prevent taking further damage from the source
         damaged = false;
     }
 
@@ -136,6 +137,7 @@ function removeMenu(){
     playSprite.visible = false;
     optionsSprite.visible = false;
 }
+
 // Shows the menu
 function showMenu(){
     menu = true;

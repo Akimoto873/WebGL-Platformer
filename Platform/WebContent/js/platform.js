@@ -60,213 +60,233 @@ function main() {
 
 //Game Loop
 function tick() {
-	if (level == 1) {
-		
-		stats.update();
-		// updateCamera(); //removed since camera is now attached to character.
-		renderer.clear();
-		renderer.render(scene, camera);
-		renderer.clearDepth();
-		renderer.render(orthoScene, orthoCamera);
-		
-		
-	} else if (level == 2) {
-		scene.simulate();
-		stats.update();
-		// updateCamera(); //removed since camera is now attached to character.
-		renderer.clear();
-		renderer.render(scene, camera);
-		renderer.clearDepth();
-		renderer.render(orthoScene, orthoCamera);
-	} else {
+    if (level == 1) {
 
-	}
+            stats.update();
+            // updateCamera(); //removed since camera is now attached to character.
+            renderer.clear();
+            renderer.render(scene, camera);
+            renderer.clearDepth();
+            renderer.render(orthoScene, orthoCamera);
 
-	requestAnimationFrame(tick);
+
+    } else if (level == 2) {
+            scene.simulate();
+            stats.update();
+            // updateCamera(); //removed since camera is now attached to character.
+            renderer.clear();
+            renderer.render(scene, camera);
+            renderer.clearDepth();
+            renderer.render(orthoScene, orthoCamera);
+    } else {
+
+    }
+
+    requestAnimationFrame(tick);
 }
 
 
 //Initate 
 function init() {
-	Physijs.scripts.worker = 'lib/physijs_worker.js';
-	Physijs.scripts.ammo = 'http://gamingJS.com/ammo.js';
+    Physijs.scripts.worker = 'lib/physijs_worker.js';
+    Physijs.scripts.ammo = 'http://gamingJS.com/ammo.js';
 
-	scene = new Physijs.Scene({fixedTimeStep: 1/60});
-	scene.fog = new THREE.Fog(0x202020, 10, 100);
-	scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
-	scene.addEventListener('update', function() {
-		checkKeys();
-		checkMovement();
-		checkChangesToHUD();
-		resetValues();
-		scene.simulate();
-		
-		
-	});
+    scene = new Physijs.Scene({fixedTimeStep: 1/60});
+    scene.fog = new THREE.Fog(0x202020, 10, 100);
+    scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
+    scene.addEventListener('update', function() {
+            checkKeys();
+            checkMovement();
+            checkChangesToHUD();
+            resetValues();
+            scene.simulate();
 
-	orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2,
-            window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10, 1000);
-	
-        orthoScene = new THREE.Scene();
 
-	keyboard = new THREEx.KeyboardState();
+    });
 
-	// Camera
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 30000);
+    orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2,
+        window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10, 1000);
 
-	if (!charCam) {
-		camera.position.y += 15;
-		controls = new THREE.OrbitControls(camera);
-	}
+    orthoScene = new THREE.Scene();
 
-	// Lights
-	ambientLight = new THREE.AmbientLight(0x606060);
-	scene.add(ambientLight);
+    keyboard = new THREEx.KeyboardState();
 
-	// Renderer
-	renderer = new THREE.WebGLRenderer({
-		antialias : true,
-		alpha : true
-	});
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.shadowMap.Enabled = true;
-	renderer.autoClear = false;
+    // Camera
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 30000);
 
-	textureLoader = new THREE.TextureLoader();
+    if (!charCam) {
+            camera.position.y += 15;
+            controls = new THREE.OrbitControls(camera);
+    }
 
-	// level1Texture = textureLoader.load('images/level_1_texture2.jpg');
-	trapTexture = textureLoader.load('images/crushers.jpg');
+    // Lights
+    ambientLight = new THREE.AmbientLight(0x606060);
+    scene.add(ambientLight);
 
-        // OBJ MTL Loader
-        THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
-        var objLoader = new THREE.OBJMTLLoader();
+    // Renderer
+    renderer = new THREE.WebGLRenderer({
+            antialias : true,
+            alpha : true
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.Enabled = true;
+    renderer.autoClear = false;
 
-        // Load Level 1
-        objLoader.load('models/level_01/level_01.obj', 'models/level_01/level_01.mtl', level1LoadedCallback);
+    textureLoader = new THREE.TextureLoader();
 
-        // JSON Loader
-        var loader = new THREE.JSONLoader();
-        // loader.load('models/char.js', characterLoadedCallback);
-        // loader.load('models/level_01.js', level1loadedCallback);
-	loader.load('models/trap.js', trapLoadedCallback);
-	loader.load('models/cone.js', coneLoadedCallback);
-	loader.load('models/cones.js', conesLoadedCallback);
+    // level1Texture = textureLoader.load('images/level_1_texture2.jpg');
+    trapTexture = textureLoader.load('images/crushers.jpg');
 
-	var crateTexture = textureLoader.load('images/crate.jpg');
-	crateMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
-		map : crateTexture
-	}), 0.4, 0.8);
-	var exitTexture = textureLoader.load('images/exit.jpg');
-	exitMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
-		map : exitTexture
-	}), 0.4, 0.8);
-	var crushingTexture = textureLoader.load('images/crushing.jpg');
-	crushingMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
-		map : crushingTexture
-	}), 0.4, 0.8);
-	roofTexture = textureLoader.load('images/concrete.jpg');
-	roofTexture.wrapT = roofTexture.wrapS = THREE.RepeatWrapping;
-	roofTexture.repeat.set(20, 20);
-	generateLevel1();
+    // OBJ MTL Loader
+    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
+    var objLoader = new THREE.OBJMTLLoader();
 
-	window.addEventListener('resize', onWindowResize, false);
+    // Load Level 1
+    objLoader.load('models/level_01/level_01.obj', 'models/level_01/level_01.mtl', level1LoadedCallback);
 
-	container = document.getElementById('container');
-	container.appendChild(renderer.domElement);
+    // JSON Loader
+    var loader = new THREE.JSONLoader();
+    // loader.load('models/char.js', characterLoadedCallback);
+    // loader.load('models/level_01.js', level1loadedCallback);
+    loader.load('models/trap.js', trapLoadedCallback);
+    loader.load('models/cone.js', coneLoadedCallback);
+    loader.load('models/cones.js', conesLoadedCallback);
 
-	// fps statistics
+    var crateTexture = textureLoader.load('images/crate.jpg');
+    crateMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
+            map : crateTexture
+    }), 0.4, 0.8);
+    var exitTexture = textureLoader.load('images/exit.jpg');
+    exitMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
+            map : exitTexture
+    }), 0.4, 0.8);
+    var crushingTexture = textureLoader.load('images/crushing.jpg');
+    crushingMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
+            map : crushingTexture
+    }), 0.4, 0.8);
+    roofTexture = textureLoader.load('images/concrete.jpg');
+    roofTexture.wrapT = roofTexture.wrapS = THREE.RepeatWrapping;
+    roofTexture.repeat.set(20, 20);
+    generateLevel1();
 
-	stats = new Stats();
-	stats.domElement.style.position = 'absolute';
-	stats.domElement.style.top = '0px';
-	stats.domElement.style.zIndex = 100;
-	container.appendChild(stats.domElement);
+    window.addEventListener('resize', onWindowResize, false);
 
-	
-	//Key event handler
-	onkeydown = onkeyup = function(e) {
-		e = e || event; // to deal with IE
-		keyMap[e.keyCode] = e.type == 'keydown';
-		if (e.keyCode == 32) {
-			e.preventDefault();
-			if(e.type == 'keydown' && !airborne2){
-				if(!airborne1){
-					airborne1 = true;
-					jump = true;
-				}
-				else if (!waitForKeyUp){
-					airborne2 = true;
-					jump = true;
-				}
-				
-			}
-			else if(e.type == 'keyup' && waitForKeyUp){
-				waitForKeyUp = false;
-			}
-		}
-		if(e.keyCode == 27){
-			if(e.type == 'keyup'){
-				if(menu){
-					removeMenu();
-				}
-				else{
-					showMenu();
-				}
-			}
-		}
-		if (e.keyCode == 70) {
-			if (e.type == 'keyup') {
-				pickup = true;
-			}
-		}
-		if (e.keyCode == 77) {
-			if (e.type == 'keyup') {
-				if (ambience.volume != 0) {
-					gameOverAudio.volume = 0;
-					ambience.volume = 0;
-				} else {
-					gameOverAudio.volume = 0.5;
-					ambience.volume = 0.2;
-				}
-			}
-		}
-		if((e.keyCode == 87 || e.keyCode == 83 || e.keyCode == 69 || e.keyCode == 81) && e.type == 'keyup'){
-			if(!keyMap[87] && !keyMap[83] && !keyMap[69] && !keyMap[81]){
-				var oldY = charMesh.getLinearVelocity().y;
-				charMesh.setLinearVelocity(new THREE.Vector3(0,oldY,0));
-			}
-		}
-		
-		if(e.keyCode == 71 && e.type == 'keyup'){
-			dropCone();
-		}
-		
-	};
-	
-	//Mouseclick event handler
-	renderer.domElement.addEventListener('click', function(e){
-		e = e || event;
-		var xPos = e.clientX;
-		var yPos = e.clientY;
-		if(menu && xPos < window.innerWidth / 2 + window.innerWidth / 16 && xPos > window.innerWidth / 2 -window.innerWidth / 16 && yPos < window.innerHeight / 2 - 50 + window.innerHeight / 30 && yPos > window.innerHeight / 2 - 50 - window.innerHeight / 30){
-			removeMenu();
-			
-		}
-	});
+    container = document.getElementById('container');
+    container.appendChild(renderer.domElement);
 
-	gameOverAudio = new Audio('audio/gameOver.mp3');
-	ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
-	ambience.volume = 0.2;
-	ambience.addEventListener('ended', function() {
-		this.currentTime = 0;
-		this.play();
-	}, false);
-	ambience.play();
+    // fps statistics
 
-	createOverlay();
-	createChar();
-	createWelcome();
-	fallClock = new THREE.Clock();
+    stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.top = '0px';
+    stats.domElement.style.zIndex = 100;
+    container.appendChild(stats.domElement);
+
+
+    //Key event handler
+    onkeydown = onkeyup = function(e) {
+            e = e || event; // to deal with IE
+            keyMap[e.keyCode] = e.type == 'keydown';
+            if (e.keyCode == 32) {
+                    e.preventDefault();
+                    if(e.type == 'keydown' && !airborne2){
+                            if(!airborne1){
+                                    airborne1 = true;
+                                    jump = true;
+                            }
+                            else if (!waitForKeyUp){
+                                    airborne2 = true;
+                                    jump = true;
+                            }
+
+                    }
+                    else if(e.type == 'keyup' && waitForKeyUp){
+                            waitForKeyUp = false;
+                    }
+            }
+            if(e.keyCode == 27){
+                    if(e.type == 'keyup'){
+                            if(menu){
+                                    removeMenu();
+                            }
+                            else{
+                                    showMenu();
+                            }
+                    }
+            }
+            if (e.keyCode == 70) {
+                    if (e.type == 'keyup') {
+                            pickup = true;
+                    }
+            }
+            if (e.keyCode == 77) {
+                    if (e.type == 'keyup') {
+                            if (ambience.volume != 0) {
+                                    gameOverAudio.volume = 0;
+                                    ambience.volume = 0;
+                            } else {
+                                    gameOverAudio.volume = 0.5;
+                                    ambience.volume = 0.2;
+                            }
+                    }
+            }
+            if((e.keyCode == 87 || e.keyCode == 83 || e.keyCode == 69 || e.keyCode == 81) && e.type == 'keyup'){
+                    if(!keyMap[87] && !keyMap[83] && !keyMap[69] && !keyMap[81]){
+                            var oldY = charMesh.getLinearVelocity().y;
+                            charMesh.setLinearVelocity(new THREE.Vector3(0,oldY,0));
+                    }
+            }
+
+            if(e.keyCode == 71 && e.type == 'keyup'){
+                    dropCone();
+            }
+            
+            // TEMP DEBUG KEY - Change to level 2:
+            if(e.keyCode == 50 && e.type == 'keyup'){
+                level = 0;
+                scene = new Physijs.Scene();
+                scene.fog = new THREE.Fog(0x202020, 10, 100);
+                scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
+                scene.addEventListener('update', function() {
+
+                        scene.simulate();
+                        checkKeys();
+                        checkMovement();
+                        checkChangesToHUD();
+                        resetValues();
+
+                });
+                generateLevel2();
+                resetChar();
+                level = 2;
+            }
+
+    };
+
+    //Mouseclick event handler
+    renderer.domElement.addEventListener('click', function(e){
+            e = e || event;
+            var xPos = e.clientX;
+            var yPos = e.clientY;
+            if(menu && xPos < window.innerWidth / 2 + window.innerWidth / 16 && xPos > window.innerWidth / 2 -window.innerWidth / 16 && yPos < window.innerHeight / 2 - 50 + window.innerHeight / 30 && yPos > window.innerHeight / 2 - 50 - window.innerHeight / 30){
+                    removeMenu();
+
+            }
+    });
+
+    gameOverAudio = new Audio('audio/gameOver.mp3');
+    ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
+    ambience.volume = 0.2;
+    ambience.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+    }, false);
+    ambience.play();
+
+    createOverlay();
+    createChar();
+    createWelcome();
+    fallClock = new THREE.Clock();
 }
 
 

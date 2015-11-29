@@ -171,6 +171,28 @@ function generateLevel1() {
 	checkTick();
 }
 
+// Generates level 2
+function generateLevel2(){
+	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : true, opacity: 1
+			}), 0.99, 0.2), 0);
+                        
+	floor.position.y -= 2.25;
+	scene.add(floor);
+        
+        /*
+	crate = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 2, 3),
+			crateMaterial, 15);
+	moveableObjects.push(crate);
+	pickUpItems.push(crate);
+	crate.position.x += 9;
+	crate.position.z -= 12;
+	scene.add(crate);
+        */
+}
+
 //Adds a new wall with the specified position and scale
 function addWall(object, wallX, wallZ, wallScaleX, wallScaleY, wallScaleZ) {
 	wall = cloneBox(object);
