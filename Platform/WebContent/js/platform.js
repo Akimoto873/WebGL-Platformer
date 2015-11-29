@@ -334,7 +334,7 @@ function conesLoadedCallback(geometry){
 
 //Creates the character mesh
 function createChar() {
-	charMesh = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 3, 1), Physijs
+	charMesh = new Physijs.CapsuleMesh(new THREE.CylinderGeometry(0.8, 0.8, 3, 16), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0xeeff33
 			}), 0.5, .1), 10);
@@ -434,9 +434,10 @@ function restartLevel() { // Currently not finished.
 // Resets the character mesh.
 function resetChar() {
     charMesh.remove(camera);
-    var temp = cloneBox(charMesh);
-    temp.visible = true;
-    charMesh = temp;
+    var clone = new Physijs.CapsuleMesh(charMesh.clone().geometry, charMesh.material,
+			charMesh.mass);
+	clone.visible = true;
+    charMesh = clone;
     charMesh.position.x = charMeshPosition.x;
     charMesh.position.y = charMeshPosition.y;
     charMesh.position.z = charMeshPosition.z;
