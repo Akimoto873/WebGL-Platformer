@@ -250,6 +250,7 @@ function init() {
             }
             if(e.keyCode == 82 && e.type == 'keyup'){
             	restartLevel();
+            	/*TODO: UPDATE THE CONTROLS MENU SCREEN */
             }
             
             // TEMP DEBUG KEY: 2 
