@@ -7,7 +7,6 @@ if (!Detector.webgl)
 
 var scene, keyboard, camera, directionalLight, ambientLight, renderer;
 var charMesh;
-var controls;
 var stats;
 var container;
 var airborne1 = false;
@@ -53,6 +52,11 @@ var carriedCones = 0;
 var pickUpItems = [];
 var coneGeometry;
 var waitForKeyUp = true;
+var menuSizeX;
+var menuSizeY;
+var buttonSizeX;
+var buttonSizeY;
+var controls = false;
 
 function main() {
 	init();
@@ -273,10 +277,20 @@ function init() {
             e = e || event;
             var xPos = e.clientX;
             var yPos = e.clientY;
-            if(menu && xPos < window.innerWidth / 2 + window.innerWidth / 16 && xPos > window.innerWidth / 2 -window.innerWidth / 16 && yPos < window.innerHeight / 2 - 50 + window.innerHeight / 30 && yPos > window.innerHeight / 2 - 50 - window.innerHeight / 30){
-                    removeMenu();
-
-            }
+            if(menu && xPos < window.innerWidth / 2 + buttonSizeX / 2 && xPos > window.innerWidth / 2 -buttonSizeX / 2 && yPos > window.innerHeight / 2 - buttonSizeY*3.5 && yPos < window.innerHeight / 2 - buttonSizeY*2.5){
+    			removeMenu();
+    			
+    		}
+    		if(menu && xPos < window.innerWidth / 2 + buttonSizeX / 2 && xPos > window.innerWidth / 2 -buttonSizeX / 2 && yPos > window.innerHeight / 2 - buttonSizeY*1.5 && yPos < window.innerHeight / 2 - buttonSizeY*0.5){
+    			
+    			
+    		}
+    		if(menu && xPos < window.innerWidth / 2 + buttonSizeX / 2 && xPos > window.innerWidth / 2 -buttonSizeX / 2 && yPos > window.innerHeight / 2 + buttonSizeY*0.5 && yPos < window.innerHeight / 2 + buttonSizeY*1.5){
+    			showControls();
+    		}
+    		if(menu && controls && xPos < window.innerWidth / 2 + buttonSizeX / 2 && xPos > window.innerWidth / 2 -buttonSizeX / 2 && yPos > window.innerHeight / 2 +menuSizeY/2 - buttonSizeY*1.5 && yPos < window.innerHeight / 2 + menuSizeY/2 - buttonSizeY*0.5){
+    			backToMenu();
+    		}
     });
 
     gameOverAudio = new Audio('audio/gameOver.mp3');
@@ -504,42 +518,71 @@ function resetTraps() {
     triggered2 = false;
 }
 
-// Creates the menu
+//Creates the menu
 function createWelcome(){
-    // Create Menu container
-    overlayContainer = document.createElement('div');
-    document.body.appendChild(overlayContainer);
-        
-    // Textures
-    menuTexture = textureLoader.load('images/testMenu.jpg');
-    playTexture = textureLoader.load('images/testPlay.jpg');
-    optionsTexture = textureLoader.load('images/testOptions.jpg');
+	menuTexture = textureLoader.load('images/testMenu.jpg');
+	playTexture = textureLoader.load('images/testPlay.jpg');
+	optionsTexture = textureLoader.load('images/testOptions.jpg');
+	controlsTexture = textureLoader.load('images/controlsButton.jpg');
+	controlsScreenTexture = textureLoader.load('images/controlsScreen.jpg');
+	backTexture = textureLoader.load('images/backButton.jpg');
+	
 
-    // Menu Sprite
-    var spriteMaterial = new THREE.SpriteMaterial({
-        map : menuTexture
-    });
-    menuSprite = new THREE.Sprite(spriteMaterial);
-    menuSprite.position.set(0,0 , -100);
-    menuSprite.scale.set(window.innerWidth / 2, window.innerHeight / 1.5, 1);
-    orthoScene.add(menuSprite);
+	
+	overlayContainer = document.createElement('div');
+	document.body.appendChild(overlayContainer);
+	
+	menuSizeX = window.innerWidth / 1.5;
+	menuSizeY = window.innerHeight / 1.1;
+	buttonSizeX = window.innerWidth / 7;
+	buttonSizeY = window.innerHeight / 15;
 
-    // "Play" Sprite Text
-    var spriteMaterial = new THREE.SpriteMaterial({
-        map : playTexture
-    });
-    playSprite = new THREE.Sprite(spriteMaterial);
-    playSprite.position.set(0,50 , -80);
-    playSprite.scale.set(window.innerWidth / 8, window.innerHeight / 15, 1);
-    orthoScene.add(playSprite);
-
-    // "Options" Sprite Text
-    var spriteMaterial = new THREE.SpriteMaterial({
-        map : optionsTexture
-    });
-    optionsSprite = new THREE.Sprite(spriteMaterial);
-    optionsSprite.position.set(0,-10 , -80);
-    optionsSprite.scale.set(window.innerWidth / 8, window.innerHeight / 15, 1);
-    orthoScene.add(optionsSprite);
-    menu = true;
+	
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : menuTexture
+	});
+	menuSprite = new THREE.Sprite(spriteMaterial);
+	menuSprite.position.set(0,0 , -100);
+	menuSprite.scale.set(menuSizeX, menuSizeY, 1);
+	orthoScene.add(menuSprite);
+	
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : controlsScreenTexture
+	});
+	controlsScreenSprite = new THREE.Sprite(spriteMaterial);
+	controlsScreenSprite.position.set(0,0 , -100);
+	controlsScreenSprite.scale.set(menuSizeX, menuSizeY, 1);
+	controlsScreenSprite.visible = false;
+	orthoScene.add(controlsScreenSprite);
+	
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : playTexture
+	});
+	playSprite = new THREE.Sprite(spriteMaterial);
+	playSprite.position.set(0,buttonSizeY*3 , -80);
+	playSprite.scale.set(buttonSizeX, buttonSizeY, 1);
+	orthoScene.add(playSprite);
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : optionsTexture
+	});
+	optionsSprite = new THREE.Sprite(spriteMaterial);
+	optionsSprite.position.set(0,buttonSizeY , -80);
+	optionsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
+	orthoScene.add(optionsSprite);
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : controlsTexture
+	});
+	controlsSprite = new THREE.Sprite(spriteMaterial);
+	controlsSprite.position.set(0, -buttonSizeY , -80);
+	controlsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
+	orthoScene.add(controlsSprite);
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : backTexture
+	});
+	backSprite = new THREE.Sprite(spriteMaterial);
+	backSprite.position.set(0, -menuSizeY/2 + buttonSizeY, -80);
+	backSprite.scale.set(buttonSizeX, buttonSizeY, 1);
+	backSprite.visible = false;
+	orthoScene.add(backSprite);
+	menu = true;
 }

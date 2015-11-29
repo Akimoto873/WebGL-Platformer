@@ -130,12 +130,16 @@ function checkChangesToHUD() {
     }
 }
 
-// Removes the menu
+//Removes the menu
 function removeMenu(){
     menu = false;
     menuSprite.visible = false;
     playSprite.visible = false;
     optionsSprite.visible = false;
+    controlsSprite.visible = false;
+    controlsScreenSprite.visible = false;
+    backSprite.visible = false;
+    controls = false;
 }
 
 // Shows the menu
@@ -144,4 +148,25 @@ function showMenu(){
     menuSprite.visible = true;
     playSprite.visible = true;
     optionsSprite.visible = true;
+    controlsSprite.visible = true;
+}
+
+function showControls(){
+	menuSprite.visible = false;
+	playSprite.visible = false;
+    optionsSprite.visible = false;
+    controlsSprite.visible = false;
+    controlsScreenSprite.visible = true;
+    backSprite.visible = true;
+    controls = true;
+}
+
+function backToMenu(){
+	menuSprite.visible = true;
+	playSprite.visible = true;
+    optionsSprite.visible = true;
+    controlsSprite.visible = true;
+    controlsScreenSprite.visible = false;
+    backSprite.visible = false;
+    controls = false;
 }
