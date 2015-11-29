@@ -124,6 +124,9 @@ function checkMovement() {
     // Space is pressed
     if (jump) { 
         if(airborne1 || airborne2){
+        	if(airborne1){
+        		waitForKeyUp = true;
+        	}
             airTime = new THREE.Clock();
             charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
             stamina -= 20;

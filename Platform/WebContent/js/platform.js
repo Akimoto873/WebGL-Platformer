@@ -54,6 +54,7 @@ var cone;
 var carriedCones = 0;
 var pickUpItems = [];
 var coneGeometry;
+var waitForKeyUp = true;
 
 function main() {
 	init();
@@ -190,14 +191,17 @@ function init() {
 		keyMap[e.keyCode] = e.type == 'keydown';
 		if (e.keyCode == 32) {
 			e.preventDefault();
-			if(e.type == 'keyup' && !airborne2){
+			if(e.type == 'keydown' && !airborne2){
 				if(!airborne1){
 					airborne1 = true;
 				}
-				else{
+				else if (!waitForKeyUp){
 					airborne2 = true;
 				}
 				jump = true;
+			}
+			else if(e.type == 'keyup' && waitForKeyUp){
+				waitForKeyUp = false;
 			}
 		}
 		if(e.keyCode == 27){
