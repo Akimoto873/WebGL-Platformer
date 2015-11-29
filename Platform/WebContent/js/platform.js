@@ -23,7 +23,6 @@ var moveableObjects = [];
 var airTime;
 var trapTime;
 var crateMaterial;
-var charCam = true;  //Set to false for easier bugtesting.
 var carrying = false;
 var triggered = false;
 var triggered2 = false;
@@ -54,6 +53,9 @@ var pickUpItems = [];
 var coneGeometry;
 var waitForKeyUp = true;
 
+/* DEBUG VARS */
+var charCam = true;  // Set to false for easier bugtesting.
+
 function main() {
 	init();
 }
@@ -61,7 +63,7 @@ function main() {
 //Game Loop
 function tick() {
     if (level == 1) {
-
+            scene.simulate();
             stats.update();
             // updateCamera(); //removed since camera is now attached to character.
             renderer.clear();
@@ -112,37 +114,29 @@ function init() {
     keyboard = new THREEx.KeyboardState();
 
     // Camera
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 30000);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 300000);
 
     if (!charCam) {
             camera.position.y += 15;
             controls = new THREE.OrbitControls(camera);
     }
 
-    // Lights
-    ambientLight = new THREE.AmbientLight(0x606060);
-    scene.add(ambientLight);
-
     // Renderer
     renderer = new THREE.WebGLRenderer({
-            antialias : true,
-            alpha : true
+            antialias : true
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.Enabled = true;
+    renderer.shadowMap.enabled = true;
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.type = THREE.PCFShadowMap;       // Softer shadow
     renderer.autoClear = false;
+    renderer.setClearColor( scene.fog.color );
+    
 
     textureLoader = new THREE.TextureLoader();
 
-    // level1Texture = textureLoader.load('images/level_1_texture2.jpg');
     trapTexture = textureLoader.load('images/crushers.jpg');
 
-    // OBJ MTL Loader
-    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
-    var objLoader = new THREE.OBJMTLLoader();
-
-    // Load Level 1
-    objLoader.load('models/level_01/level_01.obj', 'models/level_01/level_01.mtl', level1LoadedCallback);
 
     // JSON Loader
     var loader = new THREE.JSONLoader();
@@ -268,7 +262,7 @@ function init() {
 
     };
 
-    //Mouseclick event handler
+    // Mouseclick event handler
     renderer.domElement.addEventListener('click', function(e){
             e = e || event;
             var xPos = e.clientX;
@@ -281,7 +275,6 @@ function init() {
 
     gameOverAudio = new Audio('audio/gameOver.mp3');
     ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
-    
     /* TODO: DEBUG: TURNED OFF MUSIC WHILE WORKING ON THE GAME */
     ambience.volume = 0;
     ambience.addEventListener('ended', function() {
@@ -296,40 +289,6 @@ function init() {
     fallClock = new THREE.Clock();
 }
 
-
-// Called when level 1 model is loaded.
-function level1LoadedCallback(object)
-{
-    // Add shadows
-    object.traverse(function (node) {
-        if (node instanceof THREE.Mesh) 
-        {
-            node.castShadow = true;
-            node.receiveShadow = true;
-        }
-    });
-
-    // Set position and scale
-    object.scale.set(1, 1.8, 1);
-    object.position.y += 1.4;
-
-    // Add to scene
-    scene.add(object);
-}
-
-
-/*
-//Called when level1 model is loaded.
-function level1loadedCallback(geometry, materials) {
-	levelMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-		map : level1Texture
-	}));
-	levelMesh.scale.set(1, 1.8, 1)
-	levelMesh.position.y += 1.4;
-	scene.add(levelMesh);
-	// tick();
-}
-*/
 
 //Called when trap model is loaded.
 function trapLoadedCallback(geometry) {
@@ -421,42 +380,41 @@ function log(param) {
 
 //Called when the level is complete. Starts next level
 function levelComplete() {
-	level = 0;
-	scene = new Physijs.Scene();
-	scene.fog = new THREE.Fog(0x202020, 10, 100);
-	scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
-	scene.addEventListener('update', function() {
-		
-		scene.simulate();
-		checkKeys();
-		checkMovement();
-		checkChangesToHUD();
-		resetValues();
-		
-	});
-	generateLevel3(); //For testing.
-	resetChar();
-	level = 2;
+    level = 0;
+    scene = new Physijs.Scene();
+    scene.fog = new THREE.Fog(0x202020, 10, 100);
+    scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
+    scene.addEventListener('update', function() {
+
+            scene.simulate();
+            checkKeys();
+            checkMovement();
+            checkChangesToHUD();
+            resetValues();
+
+    });
+    generateLevel2();
+    resetChar();
+    level = 2;
 }
 
 
 //restarts the level (after death for example).
 function restartLevel() { // Currently not finished.
-	level = 0;
-	scene.remove(charMesh);
-	resetChar();
-	resetCrate();
-	resetTraps();
-	health = 100;
-	damaged = true;
-	if (gameOverScreen) {
-		gameOverScreen = false;
-		orthoScene.remove(bloodSprite);
-		orthoScene.remove(gameOverSprite);
-		orthoScene.remove(restartSprite);
-	}
-	level = 1;
-
+    level = 0;
+    scene.remove(charMesh);
+    resetChar();
+    resetCrate();
+    resetTraps();
+    health = 100;
+    damaged = true;
+    if (gameOverScreen) {
+            gameOverScreen = false;
+            orthoScene.remove(bloodSprite);
+            orthoScene.remove(gameOverSprite);
+            orthoScene.remove(restartSprite);
+    }
+    level = 1;
 }
 
 // Resets the character mesh.
