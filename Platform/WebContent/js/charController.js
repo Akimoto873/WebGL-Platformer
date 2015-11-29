@@ -177,7 +177,6 @@ function checkMovement() {
                 else {
                         pickUpItems.splice(i, 1);
                         carriedCones += 1;
-                        log(carriedCones);
                         i = pickUpItems.length + 1;
                 }
             }
