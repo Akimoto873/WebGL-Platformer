@@ -58,8 +58,14 @@ var buttonSizeY;
 var controls = false;
 var loadingScreen = true;
 
+// Menu Sprites
+var menuSprite;
+
 // Menu Textures
 var playTexture, playSelectedTexture, optionsTexture, optionsSelectedTexture, helpTexture, helpSelectedTexture;
+
+// Loading Textures
+var loadingBarTexture;
 
 // Initial Screen Ratio
 var screenRatioX, screenRatioY;
@@ -298,30 +304,7 @@ function init() {
     };
 
     // Mouse click listener
-    // document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-
-    // Mouseclick event handler
-    renderer.domElement.addEventListener('click', function(e){
-            e = e || event;
-            
-            // Play Button
-            if(hasClickedButton(e, toScreenXY(menuItems["play"])))
-            {
-                removeMenu();
-            }
-            
-            // Options Button
-            if(hasClickedButton(e, toScreenXY(menuItems["options"])))
-            {
-                // Do something
-            }
-            
-            // Options Button
-            if(hasClickedButton(e, toScreenXY(menuItems["help"])))
-            {
-                showControls();
-            }
-    });
+    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
     
     // Check mouse movement
     document.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -339,12 +322,37 @@ function init() {
 
     createOverlay();
     createChar();
-    createWelcome();
+    createMenu();
     fallClock = new THREE.Clock();
 }
 
+// Listener: On mouse click
+function onDocumentMouseDown(e) 
+{
+    e = e || event;
+            
+    // Play Button
+    if(hasClickedButton(e, toScreenXY(menuItems["play"])))
+    {
+        removeMenu();
+    }
 
-// Update mouse coordinates
+    // Options Button
+    if(hasClickedButton(e, toScreenXY(menuItems["options"])))
+    {
+        // Do something
+    }
+
+    // Options Button
+    if(hasClickedButton(e, toScreenXY(menuItems["help"])))
+    {
+        showControls();
+    }
+}
+
+
+
+// Listener: On mouse move
 function onDocumentMouseMove(e) 
 {
 	// the following line would stop any other event handler from firing
@@ -355,6 +363,8 @@ function onDocumentMouseMove(e)
 	mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
         
+        
+        console.log("Mouse Coord: (" + e.clientX + ", " + e.clientY + ")");
         
         // Check if hovering menu items
         // Play Button
@@ -491,18 +501,7 @@ function checkTick() {
 		
 	}
 }
-function onWindowResize() {
-
-	//camera.aspect = window.innerWidth / window.innerHeight;
-        // camera.aspect = 16 / 9;
-        
-        // Update menu size
-        buttonSizeX = window.innerWidth * (200/window.innerWidth);
-	buttonSizeY = (window.innerWidth * (9/16)) * (50/(window.innerWidth * (9/16)));
-        
-        // Update canvas
-	camera.updateProjectionMatrix();
-        
+function onWindowResize() {        
         // Keep aspect ratio regardless of windows width or height
         if(window.innerWidth < window.innerHeight * 16/9){
             renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
@@ -510,7 +509,16 @@ function onWindowResize() {
             renderer.setSize(window.innerHeight * 16/9, innerHeight);
         }
         
-        // Update menu button coordinates
+        // Button Size
+        buttonSizeX = window.innerWidth * (200/window.innerWidth);
+        buttonSizeY = window.innerHeight * (50/(window.innerHeight));
+        
+        // Buttons
+        
+        
+        // Update canvas
+	camera.updateProjectionMatrix();
+        orthoCamera.updateProjectionMatrix();
 }
 
 
@@ -633,7 +641,8 @@ function resetTraps() {
 }
 
 //Creates the menu
-function createWelcome(){
+function createMenu(){
+    // Load Textures
     menuTexture = textureLoader.load('images/menu/main_menu.png');
     playTexture = textureLoader.load('images/menu/menu_play.png');
     playSelectedTexture = textureLoader.load('images/menu/menu_play_selected.png');
@@ -656,9 +665,10 @@ function createWelcome(){
     // Automatically adjust menu and buttons according to screen size
     menuSizeX = window.innerWidth;
     menuSizeY = window.innerHeight;
-    buttonSizeY = 50 * window.innerHeight / 1080;
-    buttonSizeX = 200 * window.innerWidth / 1920;
 
+    // Create initial button sizes depending on screen size
+    buttonSizeX = window.innerWidth * (200/window.innerWidth);
+    buttonSizeY = window.innerHeight * (50/(window.innerHeight));
 
     var spriteMaterial = new THREE.SpriteMaterial({
             map : loadingBackgroundTexture
@@ -703,7 +713,7 @@ function createWelcome(){
             map : playTexture
     });
     playSprite = new THREE.Sprite(spriteMaterialPlay);
-    playSprite.position.set(8, -buttonSizeY + 60 , -80);
+    playSprite.position.set(8, -buttonSizeY, -80);
     playSprite.scale.set(buttonSizeX, buttonSizeY, 1);
     orthoScene.add(playSprite);
     playSprite.visible = false;
@@ -714,7 +724,7 @@ function createWelcome(){
             map : optionsTexture
     });
     optionsSprite = new THREE.Sprite(spriteMaterialOptions);
-    optionsSprite.position.set(8, -buttonSizeY*2 + 30 , -80);
+    optionsSprite.position.set(8, -buttonSizeY*2, -80);
     optionsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
     orthoScene.add(optionsSprite);
     optionsSprite.visible = false;

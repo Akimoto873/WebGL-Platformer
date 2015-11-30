@@ -113,11 +113,15 @@ function checkChangesToHUD() {
 			staminaSprite2.visible = true;
 			healthSprite2.visible = true;
 		}
+                
+            // TODO: Fix so it scales properly
 	    staminaSprite.scale.set((Math.abs(stamina) / 200) * (window.innerWidth / 3), window.innerHeight / 16, 1);
 	    staminaSprite.position.x = (-window.innerWidth / 3.2) - (1 - Math.abs(stamina / 200)) * (window.innerWidth / 6.0);
 	
 	    // If you have been hurt, we update the apperance of your health
 	    if (damaged) {
+                
+                // TODO: Fix so it scales properly
 	        // Update the size of the health bar according to your amount of health
 	        healthSprite.scale.set((Math.abs(health) / 100) * (window.innerWidth / 3), window.innerHeight / 16, 1);
 	        healthSprite.position.x = (-window.innerWidth / 3.2) - (1 - Math.abs(health / 100)) * (window.innerWidth / 6.0);

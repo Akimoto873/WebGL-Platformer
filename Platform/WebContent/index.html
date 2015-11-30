@@ -10,12 +10,21 @@
                 width: 100%; 
                 height: 100%;
                 margin: auto;
+                
             }
-            body 
-            {
-                color: #fff;
-                margin: auto;
-                overflow: hidden;
+            html, body {
+                width: 100%; 
+                height: 100%; 
+                background-color: black;
+                text-align: center;
+                background-image: url('images/bg.png');
+                background-attachment: inherit;
+                background-repeat: repeat;
+                -moz-user-select     : none;
+                -khtml-user-select   : none;
+                -webkit-user-select  : none;
+                -o-user-select       : none;
+                user-select          : none;
             }
          </style>
         <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
@@ -27,6 +36,7 @@
         <script type="text/javascript" src="js/OrbitControls.js"></script>
         <script type="text/javascript" src="js/stats.min.js"></script>
         <script type="text/javascript" src="js/Detector.js"></script>
+        <script type="text/javascript" src='js/renderers/WindowResize.js'></script>
         <script type="text/javascript" src="js/renderers/Projector.js"></script>
         <script type="text/javascript" src="js/loaders/DDSLoader.js"></script>
         <script type="text/javascript" src="js/loaders/MTLLoader.js"></script>
