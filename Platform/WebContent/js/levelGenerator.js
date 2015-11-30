@@ -310,7 +310,7 @@ function addWall(object, wallX, wallZ, wallScaleX, wallScaleY, wallScaleZ) {
 	wall.position.x += wallX;
 	wall.position.z += wallZ;
 	wall.scale.set(wallScaleX, wallScaleY, wallScaleZ);
-        wall.visible = true;
+        wall.visible = false;
 	scene.add(wall);
 }
 
