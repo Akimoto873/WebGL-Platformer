@@ -1,3 +1,5 @@
+/*
+// Unused; No need for this, since level textures and models will have been "baked" with shadow and lighting
 function createLight( x, y, z ) {
     
     var lightIntensity = 2;
@@ -5,7 +7,6 @@ function createLight( x, y, z ) {
     var lightColor = 0xf3f6e0;
     
     var myLight = new THREE.SpotLight( lightColor, lightIntensity, lightDistance );
-    
     myLight.castShadow = true;
     myLight.receiveShadow = true;
     myLight.shadowCameraNear = 0.1;
@@ -16,7 +17,7 @@ function createLight( x, y, z ) {
     myLight.shadowBias = 0.01;
     myLight.shadowDarkness = 0.5;
 
-    /* DEBUG Sphere */
+    // DEBUG Sphere
     var sphere = new THREE.SphereGeometry( 0.25, 16, 8 );
     myLight.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: lightColor } ) ) );
     
@@ -27,7 +28,7 @@ function createLight( x, y, z ) {
     
     scene.add(myLight);
 }
-
+*/
 
 
 // Generates level 1.
@@ -43,9 +44,9 @@ function generateLevel1() {
     // Lights
     ambientLight = new THREE.AmbientLight(0xffffff);
     scene.add(ambientLight);
-    var lightHeight = 4.4;
     
     /*
+    var lightHeight = 4.4;
     createLight(0,lightHeight, -2);
     createLight(5,lightHeight, -2);
     createLight(9,lightHeight, -4);
@@ -62,6 +63,7 @@ function generateLevel1() {
     createLight(2.5,lightHeight, -11);
     createLight(5.4,lightHeight, -20);
     */
+   
     // Level Collision
     floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
                     .createMaterial(new THREE.MeshBasicMaterial({
@@ -73,10 +75,11 @@ function generateLevel1() {
 
     roof = new Physijs.BoxMesh(new THREE.BoxGeometry(50, 1, 50), Physijs
                     .createMaterial(new THREE.MeshBasicMaterial({
-                            map : roofTexture
+                            color : 0xee2233,
+                            visible : false
                     }), 0.9, 0.2), 0);
-    roof.position.y += 5;
-    // scene.add(roof);
+    roof.position.y += 6;
+    scene.add(roof);
 
     var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(4, 6, 0.2),
                     Physijs.createMaterial(new THREE.MeshBasicMaterial({
@@ -105,6 +108,7 @@ function generateLevel1() {
     addWall(basicWall1, -12.5, -14, 1, 1, 1);
     addWall(basicWall1, -11, -17.8, 1.8, 1, 1);
     addWall(basicWall1, -18, -21.5, 1.8, 1, 1);
+    
     var basicWall2 = new Physijs.BoxMesh(new THREE.BoxGeometry(0.2, 6, 4),
                     Physijs.createMaterial(new THREE.MeshBasicMaterial({
                             color : 0x554444
@@ -128,7 +132,7 @@ function generateLevel1() {
     addWall(basicWall2, 4, -3.5, 1, 1, 2);
     addWall(basicWall2, 4, -20.5, 1, 1, 3);
     addWall(basicWall2, 7.5, 12.5, 1, 1, 2.8);
-    addWall(basicWall2, 7, -12.5, 1, 1, 6);
+    addWall(basicWall2, 7, -11.5, 1, 1, 6);
     addWall(basicWall2, 11, -10.5, 1, 1, 5.5);
     addWall(basicWall2, 11, 9, 1, 1, 2.5);
     addWall(basicWall2, 14.5, -9, 1, 1, 10);
@@ -306,6 +310,7 @@ function addWall(object, wallX, wallZ, wallScaleX, wallScaleY, wallScaleZ) {
 	wall.position.x += wallX;
 	wall.position.z += wallZ;
 	wall.scale.set(wallScaleX, wallScaleY, wallScaleZ);
+        wall.visible = true;
 	scene.add(wall);
 }
 
