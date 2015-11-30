@@ -305,19 +305,19 @@ function init() {
             e = e || event;
             
             // Play Button
-            if(hasClickedButton(e, menuItems["play"]))
+            if(hasClickedButton(e, toScreenXY(menuItems["play"])))
             {
                 removeMenu();
             }
             
             // Options Button
-            if(hasClickedButton(e, menuItems["options"]))
+            if(hasClickedButton(e, toScreenXY(menuItems["options"])))
             {
                 // Do something
             }
             
             // Options Button
-            if(hasClickedButton(e, menuItems["help"]))
+            if(hasClickedButton(e, toScreenXY(menuItems["help"])))
             {
                 showControls();
             }
@@ -395,12 +395,14 @@ function hasClickedButton(e, vec2)
     var xPos = e.clientX;
     var yPos = e.clientY;
             
-    // Calculate if the mouse click was within the button area of given vector2
-    if(menu && xPos > vec2.x - buttonSizeX / 2 && xPos < vec2.x + buttonSizeX / 2){
-        if(yPos > vec2.y && yPos < vec2.y + buttonSizeY * 2){
+    // Returns true if within button
+    if(menu && xPos + buttonSizeX / 1.3 > vec2.x && xPos < vec2.x)
+    {
+        if(yPos - buttonSizeY / 2 < vec2.y && yPos + buttonSizeY / 2 > vec2.y){
             return true;
         }
     }
+
     return false;
 }
 
