@@ -274,6 +274,8 @@ function level1LoadedCallback(object)
 
     // Add to scene
     scene.add(object);
+    loadingScreen = false;
+    removeLoadingScreen();
 }
 
 

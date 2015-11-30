@@ -100,51 +100,53 @@ function showGameOver() {
 
 // Scales the health and stamina bars based on health and stamina remaining.
 function checkChangesToHUD() {
-	if(menu){
-		staminaSprite.visible = false;
-		healthSprite.visible = false;
-		staminaSprite2.visible = false;
-		healthSprite2.visible = false;
-	}
-	else{
-		staminaSprite.visible = true;
-		healthSprite.visible = true;
-		staminaSprite2.visible = true;
-		healthSprite2.visible = true;
-	}
-    staminaSprite.scale.set((Math.abs(stamina) / 200) * (window.innerWidth / 3), window.innerHeight / 16, 1);
-    staminaSprite.position.x = (-window.innerWidth / 3.2) - (1 - Math.abs(stamina / 200)) * (window.innerWidth / 6.0);
-
-    // If you have been hurt, we update the apperance of your health
-    if (damaged) {
-        // Update the size of the health bar according to your amount of health
-        healthSprite.scale.set((Math.abs(health) / 100) * (window.innerWidth / 3), window.innerHeight / 16, 1);
-        healthSprite.position.x = (-window.innerWidth / 3.2) - (1 - Math.abs(health / 100)) * (window.innerWidth / 6.0);
-        
-        // Color codes your health bar according to amount of health
-        if (health > 80) {
-                healthSprite.material.color.setHex(0x00ff00);   // Green
-        }
-        if (health < 80) {
-                healthSprite.material.color.setHex(0xffff00);   // Yellow
-        }
-        if (health < 50) {
-                healthSprite.material.color.setHex(0xff0000);   // Red
-        }
-        
-        // Set damaged to false to prevent taking further damage from the source
-        damaged = false;
-    }
-
-    // Fading in the game over screen(s)
-    if (gameOverScreen) {
-        if (bloodSprite.material.opacity < 0.8) {
-                bloodSprite.material.opacity += 0.01;
-                gameOverSprite.material.opacity += 0.015;
-        } else if (restartSprite.material.opacity < 0.5) {
-                restartSprite.material.opacity += 0.02;
-        }
-    }
+	
+		if(menu){
+			staminaSprite.visible = false;
+			healthSprite.visible = false;
+			staminaSprite2.visible = false;
+			healthSprite2.visible = false;
+		}
+		else{
+			staminaSprite.visible = true;
+			healthSprite.visible = true;
+			staminaSprite2.visible = true;
+			healthSprite2.visible = true;
+		}
+	    staminaSprite.scale.set((Math.abs(stamina) / 200) * (window.innerWidth / 3), window.innerHeight / 16, 1);
+	    staminaSprite.position.x = (-window.innerWidth / 3.2) - (1 - Math.abs(stamina / 200)) * (window.innerWidth / 6.0);
+	
+	    // If you have been hurt, we update the apperance of your health
+	    if (damaged) {
+	        // Update the size of the health bar according to your amount of health
+	        healthSprite.scale.set((Math.abs(health) / 100) * (window.innerWidth / 3), window.innerHeight / 16, 1);
+	        healthSprite.position.x = (-window.innerWidth / 3.2) - (1 - Math.abs(health / 100)) * (window.innerWidth / 6.0);
+	        
+	        // Color codes your health bar according to amount of health
+	        if (health > 80) {
+	                healthSprite.material.color.setHex(0x00ff00);   // Green
+	        }
+	        if (health < 80) {
+	                healthSprite.material.color.setHex(0xffff00);   // Yellow
+	        }
+	        if (health < 50) {
+	                healthSprite.material.color.setHex(0xff0000);   // Red
+	        }
+	        
+	        // Set damaged to false to prevent taking further damage from the source
+	        damaged = false;
+	    }
+	
+	    // Fading in the game over screen(s)
+	    if (gameOverScreen) {
+	        if (bloodSprite.material.opacity < 0.8) {
+	                bloodSprite.material.opacity += 0.01;
+	                gameOverSprite.material.opacity += 0.015;
+	        } else if (restartSprite.material.opacity < 0.5) {
+	                restartSprite.material.opacity += 0.02;
+	        }
+	    }
+	
 }
 
 //Removes the menu
@@ -186,4 +188,10 @@ function backToMenu(){
     controlsScreenSprite.visible = false;
     backSprite.visible = false;
     controls = false;
+}
+
+function removeLoadingScreen(){
+	loadingBackgroundSprite.visible = false;
+	loadingBarSprite.visible = false;
+	showMenu();
 }

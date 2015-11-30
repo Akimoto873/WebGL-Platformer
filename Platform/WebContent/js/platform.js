@@ -56,6 +56,7 @@ var menuSizeY;
 var buttonSizeX;
 var buttonSizeY;
 var controls = false;
+var loadingScreen = true;
 
 /* DEBUG VARS */
 var charCam = true;  // Set to false for easier bugtesting.
@@ -70,12 +71,16 @@ function tick() {
     	if(!menu){
             scene.simulate();
     	}
-            stats.update();
-            // updateCamera(); //removed since camera is now attached to character.
-            renderer.clear();
+        stats.update();
+        renderer.clear();
+        if(!loadingScreen){
             renderer.render(scene, camera);
-            renderer.clearDepth();
-            renderer.render(orthoScene, orthoCamera);
+        }
+        renderer.clearDepth();
+        renderer.render(orthoScene, orthoCamera);
+        if(loadingScreen){
+    		loadingBarTexture.offset.x += 0.1;
+    	}
 
 
     } else if (level == 2) {
@@ -384,7 +389,7 @@ function createChar() {
 //Checks if everything is loaded, and starts the tick loop if it is.
 function checkTick() {
 	if (charLoaded && levelLoaded) {
-		tick();
+		
 	}
 }
 function onWindowResize() {
@@ -518,17 +523,36 @@ function createWelcome(){
 	controlsTexture = textureLoader.load('images/controlsButton.jpg');
 	controlsScreenTexture = textureLoader.load('images/controlsScreen.jpg');
 	backTexture = textureLoader.load('images/backButton.jpg');
+	loadingBackgroundTexture = textureLoader.load('images/loadingBackground.jpg');
+	loadingBarTexture = textureLoader.load('images/loadingBar.jpg');
+	loadingBarTexture.wrapS = THREE.RepeatWrapping;
+    loadingBarTexture.wrapT = THREE.RepeatWrapping;
 	
 
 	
 	overlayContainer = document.createElement('div');
 	document.body.appendChild(overlayContainer);
 	
-	menuSizeX = window.innerWidth / 1.5;
-	menuSizeY = window.innerHeight / 1.1;
+	menuSizeX = window.innerWidth ;
+	menuSizeY = window.innerHeight ;
 	buttonSizeX = window.innerWidth / 7;
 	buttonSizeY = window.innerHeight / 15;
 
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : loadingBackgroundTexture
+	});
+	loadingBackgroundSprite = new THREE.Sprite(spriteMaterial);
+	loadingBackgroundSprite.position.set(0,0 , -100);
+	loadingBackgroundSprite.scale.set(menuSizeX, menuSizeY, 1);
+	orthoScene.add(loadingBackgroundSprite);
+	
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : loadingBarTexture
+	});
+	loadingBarSprite = new THREE.Sprite(spriteMaterial);
+	loadingBarSprite.position.set(0, 0 , -80);
+	loadingBarSprite.scale.set(buttonSizeX*2, buttonSizeY, 1);
+	orthoScene.add(loadingBarSprite);
 	
 	var spriteMaterial = new THREE.SpriteMaterial({
 		map : menuTexture
@@ -537,6 +561,7 @@ function createWelcome(){
 	menuSprite.position.set(0,0 , -100);
 	menuSprite.scale.set(menuSizeX, menuSizeY, 1);
 	orthoScene.add(menuSprite);
+	menuSprite.visible = false;
 	
 	var spriteMaterial = new THREE.SpriteMaterial({
 		map : controlsScreenTexture
@@ -554,6 +579,7 @@ function createWelcome(){
 	playSprite.position.set(0,buttonSizeY*3 , -80);
 	playSprite.scale.set(buttonSizeX, buttonSizeY, 1);
 	orthoScene.add(playSprite);
+	playSprite.visible = false;
 	var spriteMaterial = new THREE.SpriteMaterial({
 		map : optionsTexture
 	});
@@ -561,6 +587,7 @@ function createWelcome(){
 	optionsSprite.position.set(0,buttonSizeY , -80);
 	optionsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
 	orthoScene.add(optionsSprite);
+	optionsSprite.visible = false;
 	var spriteMaterial = new THREE.SpriteMaterial({
 		map : controlsTexture
 	});
@@ -568,6 +595,7 @@ function createWelcome(){
 	controlsSprite.position.set(0, -buttonSizeY , -80);
 	controlsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
 	orthoScene.add(controlsSprite);
+	controlsSprite.visible = false;
 	var spriteMaterial = new THREE.SpriteMaterial({
 		map : backTexture
 	});
@@ -577,4 +605,6 @@ function createWelcome(){
 	backSprite.visible = false;
 	orthoScene.add(backSprite);
 	menu = true;
+	tick();
+	
 }
