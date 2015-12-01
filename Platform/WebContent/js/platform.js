@@ -329,49 +329,6 @@ function init() {
             }
     });
     
-    
-    //Should refactor this. Just keeping it as it is to check if it works.
-    renderer.domElement.addEventListener('mousemove', function(e){
-        e = e || event;
-        
-        if(menu){
-	        // On Screen Coordinates of the buttons
-	        var playVec2 = toScreenXY(playSprite.position);
-	        var optionsVec2 = toScreenXY(optionsSprite.position);
-	        var helpVec2 = toScreenXY(controlsSprite.position);
-	        
-	        // Play Button
-	        if(hasClickedButton(e, playVec2))
-	        {
-	            playSprite.material.color.setHex(0x000044);
-	        }
-	        else{
-	        	playSprite.material.color.setHex(16777215);
-	        }
-	        
-	        // Options Button
-	        if(hasClickedButton(e, optionsVec2))
-	        {
-	            optionsSprite.material.color.setHex(0x000044);
-	        }
-	        else{
-	        	optionsSprite.material.color.setHex(16777215);
-	        }
-	        
-	        
-	        // Options Button
-	        if(hasClickedButton(e, helpVec2))
-	        {
-	            controlsSprite.material.color.setHex(0x000044);
-	        }
-	        else{
-	        	controlsSprite.material.color.setHex(16777215);
-	        }
-        }
-    });
-    
-   
-   
     gameOverAudio = new Audio('audio/gameOver.mp3');
     ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
     /* TODO: DEBUG: TURNED OFF MUSIC WHILE WORKING ON THE GAME */
