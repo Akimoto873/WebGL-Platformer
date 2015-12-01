@@ -56,7 +56,7 @@ var menuSizeY;
 var buttonSizeX;
 var buttonSizeY;
 var controls = false;
-var loadingScreen = true;
+var loadingScreen = false;
 
 // Initial Screen Ratio
 var screenRatioX, screenRatioY;
@@ -164,38 +164,10 @@ function init() {
     renderer.autoClear = false;
     renderer.setClearColor( scene.fog.color );
     
-
     textureLoader = new THREE.TextureLoader();
-
-    trapTexture = textureLoader.load('images/crushers.jpg');
-
-
-    // JSON Loader
-    var loader = new THREE.JSONLoader();
-    // loader.load('models/char.js', characterLoadedCallback);
-    // loader.load('models/level_01.js', level1loadedCallback);
-    loader.load('models/trap.js', trapLoadedCallback);
-    loader.load('models/cone.js', coneLoadedCallback);
-    loader.load('models/cones.js', conesLoadedCallback);
-
-    var crateTexture = textureLoader.load('images/crate.jpg');
-    crateMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
-            map : crateTexture
-    }), 0.4, 0.8);
-    var exitTexture = textureLoader.load('images/exit.jpg');
-    exitMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
-            map : exitTexture
-    }), 0.4, 0.8);
-    var crushingTexture = textureLoader.load('images/crushing.jpg');
-    crushingMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
-            map : crushingTexture
-    }), 0.4, 0.8);
-    roofTexture = textureLoader.load('images/concrete.jpg');
-    roofTexture.wrapT = roofTexture.wrapS = THREE.RepeatWrapping;
-    roofTexture.repeat.set(20, 20);
     
     // Create level 1
-    generateLevel1();
+    generateLevel1();  //For debugging level 2, just change this to level2, works flawlessly now.
     
     // Add window resize listener
     window.addEventListener('resize', onWindowResize, false);
@@ -281,7 +253,7 @@ function init() {
                 level = 0;
                 scene = new Physijs.Scene();
                 scene.fog = new THREE.Fog(0x202020, 10, 100);
-                scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
+                scene.setGravity(new THREE.Vector3(0, -20, 0)); // set gravity
                 scene.addEventListener('update', function() {
 
                         scene.simulate();
@@ -436,33 +408,7 @@ function toScreenXY(pos3D)
     return new THREE.Vector2(left, top);
 }
 
-//Called when trap model is loaded.
-function trapLoadedCallback(geometry) {
-	trapBase = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-		map : trapTexture
-	}));
-	trapMesh = trapBase.clone();
-	trapMesh.scale.set(0.1, 0.1, 0.1);
-	trapMesh.position.y -= 0.5;
-	trap.add(trapMesh);
-	trap2Mesh = trapBase.clone();
-	trap2Mesh.rotation.x += Math.PI / 2;
-	trap2Mesh.scale.set(0.1, 0.1, 0.08);
-	trap2.add(trap2Mesh);
-}
 
-function coneLoadedCallback(geometry){
-	coneGeometry = geometry;
-}
-
-function conesLoadedCallback(geometry){
-	cones = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xff8800}), 1, .1), 10);
-	cones.position.z = -5;
-	cones.position.y += 1;
-	cones.scale.set(0.2, 0.2, 0.2);
-	scene.add(cones);
-	pickUpItems.push(cones);
-}
 
 //Creates the character mesh
 function createChar() {
@@ -482,16 +428,7 @@ function createChar() {
 		charMesh.material.visible = false;
 	}
 	charMesh.setAngularFactor(new THREE.Vector3(0, 0.1, 0));
-	charMesh.addEventListener('collision', function(other_object,
-			relative_velocity, relative_rotation, contact_normal) {
-		if (other_object == trap || other_object == trap2) {
-			health -= 100;
-			damaged = true;
-		}
-		if (other_object == exit) {
-			levelComplete();
-		}
-	});
+	
 //	charMesh.setDamping(0.1, 0.9);
 
 	charCaster = new THREE.Raycaster();
@@ -622,7 +559,7 @@ function resetCones(){
 			cones.mass);
 	clone.position.x = 0;
 	clone.position.z = -5;
-	clone.position.y = 10;
+	clone.position.y = 1;
 	clone.rotation.z = 0;
 	clone.rotation.y = 0;
 	clone.rotation.x = 0;
@@ -750,6 +687,8 @@ function createWelcome(){
 	backSprite.visible = false;
 	orthoScene.add(backSprite);
 	menu = true;
+	removeLoadingScreen();
+	showMenu();
 	tick();
 	
 }

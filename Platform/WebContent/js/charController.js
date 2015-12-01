@@ -13,6 +13,7 @@ var sideForce;
 var walkSpeed = 4;
 var runSpeed = 8;
 var forceVector;
+var move = false;
 
 
 //checks keyinputs on every loop turn.
@@ -27,6 +28,7 @@ function checkKeys() {
             stamina -= 2;
         }
         forceVector.z += force;
+        move = true;
     }
 
     // If not running. Regen stamina.
@@ -37,6 +39,7 @@ function checkKeys() {
     // S - walk backwards
     if (keyMap[83]) { 
     		forceVector.z -= force;
+    		move = true;
             
     }
 
@@ -53,11 +56,13 @@ function checkKeys() {
     // Q - strafe
     if (keyMap[69]) {
             forceVector.x -= force;
+            move = true;
     }
 
     // E - strafe
     if (keyMap[81]) {
             forceVector.x += force;
+            move = true;
     }
 
     // Restart level is dead and R is pressed.
@@ -95,7 +100,7 @@ function checkMovement() {
     	maxSpeed = 8;
     	force = 8;
     }
-    if(currentVelocity < maxSpeed){
+    if(move && currentVelocity < maxSpeed){
 	    var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
 	    charMesh.setLinearVelocity(new THREE.Vector3(finalForceVector.x, oldVelocityVector.y,
 	                   finalForceVector.z));
@@ -294,4 +299,5 @@ function resetValues() {
     jump = false;
     pickupThisFrame = false;
     pickup = false;
+    move = false;
 }
