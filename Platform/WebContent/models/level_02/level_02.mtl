@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 29.11.2015 15:23:21
+# File Created: 01.12.2015 14:08:30
 
-newmtl Building_Textures
+newmtl pyramid_wall
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -12,10 +12,10 @@ newmtl Building_Textures
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka BuildingsDiffuseMap.png
-	map_Kd BuildingsDiffuseMap.png
+	map_Ka level_02_WallsCompleteMap.png
+	map_Kd level_02_WallsCompleteMap.png
 
-newmtl Floor_Textures
+newmtl Material__104
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -26,10 +26,10 @@ newmtl Floor_Textures
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka FloorDiffuseMap.png
-	map_Kd FloorDiffuseMap.png
+	map_Ka level_02_FloorCompleteMap.png
+	map_Kd level_02_FloorCompleteMap.png
 
-newmtl Platform_Textures
+newmtl pyramid_roof
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -40,19 +40,5 @@ newmtl Platform_Textures
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka PlatformsDiffuseMap.png
-	map_Kd PlatformsDiffuseMap.png
-
-newmtl Wall_Textures
-	Ns 10.0000
-	Ni 1.5000
-	d 1.0000
-	Tr 0.0000
-	Tf 1.0000 1.0000 1.0000 
-	illum 2
-	Ka 0.5880 0.5880 0.5880
-	Kd 0.5880 0.5880 0.5880
-	Ks 0.0000 0.0000 0.0000
-	Ke 0.0000 0.0000 0.0000
-	map_Ka WallsDiffuseMap.png
-	map_Kd WallsDiffuseMap.png
+	map_Ka level_02_RoofCompleteMap.png
+	map_Kd level_02_RoofCompleteMap.png
