@@ -355,19 +355,10 @@ function onDocumentMouseDown(e)
 // Listener: On mouse move
 function onDocumentMouseMove(e) 
 {
-	// the following line would stop any other event handler from firing
-	// (such as the mouse's TrackballControls)
 	// event.preventDefault();
-	
-	// update the mouse variable
-	mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
-	mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
-        
-        
-        console.log("Mouse Coord: (" + e.clientX + ", " + e.clientY + ")");
+        //console.log("Mouse Coord: (" + e.clientX + ", " + e.clientY + ")");
         
         // Check if hovering menu items
-        // Play Button
         if(hasClickedButton(e, toScreenXY(menuItems["play"])))
         {
             menuItems["play"].material.map = playSelectedTexture; 
@@ -512,18 +503,11 @@ function onWindowResize() {
         // Button Size
         buttonSizeX = window.innerWidth * (200/window.innerWidth);
         buttonSizeY = window.innerHeight * (50/(window.innerHeight));
-        
-        // Buttons
-        
-        
+
         // Update canvas
 	camera.updateProjectionMatrix();
         orthoCamera.updateProjectionMatrix();
 }
-
-
-
-
 
 //debug help
 function log(param) {
@@ -713,7 +697,7 @@ function createMenu(){
             map : playTexture
     });
     playSprite = new THREE.Sprite(spriteMaterialPlay);
-    playSprite.position.set(8, -buttonSizeY, -80);
+    playSprite.position.set(8, buttonSizeY, -80);
     playSprite.scale.set(buttonSizeX, buttonSizeY, 1);
     orthoScene.add(playSprite);
     playSprite.visible = false;
@@ -724,7 +708,7 @@ function createMenu(){
             map : optionsTexture
     });
     optionsSprite = new THREE.Sprite(spriteMaterialOptions);
-    optionsSprite.position.set(8, -buttonSizeY*2, -80);
+    optionsSprite.position.set(8, -buttonSizeY, -80);
     optionsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
     orthoScene.add(optionsSprite);
     optionsSprite.visible = false;
