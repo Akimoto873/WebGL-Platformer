@@ -57,6 +57,8 @@ var buttonSizeX;
 var buttonSizeY;
 var controls = false;
 var loadingScreen = false;
+var playSelectedTexture;
+var playTexture;
 
 
 // Initial Screen Ratio
@@ -68,7 +70,7 @@ var projector, mouse = { x: 0, y: 0 };
 var menuItems = [];
 
 /* DEBUG VARS */
-var charCam = false;  // Set to false for easier bugtesting.
+var charCam = true;  // Set to false for easier bugtesting.
 var box; //For easier collision box placement.
 
 function main() {
@@ -331,6 +333,8 @@ function init() {
             }
     });
     
+    
+    
     gameOverAudio = new Audio('audio/gameOver.mp3');
     ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
     /* TODO: DEBUG: TURNED OFF MUSIC WHILE WORKING ON THE GAME */
@@ -387,31 +391,31 @@ function onDocumentMouseMove(e)
         //console.log("Mouse Coord: (" + e.clientX + ", " + e.clientY + ")");
         
         // Check if hovering menu items
-        if(hasClickedButton(e, toScreenXY(menuItems["play"])))
+        if(hasClickedButton(e, toScreenXY(playSprite.position)))
         {
-            menuItems["play"].material.map = playSelectedTexture; 
+           playSprite.material.map = playSelectedTexture; 
         }
         else
         {
-            menuItems["play"].material.map = playTexture; 
+            playSprite.material.map = playTexture; 
         }
         
-        if(hasClickedButton(e, toScreenXY(menuItems["options"])))
+        if(hasClickedButton(e, toScreenXY(optionsSprite.position)))
         {
-            menuItems["options"].material.map = optionsSelectedTexture; 
+           optionsSprite.material.map = optionsSelectedTexture; 
         }
         else
         {
-            menuItems["options"].material.map = optionsTexture; 
+           optionsSprite.material.map = optionsTexture; 
         }
         
-        if(hasClickedButton(e, toScreenXY(menuItems["help"])))
+        if(hasClickedButton(e, toScreenXY(controlsSprite.position)))
         {
-            menuItems["help"].material.map = helpSelectedTexture; 
+            controlsSprite.material.map = helpSelectedTexture; 
         }
         else
         {
-            menuItems["help"].material.map = helpTexture; 
+            controlsSprite.material.map = helpTexture; 
         }
         
 }
@@ -622,6 +626,7 @@ function createWelcome(){
 	playTexture = textureLoader.load('images/menu/menu_play.png');
 	playSelectedTexture = textureLoader.load('images/menu/menu_play_selected.png');
 	optionsTexture = textureLoader.load('images/menu/menu_options.png');
+	optionsSelectedTexture = textureLoader.load('images/menu/menu_options_selected.png');
 	controlsTexture = textureLoader.load('images/menu/menu_help.png');
 	controlsSelectedTexture = textureLoader.load('images/menu/menu_help_selected.png');
 	controlsScreenTexture = textureLoader.load('images/menu/menu_controls.png');
@@ -688,9 +693,9 @@ function createWelcome(){
 	playSprite = new THREE.Sprite(spriteMaterialPlay);
 	playSprite.position.set(8, -buttonSizeY + 60 , -80);
 	playSprite.scale.set(buttonSizeX, buttonSizeY, 1);
-        menuItems.push(playSprite);
 	orthoScene.add(playSprite);
 	playSprite.visible = false;
+	
         
         // Options Button
 	var spriteMaterialOptions = new THREE.SpriteMaterial({
@@ -699,7 +704,6 @@ function createWelcome(){
 	optionsSprite = new THREE.Sprite(spriteMaterialOptions);
 	optionsSprite.position.set(8, -buttonSizeY*2 + 30 , -80);
 	optionsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
-        menuItems.push(optionsSprite);
 	orthoScene.add(optionsSprite);
 	optionsSprite.visible = false;
         
@@ -710,7 +714,6 @@ function createWelcome(){
 	controlsSprite = new THREE.Sprite(spriteMaterialControls);
 	controlsSprite.position.set(8, -buttonSizeY*3, -80);
 	controlsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
-        menuItems.push(controlsSprite);
 	orthoScene.add(controlsSprite);
 	controlsSprite.visible = false;
         
@@ -726,6 +729,7 @@ function createWelcome(){
 	menu = true;
 	removeLoadingScreen();
 	showMenu();
+	renderer.domElement.addEventListener('mousemove', onDocumentMouseDown);
 	tick();
 	
 }
