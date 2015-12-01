@@ -151,7 +151,13 @@ function init() {
     renderer = new THREE.WebGLRenderer({
             antialias : true
     });
-    renderer.setSize(window.innerWidth, window.innerWidth * 9/16); // Constant 16:9 aspect
+    
+    if(window.innerWidth < window.innerHeight * 16/9){
+        renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
+    }else{
+        renderer.setSize(window.innerHeight * 16/9, innerHeight);
+    }
+        
     renderer.shadowMap.enabled = true;
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.type = THREE.PCFShadowMap;       // Softer shadow
@@ -557,8 +563,11 @@ function onWindowResize() {
         
         // Update canvas
 	camera.updateProjectionMatrix();
-	renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
-
+        if(window.innerWidth < window.innerHeight * 16/9){
+            renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
+        }else{
+            renderer.setSize(window.innerHeight * 16/9, innerHeight);
+        }
 }
 
 //debug help
