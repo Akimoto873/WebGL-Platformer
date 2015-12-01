@@ -58,15 +58,6 @@ var buttonSizeY;
 var controls = false;
 var loadingScreen = true;
 
-// Menu Sprites
-var menuSprite;
-
-// Menu Textures
-var playTexture, playSelectedTexture, optionsTexture, optionsSelectedTexture, helpTexture, helpSelectedTexture;
-
-// Loading Textures
-var loadingBarTexture;
-
 // Initial Screen Ratio
 var screenRatioX, screenRatioY;
 
@@ -142,7 +133,7 @@ function init() {
     });
 
     orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2,
-            window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10, 1000);
+        window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10, 1000);
 
     orthoScene = new THREE.Scene();
 
@@ -160,25 +151,23 @@ function init() {
     renderer = new THREE.WebGLRenderer({
             antialias : true
     });
-    
-    // Set initial window size based on width or height (keep aspect ratio of 16:9)
-    if(window.innerWidth < window.innerHeight * 16/9){
-        renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
-    }else{
-        renderer.setSize(window.innerHeight * 16/9, innerHeight);
-    }
-    
+    renderer.setSize(window.innerWidth, window.innerWidth * 9/16); // Constant 16:9 aspect
     renderer.shadowMap.enabled = true;
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.type = THREE.PCFShadowMap;       // Softer shadow
     renderer.autoClear = false;
     renderer.setClearColor( scene.fog.color );
+    
 
     textureLoader = new THREE.TextureLoader();
+
     trapTexture = textureLoader.load('images/crushers.jpg');
+
 
     // JSON Loader
     var loader = new THREE.JSONLoader();
+    // loader.load('models/char.js', characterLoadedCallback);
+    // loader.load('models/level_01.js', level1loadedCallback);
     loader.load('models/trap.js', trapLoadedCallback);
     loader.load('models/cone.js', coneLoadedCallback);
     loader.load('models/cones.js', conesLoadedCallback);
@@ -304,12 +293,79 @@ function init() {
     };
 
     // Mouse click listener
-    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    // document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+
+    // Mouseclick event handler
+    renderer.domElement.addEventListener('click', function(e){
+            e = e || event;
+            
+            // On Screen Coordinates of the buttons
+            var playVec2 = toScreenXY(playSprite.position);
+            var optionsVec2 = toScreenXY(optionsSprite.position);
+            var helpVec2 = toScreenXY(controlsSprite.position);
+            
+            // Play Button
+            if(hasClickedButton(e, playVec2))
+            {
+                removeMenu();
+            }
+            
+            // Options Button
+            if(hasClickedButton(e, optionsVec2))
+            {
+                // Do something
+            }
+            
+            // Options Button
+            if(hasClickedButton(e, helpVec2))
+            {
+                showControls();
+            }
+    });
     
-    // Check mouse movement
-    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+    
+    //Should refactor this. Just keeping it as it is to check if it works.
+    renderer.domElement.addEventListener('mousemove', function(e){
+        e = e || event;
+        
+        if(menu){
+	        // On Screen Coordinates of the buttons
+	        var playVec2 = toScreenXY(playSprite.position);
+	        var optionsVec2 = toScreenXY(optionsSprite.position);
+	        var helpVec2 = toScreenXY(controlsSprite.position);
+	        
+	        // Play Button
+	        if(hasClickedButton(e, playVec2))
+	        {
+	            playSprite.material.color.setHex(0x000044);
+	        }
+	        else{
+	        	playSprite.material.color.setHex(16777215);
+	        }
+	        
+	        // Options Button
+	        if(hasClickedButton(e, optionsVec2))
+	        {
+	            optionsSprite.material.color.setHex(0x000044);
+	        }
+	        else{
+	        	optionsSprite.material.color.setHex(16777215);
+	        }
+	        
+	        
+	        // Options Button
+	        if(hasClickedButton(e, helpVec2))
+	        {
+	            controlsSprite.material.color.setHex(0x000044);
+	        }
+	        else{
+	        	controlsSprite.material.color.setHex(16777215);
+	        }
+        }
+    });
+    
    
-    // Sounds & Audio
+   
     gameOverAudio = new Audio('audio/gameOver.mp3');
     ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
     /* TODO: DEBUG: TURNED OFF MUSIC WHILE WORKING ON THE GAME */
@@ -322,79 +378,8 @@ function init() {
 
     createOverlay();
     createChar();
-    createMenu();
+    createWelcome();
     fallClock = new THREE.Clock();
-}
-
-// Listener: On mouse click
-function onDocumentMouseDown(e) 
-{
-    e = e || event;
-            
-    // Play Button
-    if(hasClickedButton(e, toScreenXY(menuItems["play"])))
-    {
-        removeMenu();
-    }
-
-    // Options Button
-    if(hasClickedButton(e, toScreenXY(menuItems["options"])))
-    {
-        // Do something
-    }
-
-    // Options Button
-    if(hasClickedButton(e, toScreenXY(menuItems["help"])))
-    {
-        showControls();
-    }
-}
-
-
-
-// Listener: On mouse move
-function onDocumentMouseMove(e) 
-{
-	// the following line would stop any other event handler from firing
-	// (such as the mouse's TrackballControls)
-	// event.preventDefault();
-	
-	// update the mouse variable
-	mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
-	mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
-        
-        
-        console.log("Mouse Coord: (" + e.clientX + ", " + e.clientY + ")");
-        
-        // Check if hovering menu items
-        // Play Button
-        if(hasClickedButton(e, toScreenXY(menuItems["play"])))
-        {
-            menuItems["play"].material.map = playSelectedTexture; 
-        }
-        else
-        {
-            menuItems["play"].material.map = playTexture; 
-        }
-        
-        if(hasClickedButton(e, toScreenXY(menuItems["options"])))
-        {
-            menuItems["options"].material.map = optionsSelectedTexture; 
-        }
-        else
-        {
-            menuItems["options"].material.map = optionsTexture; 
-        }
-        
-        if(hasClickedButton(e, toScreenXY(menuItems["help"])))
-        {
-            menuItems["help"].material.map = helpSelectedTexture; 
-        }
-        else
-        {
-            menuItems["help"].material.map = helpTexture; 
-        }
-        
 }
 
 
@@ -405,21 +390,19 @@ function hasClickedButton(e, vec2)
     var xPos = e.clientX;
     var yPos = e.clientY;
             
-    // Returns true if within button
-    if(menu && xPos + buttonSizeX / 1.3 > vec2.x && xPos < vec2.x)
-    {
-        if(yPos - buttonSizeY / 2 < vec2.y && yPos + buttonSizeY / 2 > vec2.y){
+    // Calculate if the mouse click was within the button area of given vector2
+    if(menu && xPos > vec2.x - buttonSizeX / 2 && xPos < vec2.x + buttonSizeX / 2){
+        if(yPos > vec2.y && yPos < vec2.y + buttonSizeY * 2){
             return true;
         }
     }
-
     return false;
 }
 
-// Given a object3D, returns "on screen" Vector2 coordinates
-function toScreenXY(object)
+// Given a Vector 3, returns "on screen" Vector2 screen coordinates
+function toScreenXY(pos3D)
 {
-    var v = object.position.clone();
+    var v = pos3D.clone();
     v = v.project(orthoCamera);
     var percX = (v.x + 1) / 2;
     var percY = (-v.y + 1) / 2;
@@ -430,17 +413,17 @@ function toScreenXY(object)
 
 //Called when trap model is loaded.
 function trapLoadedCallback(geometry) {
-    trapBase = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-            map : trapTexture
-    }));
-    trapMesh = trapBase.clone();
-    trapMesh.scale.set(0.1, 0.1, 0.1);
-    trapMesh.position.y -= 0.5;
-    trap.add(trapMesh);
-    trap2Mesh = trapBase.clone();
-    trap2Mesh.rotation.x += Math.PI / 2;
-    trap2Mesh.scale.set(0.1, 0.1, 0.08);
-    trap2.add(trap2Mesh);
+	trapBase = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
+		map : trapTexture
+	}));
+	trapMesh = trapBase.clone();
+	trapMesh.scale.set(0.1, 0.1, 0.1);
+	trapMesh.position.y -= 0.5;
+	trap.add(trapMesh);
+	trap2Mesh = trapBase.clone();
+	trap2Mesh.rotation.x += Math.PI / 2;
+	trap2Mesh.scale.set(0.1, 0.1, 0.08);
+	trap2.add(trap2Mesh);
 }
 
 function coneLoadedCallback(geometry){
@@ -501,24 +484,19 @@ function checkTick() {
 		
 	}
 }
-function onWindowResize() {        
-        // Keep aspect ratio regardless of windows width or height
-        if(window.innerWidth < window.innerHeight * 16/9){
-            renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
-        }else{
-            renderer.setSize(window.innerHeight * 16/9, innerHeight);
-        }
+function onWindowResize() {
+
+	//camera.aspect = window.innerWidth / window.innerHeight;
+        // camera.aspect = 16 / 9;
         
-        // Button Size
+        // Update menu size
         buttonSizeX = window.innerWidth * (200/window.innerWidth);
-        buttonSizeY = window.innerHeight * (50/(window.innerHeight));
-        
-        // Buttons
-        
+	buttonSizeY = (window.innerWidth * (9/16)) * (50/(window.innerWidth * (9/16)));
         
         // Update canvas
 	camera.updateProjectionMatrix();
-        orthoCamera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
+
 }
 
 
@@ -641,115 +619,113 @@ function resetTraps() {
 }
 
 //Creates the menu
-function createMenu(){
-    // Load Textures
-    menuTexture = textureLoader.load('images/menu/main_menu.png');
-    playTexture = textureLoader.load('images/menu/menu_play.png');
-    playSelectedTexture = textureLoader.load('images/menu/menu_play_selected.png');
-    optionsTexture = textureLoader.load('images/menu/menu_options.png');
-    optionsSelectedTexture = textureLoader.load('images/menu/menu_options_selected.png');
-    helpTexture = textureLoader.load('images/menu/menu_help.png');
-    helpSelectedTexture = textureLoader.load('images/menu/menu_help_selected.png');
-    controlsScreenTexture = textureLoader.load('images/menu/menu_controls.png');
-    backTexture = textureLoader.load('images/backButton.jpg');
-    loadingBackgroundTexture = textureLoader.load('images/loadingBackground.jpg');
-    loadingBarTexture = textureLoader.load('images/loadingBar.jpg');
-    loadingBarTexture.wrapS = THREE.RepeatWrapping;
-    loadingBarTexture.wrapT = THREE.RepeatWrapping;
+function createWelcome(){
+	menuTexture = textureLoader.load('images/menu/main_menu.png');
+	playTexture = textureLoader.load('images/menu/menu_play.png');
+	playSelectedTexture = textureLoader.load('images/menu/menu_play_selected.png');
+	optionsTexture = textureLoader.load('images/menu/menu_options.png');
+	controlsTexture = textureLoader.load('images/menu/menu_help.png');
+	controlsSelectedTexture = textureLoader.load('images/menu/menu_help_selected.png');
+	controlsScreenTexture = textureLoader.load('images/menu/menu_controls.png');
+	backTexture = textureLoader.load('images/backButton.jpg');
+	loadingBackgroundTexture = textureLoader.load('images/loadingBackground.jpg');
+	loadingBarTexture = textureLoader.load('images/loadingBar.jpg');
+	loadingBarTexture.wrapS = THREE.RepeatWrapping;
+        loadingBarTexture.wrapT = THREE.RepeatWrapping;
+	
 
+	// Create and add container for our overlay (menu)
+        overlayContainer = document.createElement('div');
+	document.body.appendChild(overlayContainer);
+	
+        // Automatically adjust menu and buttons according to screen size
+	menuSizeX = window.innerWidth;
+	menuSizeY = window.innerHeight;
+        buttonSizeY = 50 * window.innerHeight / 1080;
+	buttonSizeX = 200 * window.innerWidth / 1920;
+	
 
-    // Create and add container for our overlay (menu)
-    overlayContainer = document.createElement('div');
-    document.body.appendChild(overlayContainer);
-
-    // Automatically adjust menu and buttons according to screen size
-    menuSizeX = window.innerWidth;
-    menuSizeY = window.innerHeight;
-
-    // Create initial button sizes depending on screen size
-    buttonSizeX = window.innerWidth * (200/window.innerWidth);
-    buttonSizeY = window.innerHeight * (50/(window.innerHeight));
-
-    var spriteMaterial = new THREE.SpriteMaterial({
-            map : loadingBackgroundTexture
-    });
-    loadingBackgroundSprite = new THREE.Sprite(spriteMaterial);
-    loadingBackgroundSprite.position.set(0,0 , -100);
-    loadingBackgroundSprite.scale.set(menuSizeX, menuSizeY, 1);
-    orthoScene.add(loadingBackgroundSprite);
-
-    var spriteMaterial = new THREE.SpriteMaterial({
-            map : loadingBarTexture
-    });
-    loadingBarSprite = new THREE.Sprite(spriteMaterial);
-    loadingBarSprite.position.set(0, 0 , -80);
-    loadingBarSprite.scale.set(buttonSizeX*2, buttonSizeY, 1);
-    orthoScene.add(loadingBarSprite);
-
-
-    // Main Menu Screen (background)
-    var spriteMaterial = new THREE.SpriteMaterial({
-            map : menuTexture
-    });
-    menuSprite = new THREE.Sprite(spriteMaterial);
-    menuSprite.position.set(0,0 , -100);
-    menuSprite.scale.set(menuSizeX, menuSizeY, 1);
-    orthoScene.add(menuSprite);
-    menuSprite.visible = false;
-
-    // Help / Controls Screen
-    var spriteMaterial = new THREE.SpriteMaterial({
-            map : controlsScreenTexture
-    });
-    controlsScreenSprite = new THREE.Sprite(spriteMaterial);
-    controlsScreenSprite.position.set(0,0 , -100);
-    controlsScreenSprite.scale.set(menuSizeX, menuSizeY, 1);
-    controlsScreenSprite.visible = false;
-    orthoScene.add(controlsScreenSprite);
-
-
-    // Play Button
-    var spriteMaterialPlay = new THREE.SpriteMaterial({
-            map : playTexture
-    });
-    playSprite = new THREE.Sprite(spriteMaterialPlay);
-    playSprite.position.set(8, -buttonSizeY, -80);
-    playSprite.scale.set(buttonSizeX, buttonSizeY, 1);
-    orthoScene.add(playSprite);
-    playSprite.visible = false;
-    menuItems["play"] = playSprite;
-
-    // Options Button
-    var spriteMaterialOptions = new THREE.SpriteMaterial({
-            map : optionsTexture
-    });
-    optionsSprite = new THREE.Sprite(spriteMaterialOptions);
-    optionsSprite.position.set(8, -buttonSizeY*2, -80);
-    optionsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
-    orthoScene.add(optionsSprite);
-    optionsSprite.visible = false;
-    menuItems["options"] = optionsSprite;
-
-    // Help / Controls Button
-    var spriteMaterialControls = new THREE.SpriteMaterial({
-            map : helpTexture
-    });
-    controlsSprite = new THREE.Sprite(spriteMaterialControls);
-    controlsSprite.position.set(8, -buttonSizeY*3, -80);
-    controlsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
-    orthoScene.add(controlsSprite);
-    controlsSprite.visible = false;
-    menuItems["help"] = controlsSprite;
-
-
-    var spriteMaterial = new THREE.SpriteMaterial({
-            map : backTexture
-    });
-    backSprite = new THREE.Sprite(spriteMaterial);
-    backSprite.position.set(0, -menuSizeY/2 + buttonSizeY, -80);
-    backSprite.scale.set(buttonSizeX, buttonSizeY, 1);
-    backSprite.visible = false;
-    orthoScene.add(backSprite);
-    menu = true;
-    tick();      
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : loadingBackgroundTexture
+	});
+	loadingBackgroundSprite = new THREE.Sprite(spriteMaterial);
+	loadingBackgroundSprite.position.set(0,0 , -100);
+	loadingBackgroundSprite.scale.set(menuSizeX, menuSizeY, 1);
+	orthoScene.add(loadingBackgroundSprite);
+	
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : loadingBarTexture
+	});
+	loadingBarSprite = new THREE.Sprite(spriteMaterial);
+	loadingBarSprite.position.set(0, 0 , -80);
+	loadingBarSprite.scale.set(buttonSizeX*2, buttonSizeY, 1);
+	orthoScene.add(loadingBarSprite);
+	
+        
+        // Main Menu Screen (background)
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : menuTexture
+	});
+	menuSprite = new THREE.Sprite(spriteMaterial);
+	menuSprite.position.set(0,0 , -100);
+	menuSprite.scale.set(menuSizeX, menuSizeY, 1);
+	orthoScene.add(menuSprite);
+	menuSprite.visible = false;
+	
+        // Help / Controls Screen
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : controlsScreenTexture
+	});
+	controlsScreenSprite = new THREE.Sprite(spriteMaterial);
+	controlsScreenSprite.position.set(0,0 , -100);
+	controlsScreenSprite.scale.set(menuSizeX, menuSizeY, 1);
+	controlsScreenSprite.visible = false;
+	orthoScene.add(controlsScreenSprite);
+	
+        
+        // Play Button
+	var spriteMaterialPlay = new THREE.SpriteMaterial({
+		map : playTexture
+	});
+	playSprite = new THREE.Sprite(spriteMaterialPlay);
+	playSprite.position.set(8, -buttonSizeY + 60 , -80);
+	playSprite.scale.set(buttonSizeX, buttonSizeY, 1);
+        menuItems.push(playSprite);
+	orthoScene.add(playSprite);
+	playSprite.visible = false;
+        
+        // Options Button
+	var spriteMaterialOptions = new THREE.SpriteMaterial({
+		map : optionsTexture
+	});
+	optionsSprite = new THREE.Sprite(spriteMaterialOptions);
+	optionsSprite.position.set(8, -buttonSizeY*2 + 30 , -80);
+	optionsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
+        menuItems.push(optionsSprite);
+	orthoScene.add(optionsSprite);
+	optionsSprite.visible = false;
+        
+        // Help / Controls Button
+	var spriteMaterialControls = new THREE.SpriteMaterial({
+		map : controlsTexture
+	});
+	controlsSprite = new THREE.Sprite(spriteMaterialControls);
+	controlsSprite.position.set(8, -buttonSizeY*3, -80);
+	controlsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
+        menuItems.push(controlsSprite);
+	orthoScene.add(controlsSprite);
+	controlsSprite.visible = false;
+        
+        
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map : backTexture
+	});
+	backSprite = new THREE.Sprite(spriteMaterial);
+	backSprite.position.set(0, -menuSizeY/2 + buttonSizeY, -80);
+	backSprite.scale.set(buttonSizeX, buttonSizeY, 1);
+	backSprite.visible = false;
+	orthoScene.add(backSprite);
+	menu = true;
+	tick();
+	
 }
