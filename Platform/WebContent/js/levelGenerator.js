@@ -246,6 +246,7 @@ function generateLevel2(){
 
     floor.position.y = -0.5;
     scene.add(floor);
+    floor.visible = false;
     
     
         
@@ -254,11 +255,38 @@ function generateLevel2(){
     scene.add(ambientLight);
     
     
-    var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(4, 6, 0.2),
+    var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
             Physijs.createMaterial(new THREE.MeshBasicMaterial({
                     color : 0x22ee44
             }), 0.0, 0.1), 0);
-    addWall(basicWall1, 3.5, 3.9, 3.5, 1, 1);
+    addWall(basicWall1, 2,-8.2,2.2,1,2);
+    addWall(basicWall1, 5.8,-3.6,2.2,1,2.4);
+    addWall(basicWall1, 16.6,-3.6,3.2,1,2.4);
+    addWall(basicWall1, 17.4,-8.2,2.2,1,2.4);
+    addWall(basicWall1, 15.4,-18,0.2,1, 7.2);
+    addWall(basicWall1, 4.2,-14.8,0.2,1,9.2);
+    addWall(basicWall1, -7.20,5.80,6.60,1,2.20);
+    addWall(basicWall1, -9.20,10.20,4.40,1,2.20);
+    addWall(basicWall1, 16.60,10.20,9.00,1,2.20);
+    addWall(basicWall1, 14.60,5.80,11.00,1,2.20);
+    addWall(basicWall1, -11.60,-10.20,2.20,1,15.20);
+    addWall(basicWall1, -7.00,-12.60,2.20,1,6.80);
+    addWall(basicWall1, -18.60,-5.00,0.60,1,23.00);
+    addWall(basicWall1, -15.40,-25.60,4.60,1,0.40);
+    addWall(basicWall1, 2.00,-24.60,13.20,1,0.40);
+    addWall(basicWall1, 17.00,-28.20,3.00,1,3.20);
+    addWall(basicWall1, 27.80,-28.20,3.00,1,3.20);
+    addWall(basicWall1, 22.40,-30.00,3.00,1,0.40);
+    addWall(basicWall1, 30.40,-18.40,1.20,1,9.00);
+    addWall(basicWall1, 33.20,-5.40,8.40,1,5.20);
+    addWall(basicWall1, 39.00,8.80,1.00,1,9.20);
+    addWall(basicWall1, 36.00,21.60,2.20,1,5.20);
+    addWall(basicWall1, 4.00,21.60,25.60,1,5.20);
+    addWall(basicWall1, 31.00,26.00,3.00,1,0.60);
+    addWall(basicWall1, 25.20,1.80,0.40,1,1.80);
+    
+    
+    
     
     scene.traverse(function(node) {
 
@@ -269,6 +297,7 @@ function generateLevel2(){
         }
 
 });
+    level = 2;
         
 }
 

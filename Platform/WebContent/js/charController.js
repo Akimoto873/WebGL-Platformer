@@ -168,8 +168,9 @@ function checkMovement() {
             carrying = false;
         }
     }
-
-    checkTraps();
+    if(level == 1){
+    	checkTraps();
+    }
     checkFallDmg();
 
     // If we have lost all our health, set game over

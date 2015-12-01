@@ -58,6 +58,7 @@ var buttonSizeY;
 var controls = false;
 var loadingScreen = false;
 
+
 // Initial Screen Ratio
 var screenRatioX, screenRatioY;
 
@@ -67,7 +68,8 @@ var projector, mouse = { x: 0, y: 0 };
 var menuItems = [];
 
 /* DEBUG VARS */
-var charCam = true;  // Set to false for easier bugtesting.
+var charCam = false;  // Set to false for easier bugtesting.
+var box; //For easier collision box placement.
 
 function main() {
     
@@ -167,7 +169,7 @@ function init() {
     textureLoader = new THREE.TextureLoader();
     
     // Create level 1
-    generateLevel1();  //For debugging level 2, just change this to level2, works flawlessly now.
+    generateLevel2();  //For debugging level 2, just change this to level2, works flawlessly now.
     
     // Add window resize listener
     window.addEventListener('resize', onWindowResize, false);
@@ -267,6 +269,34 @@ function init() {
                 resetChar();
                 level = 2;
             }
+            /*TODO: FOR CREATING COLLISION BOXES*/
+//            if(e.keyCode == 37 && e.type == 'keydown'){
+//            	box.position.x -= 0.2;
+//            }
+//            if(e.keyCode == 38 && e.type == 'keydown'){
+//            	box.position.z += 0.2;
+//            }
+//            if(e.keyCode == 39 && e.type == 'keydown'){
+//            	box.position.x += 0.2;
+//            }
+//            if(e.keyCode == 40 && e.type == 'keydown'){
+//            	box.position.z -= 0.2;
+//            }
+//            if(e.keyCode == 73 && e.type == 'keydown'){
+//            	box.scale.x -= 0.2
+//            }
+//            if(e.keyCode == 79 && e.type == 'keydown'){
+//            	box.scale.x += 0.2;
+//            }
+//            if(e.keyCode == 75 && e.type == 'keydown'){
+//            	box.scale.z -= 0.2;
+//            }
+//            if(e.keyCode == 76 && e.type == 'keydown'){
+//            	box.scale.z += 0.2;
+//            }
+//            if(e.keyCode == 78 && e.type == 'keyup'){
+//            	log((box.position.x).toFixed(2) + "," + (box.position.z).toFixed(2) + "," + (box.scale.x).toFixed(2) + "," + "1," + (box.scale.z).toFixed(2));
+//            }
 
     };
 
@@ -315,6 +345,13 @@ function init() {
     createChar();
     createWelcome();
     fallClock = new THREE.Clock();
+    
+    //For collision box placement
+//    var box = new THREE.Mesh(new THREE.BoxGeometry(2, 6, 2),
+//            new THREE.MeshBasicMaterial({
+//                    color : 0x22ee44
+//            }));
+//    scene.add(box);
 }
 
 // Listener: On mouse click
