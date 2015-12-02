@@ -88,9 +88,6 @@ function generateLevel1() {
     crushingMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
             map : crushingTexture
     }), 0.4, 0.8);
-    roofTexture = textureLoader.load('images/concrete.jpg');
-    roofTexture.wrapT = roofTexture.wrapS = THREE.RepeatWrapping;
-    roofTexture.repeat.set(20, 20);
     
     /*
     var lightHeight = 4.4;

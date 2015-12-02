@@ -59,6 +59,9 @@ var controls = false;
 var loadingScreen = false;
 var playSelectedTexture;
 var playTexture;
+var oldMouseX = 0;
+var oldMouseY = 0;
+var mouseDown = false;
 
 // Clock for delta
 var clock = new THREE.Clock();
@@ -206,7 +209,7 @@ function init() {
     stats.domElement.style.top = '0px';
     stats.domElement.style.zIndex = 100;
     container.appendChild(stats.domElement);
-
+    
 
     //Key event handler
     onkeydown = onkeyup = function(e) {
@@ -346,6 +349,7 @@ function init() {
     createChar();
     createMenu();
     fallClock = new THREE.Clock();
+    timer = new THREE.Clock();
     
     //For collision box placement
 //    var box = new THREE.Mesh(new THREE.BoxGeometry(2, 6, 2),
@@ -356,27 +360,35 @@ function init() {
 }
 
 // Listener: On mouse click
-function onDocumentMouseDown(e) 
+function onDocumentMouseClick(e) 
 {
-	if(menu && !controls){
+	if(menu){
 	    e = e || event;
-	            
-	    // Play Button
-	    if(hasClickedButton(e, toScreenXY(menuItems["play"].position)))
-	    {
-	        removeMenu();
+	         
+	    if(!controls){
+		    // Play Button
+		    if(hasClickedButton(e, toScreenXY(menuItems["play"].position)))
+		    {
+		        removeMenu();
+		    }
+		
+		    // Options Button
+		    if(hasClickedButton(e, toScreenXY(menuItems["options"].position)))
+		    {
+		        // Do something
+		    }
+		
+		    // Options Button
+		    if(hasClickedButton(e, toScreenXY(menuItems["help"].position)))
+		    {
+		        showControls();
+		    }
 	    }
-	
-	    // Options Button
-	    if(hasClickedButton(e, toScreenXY(menuItems["options"].position)))
-	    {
-	        // Do something
-	    }
-	
-	    // Options Button
-	    if(hasClickedButton(e, toScreenXY(menuItems["help"].position)))
-	    {
-	        showControls();
+	    if(controls){
+	    	if(hasClickedButton(e, toScreenXY(menuItems["back"].position)))
+	    	{
+		    	backToMenu();
+	    	}
 	    }
 	}
 }
@@ -387,7 +399,6 @@ function onDocumentMouseMove(e)
 {
     e.preventDefault();
     //console.log("Mouse Coord: (" + e.clientX + ", " + e.clientY + ")");
-
     // Check if hovering menu items
     if(menu && !controls){
         if(hasClickedButton(e, toScreenXY(menuItems["play"].position)))
@@ -416,8 +427,33 @@ function onDocumentMouseMove(e)
         {
             menuItems["help"].material.map = controlsTexture; 
         }
+        if(hasClickedButton(e, toScreenXY(menuItems["back"].position)))
+    	{
+        	//loadSelectedTexture
+    	}
     }
+    if(!menu){
+        if(oldMouseY == 0){
+        	oldMouseY = e.clientY;
+        }
+    	var diffY = e.clientY - oldMouseY;
+        camera.rotation.x += diffY / 200;
+        oldMouseY = e.clientY;
+    }
+    
 }
+
+//Not used. Saved in case we want to use it.
+//function onDocumentMouseDown(e){
+//	if(!menu){
+//		mouseDown = true;
+//	}
+//}
+//function onDocumentMouseUp(e){
+//	if(!menu){
+//		mouseDown = false;
+//	}
+//}
 
 
 // Returns true if button has been pressed, given button coordinates
@@ -726,14 +762,17 @@ function createMenu(){
 		map : backTexture
 	});
 	backSprite = new THREE.Sprite(spriteMaterial);
-	backSprite.position.set(0, -menuSizeY/2 + buttonSizeY, -80);
+	backSprite.position.set(-buttonSizeX*2, -menuSizeY/2 + buttonSizeY, -80);
 	backSprite.scale.set(buttonSizeX, buttonSizeY, 1);
 	backSprite.visible = false;
 	orthoScene.add(backSprite);
+	menuItems["back"] = backSprite;
 	menu = true;
 	removeLoadingScreen();
 	showMenu();
 	renderer.domElement.addEventListener('mousemove', onDocumentMouseMove);
-	renderer.domElement.addEventListener('click', onDocumentMouseDown);
+	renderer.domElement.addEventListener('click', onDocumentMouseClick);
+//	renderer.domElement.addEventListener('mousedown', onDocumentMouseDown);
+//	renderer.domElement.addEventListener('mouseup', onDocumentMouseUp);
 	tick();
 }
