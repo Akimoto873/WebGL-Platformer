@@ -158,8 +158,12 @@ function init() {
     
     if(window.innerWidth < window.innerHeight * 16/9){
         renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
+        renderSizeX = window.innerWidth;
+        renderSizeY = window.innerWidth * 9/16;
     }else{
         renderer.setSize(window.innerHeight * 16/9, innerHeight);
+        renderSizeX = window.innerHeight * 16/9;
+        renderSizeY = window.innerHeight;
     }
         
     renderer.shadowMap.enabled = true;
@@ -422,8 +426,8 @@ function toScreenXY(pos3D)
     v = v.project(orthoCamera);
     var percX = (v.x + 1) / 2;
     var percY = (-v.y + 1) / 2;
-    var left = percX * window.innerWidth;
-    var top = percY * window.innerHeight;
+    var left = percX * renderSizeX + (window.innerWidth - renderSizeX)/2;
+    var top = percY * renderSizeY;
     return new THREE.Vector2(left, top);
 }
 
@@ -478,8 +482,12 @@ function onWindowResize() {
 	camera.updateProjectionMatrix();
         if(window.innerWidth < window.innerHeight * 16/9){
             renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
+            renderSizeX = window.innerWidth;
+            renderSizeY = window.innerWidth * 9/16;
         }else{
             renderer.setSize(window.innerHeight * 16/9, innerHeight);
+            renderSizeX = window.innerHeight * 16/9;
+            renderSizeY = window.innerHeight;
         }
 }
 
