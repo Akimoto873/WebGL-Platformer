@@ -1,6 +1,19 @@
 //Creates the health and stamina bars.
+var spriteXPosition;
+var spriteXScale;
+var spriteXScale2;
+var spriteYScale;
+var spriteYScale2;
+
 function createOverlay() 
 {
+	
+	spriteXPosition = (-renderSizeX / 3);
+	spriteXScale = renderSizeX / 3;
+    spriteYScale = renderSizeY / 16;
+    spriteXScale2 = renderSizeX / 2.8;
+    spriteYScale2 = renderSizeY / 15;
+	
     // Create and append overlay container
     overlayContainer = document.createElement('div');
     document.body.appendChild(overlayContainer);
@@ -15,8 +28,8 @@ function createOverlay()
             color : 0x00ff00
     });
     healthSprite = new THREE.Sprite(spriteMaterial);
-    healthSprite.position.set(-(window.innerWidth / 3.2), -(window.innerHeight / 2) + 100, 10);
-    healthSprite.scale.set(window.innerWidth / 3, window.innerHeight / 16, 1);
+    healthSprite.position.set(spriteXPosition, -(window.innerHeight / 2) + 100, 10);
+    healthSprite.scale.set(spriteXScale, spriteYScale, 1);
     orthoScene.add(healthSprite);
 
     // Health Box Texture
@@ -25,8 +38,8 @@ function createOverlay()
             color : 0x000000
     });
     healthSprite2 = new THREE.Sprite(spriteMaterial2);
-    healthSprite2.position.set(-(window.innerWidth / 3.2), -(window.innerHeight / 2) + 100, 8);
-    healthSprite2.scale.set(window.innerWidth / 2.8, window.innerHeight / 15, 1);
+    healthSprite2.position.set(spriteXPosition, -(window.innerHeight / 2) + 100, 8);
+    healthSprite2.scale.set(spriteXScale2, spriteYScale2, 1);
     orthoScene.add(healthSprite2);
 
     // Stamina Bar Texture
@@ -35,8 +48,10 @@ function createOverlay()
             color : 0x0000ff
     });
     staminaSprite = new THREE.Sprite(spriteMaterial3);
-    staminaSprite.position.set(-(window.innerWidth / 3.2), -(window.innerHeight / 2.5) + 100, 10);
-    staminaSprite.scale.set(window.innerWidth / 3, window.innerHeight / 16, 1);
+    staminaSprite.position.set(spriteXPosition, -(renderSizeY / 2.5) + 100, 10);
+    
+    staminaSprite.scale.set(spriteXScale, spriteYScale, 1);
+    
     orthoScene.add(staminaSprite);
 
     // Stamina Box Texture
@@ -45,8 +60,9 @@ function createOverlay()
             color : 0x000000
     });
     staminaSprite2 = new THREE.Sprite(spriteMaterial4);
-    staminaSprite2.position.set(-(window.innerWidth / 3.2), -(window.innerHeight / 2.5) + 100, 8);
-    staminaSprite2.scale.set(window.innerWidth / 2.8, window.innerHeight / 15, 1);
+    staminaSprite2.position.set(spriteXPosition, -(renderSizeY / 2.5) + 100, 8);
+    staminaSprite2.scale.set(spriteXScale2, spriteYScale2, 1);
+    
     orthoScene.add(staminaSprite2);
     
     staminaSprite.visible = false;
@@ -115,16 +131,16 @@ function checkChangesToHUD() {
 		}
                 
             // TODO: Fix so it scales properly
-	    staminaSprite.scale.set((Math.abs(stamina) / 200) * (window.innerWidth / 3), window.innerHeight / 16, 1);
-	    staminaSprite.position.x = (-window.innerWidth / 3.2) - (1 - Math.abs(stamina / 200)) * (window.innerWidth / 6.0);
+	    staminaSprite.scale.set((Math.abs(stamina) / 200) * spriteXScale, spriteYScale, 1);
+	    staminaSprite.position.x = (spriteXPosition)  - (1 - (Math.abs(stamina)/200)) * spriteXScale / 2;
 	
 	    // If you have been hurt, we update the apperance of your health
 	    if (damaged) {
                 
                 // TODO: Fix so it scales properly
 	        // Update the size of the health bar according to your amount of health
-	        healthSprite.scale.set((Math.abs(health) / 100) * (window.innerWidth / 3), window.innerHeight / 16, 1);
-	        healthSprite.position.x = (-window.innerWidth / 3.2) - (1 - Math.abs(health / 100)) * (window.innerWidth / 6.0);
+	        healthSprite.scale.set((Math.abs(health) / 200) * spriteXScale, spriteYScale, 1);
+	        healthSprite.position.x = (spriteXPosition)  - (1 - (Math.abs(health)/200)) * spriteXScale / 2;
 	        
 	        // Color codes your health bar according to amount of health
 	        if (health > 80) {
