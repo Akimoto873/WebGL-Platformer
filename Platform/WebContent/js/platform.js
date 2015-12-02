@@ -543,7 +543,7 @@ function levelComplete() {
 }
 
 
-//restarts the level (after death for example).
+// Restarts the level (after death for example).
 function restartLevel() { // Currently not finished.
     level = 0;
     scene.remove(charMesh);
@@ -631,14 +631,14 @@ function resetTraps() {
 
 //Creates the menu
 function createMenu(){
-	menuTexture = textureLoader.load('images/menu/main_menu.png');
+	menuTexture = textureLoader.load('images/menu/main_menu.jpg');
 	playTexture = textureLoader.load('images/menu/menu_play.png');
 	playSelectedTexture = textureLoader.load('images/menu/menu_play_selected.png');
 	optionsTexture = textureLoader.load('images/menu/menu_options.png');
 	optionsSelectedTexture = textureLoader.load('images/menu/menu_options_selected.png');
 	controlsTexture = textureLoader.load('images/menu/menu_help.png');
 	controlsSelectedTexture = textureLoader.load('images/menu/menu_help_selected.png');
-	controlsScreenTexture = textureLoader.load('images/menu/menu_controls.png');
+	controlsScreenTexture = textureLoader.load('images/menu/menu_controls.jpg');
 	backTexture = textureLoader.load('images/backButton.jpg');
 	loadingBackgroundTexture = textureLoader.load('images/loadingBackground.jpg');
 	loadingBarTexture = textureLoader.load('images/loadingBar.jpg');
