@@ -1,35 +1,48 @@
 
-// Unused; No need for this, since level textures and models will have been "baked" with shadow and lighting
+// Essentials
+function loadAssets()
+{
+    // LOAD FLARE ANIMATION AND SPRITE
+    var flareAnimTexture = new THREE.ImageUtils.loadTexture( 'images/animation/flare_sprite.png' );
+    flareAnimation = new textureAnimator( flareAnimTexture, 4, 1, 4, 15 ); // texture, #horiz, #vert, #total, duration.
+    var flareSpriteMaterial = new THREE.SpriteMaterial( { map: flareAnimTexture, side:THREE.DoubleSide, transparent: true } );
+    flareSprite = new THREE.Sprite(flareSpriteMaterial);
+    flareSprite.scale.set(6, 6, 6);
+}
+
+
+// Create a FLARE LIGHT
 function createLight( x, y, z ) {
+    // Light settings
+    var lightIntensity = 25;
+    var lightDistance = 5;
+    var lightColor = 0xff6666;
     
-    var lightIntensity = 1;
-    var lightDistance = 50;
-    var lightColor = 0xffffff;
-    
+    // Create light
     var myLight = new THREE.PointLight( lightColor, lightIntensity, lightDistance );
     myLight.castShadow = true;
-    myLight.receiveShadow = true;
     myLight.shadowCameraNear = 0.1;
-    myLight.shadowCameraFar = 300;
-    myLight.shadowMapWidth = 2048;
-    myLight.shadowMapHeight = 2048;
-    myLight.shadowBias = 0.01;
-    myLight.shadowDarkness = 1;
+    myLight.shadowCameraFar = 30;
+    myLight.shadowMapWidth = 32;
+    myLight.shadowMapHeight = 32;
+    myLight.shadowBias = 0.04;
+    myLight.shadowDarkness = 0.5;
 
-    // DEBUG Sphere
-    // var sphere = new THREE.SphereGeometry( 0.25, 16, 8 );
-    // myLight.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: lightColor } ) ) );
+    // Add flare sprite with animation to flare
+    var flareAnim = flareSprite.clone();    
+    myLight.add(flareAnim);
     
-    // Position
-    myLight.position.set(x, y, z);
-    
-    scene.add(myLight);
+    // Returns the light
+    return myLight;
 }
 
 
 
 // Generates level 1.
 function generateLevel1() {
+    
+    // Load assets
+    loadAssets();
     
     // OBJ MTL Loader
     THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
@@ -45,7 +58,8 @@ function generateLevel1() {
     objLoader.load('models/objects/flare_box/flare_box.obj', 'models/objects/flare_box/flare_box.mtl', flareBoxLoadedCallback);
     
     // Lights
-    ambientLight = new THREE.AmbientLight(0xd3d3d3);
+    // ambientLight = new THREE.AmbientLight(0xd3d3d3);
+    ambientLight = new THREE.AmbientLight(0xffffff);
     scene.add(ambientLight);
     
    
@@ -333,6 +347,8 @@ function level1LoadedCallback(object)
             node.receiveShadow = true;
         }
     });
+    
+    object.material = new THREE.MeshPhongMaterial( { color: 0x555555, specular: 0xffffff, shininess: 50 }  );
 
     // Set position and scale
     object.scale.set(1, 1.8, 1);
@@ -340,6 +356,7 @@ function level1LoadedCallback(object)
 
     // Add to scene
     scene.add(object);
+    levelObject = object;
     
     /*TODO: Move this somewhere else? */
 //    loadingScreen = false;  
@@ -360,10 +377,8 @@ function level2LoadedCallback(object)
         }
     });
 
-    // Set position and scale
-    object.scale.set(1, 1, 1);
-    // object.position.y += 1.4;
-
+    // Set level object
+    levelObject = object;
     // Add to scene
     scene.add(object);
 }
@@ -519,3 +534,53 @@ function flareBoxLoadedCallback(object){
 	scene.add(cones);
 	pickUpItems.push(cones);
 }
+
+
+
+// Texture Animation Function:
+// Returns an object that can be added to scene, and must be updated in order to animate
+function textureAnimator(textureSource, tileHori, tileVert, tileNumber, tileDisplayDuration) 
+{	
+    // Number of horizontal tiles
+    this.tilesHorizontal = tileHori;
+
+    // Number of vertical tiles
+    this.tilesVertical = tileVert;
+    
+    // Texture wrapping
+    textureSource.wrapS = textureSource.wrapT = THREE.RepeatWrapping; 
+    textureSource.repeat.set( 1 / this.tilesHorizontal, 1 / this.tilesVertical );
+    
+    // Number of tiles we want to animate
+    this.numberOfTiles = tileNumber;
+
+    // The time each tile should be displayed
+    this.tileDisplayDuration = tileDisplayDuration;
+
+    // Current Tile (being displayed)
+    this.currentTile = 0;
+    
+    // Tile display time
+    this.currentDisplayTime = 0;
+
+    
+
+    // Update animation (must run in an update function, and should take update(delta * 1000) )
+    this.update = function( milliSec )
+    {
+            this.currentDisplayTime += milliSec;
+            while (this.currentDisplayTime > this.tileDisplayDuration)
+            {
+                    this.currentDisplayTime -= this.tileDisplayDuration;
+                    this.currentTile++;
+                    if (this.currentTile === this.numberOfTiles)
+                    {
+                        this.currentTile = 0;
+                    }
+                    var currentColumn = this.currentTile % this.tilesHorizontal;
+                    textureSource.offset.x = currentColumn / this.tilesHorizontal;
+                    var currentRow = Math.floor( this.currentTile / this.tilesHorizontal );
+                    textureSource.offset.y = currentRow / this.tilesVertical;
+            }
+    };
+}		

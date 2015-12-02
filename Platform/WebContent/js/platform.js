@@ -5,7 +5,7 @@
 if (!Detector.webgl)
 	Detector.addGetWebGLMessage();
 
-var scene, keyboard, camera, orthoCamera, directionalLight, ambientLight, renderer;
+var scene, keyboard, camera, orthoCamera, ambientLight, renderer;
 var charMesh;
 var stats;
 var container;
@@ -60,6 +60,17 @@ var loadingScreen = false;
 var playSelectedTexture;
 var playTexture;
 
+// Clock for delta
+var clock = new THREE.Clock();
+
+// Animation sprite for flare
+var flareAnimation;
+
+// Flare object
+var flareSprite;
+
+// Level Object (for lighting)
+var levelObject; 
 
 // Initial Screen Ratio
 var screenRatioX, screenRatioY;
@@ -127,10 +138,16 @@ function init() {
             checkKeys();
             checkMovement();
     	}
-            checkChangesToHUD();
-            resetValues();
+        
+        checkChangesToHUD();
+        resetValues();
+        
         if(!menu){
             scene.simulate();
+
+            // Update animation
+            var delta = clock.getDelta();
+            flareAnimation.update(delta * 1000);
         }
 
 
@@ -175,7 +192,7 @@ function init() {
     textureLoader = new THREE.TextureLoader();
     
     // Create level 1
-    generateLevel1();  //For debugging level 2, just change this to level2, works flawlessly now.
+    generateLevel1();  
     
     // Add window resize listener
     window.addEventListener('resize', onWindowResize, false);
@@ -252,7 +269,6 @@ function init() {
             }
             if(e.keyCode == 82 && e.type == 'keyup'){
             	restartLevel();
-            	/*TODO: UPDATE THE CONTROLS MENU SCREEN */
             }
             
             // TEMP DEBUG KEY: 2 
@@ -264,12 +280,15 @@ function init() {
                 scene.setGravity(new THREE.Vector3(0, -20, 0)); // set gravity
                 scene.addEventListener('update', function() {
 
-                        scene.simulate();
-                        checkKeys();
-                        checkMovement();
-                        checkChangesToHUD();
-                        resetValues();
-
+                    scene.simulate();
+                    checkKeys();
+                    checkMovement();
+                    checkChangesToHUD();
+                    resetValues();
+                    
+                    // Update animation
+                    var delta = clock.getDelta();
+                    flareAnimation.update(delta * 1000);
                 });
                 generateLevel2();
                 resetChar();
@@ -325,7 +344,7 @@ function init() {
 
     createOverlay();
     createChar();
-    createWelcome();
+    createMenu();
     fallClock = new THREE.Clock();
     
     //For collision box placement
@@ -389,7 +408,7 @@ function onDocumentMouseMove(e)
             menuItems["options"].material.map = optionsTexture; 
         }
 
-            if(hasClickedButton(e, toScreenXY(menuItems["help"].position)))
+        if(hasClickedButton(e, toScreenXY(menuItems["help"].position)))
         {
             menuItems["help"].material.map = controlsSelectedTexture; 
         }
@@ -471,6 +490,11 @@ function checkTick() {
 
 
 function onWindowResize() {
+    
+        // Always update camera aspect
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+    
         // Update menu size
         buttonSizeX = window.innerWidth * (200/window.innerWidth);
 	buttonSizeY = (window.innerWidth * (9/16)) * (50/(window.innerWidth * (9/16)));
@@ -606,7 +630,7 @@ function resetTraps() {
 }
 
 //Creates the menu
-function createWelcome(){
+function createMenu(){
 	menuTexture = textureLoader.load('images/menu/main_menu.png');
 	playTexture = textureLoader.load('images/menu/menu_play.png');
 	playSelectedTexture = textureLoader.load('images/menu/menu_play_selected.png');
@@ -720,5 +744,4 @@ function createWelcome(){
 	renderer.domElement.addEventListener('mousemove', onDocumentMouseMove);
 	renderer.domElement.addEventListener('click', onDocumentMouseDown);
 	tick();
-	
 }

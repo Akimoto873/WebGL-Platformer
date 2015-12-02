@@ -289,10 +289,21 @@ function dropCone(){
         var randomAngle = Math.floor((Math.random() * Math.PI*2) + 0); // Get an random angle between 0 and 2PI
         cone.rotation.set(randomAngle * Math.random(), randomAngle, 0);
         
-        createLight(cone.position.x, cone.position.y, cone.position.z);
+        // Add light from the flare
+        var flareLight = createLight(cone.position.x, cone.position.y, cone.position.z);
+        flareLight.position.z += 0.5;
+        cone.add(flareLight);
         
         // Add flare to scene and list of items we can pick up
         scene.add(cone);
+        
+        // Update level with lights
+        levelObject.traverse(function (node) {
+            if(node.material){
+                node.material.needsUpdate = true;
+            }
+        });
+
         pickUpItems.push(cone);
     }
 }
