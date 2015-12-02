@@ -1,34 +1,31 @@
-/*
+
 // Unused; No need for this, since level textures and models will have been "baked" with shadow and lighting
 function createLight( x, y, z ) {
     
-    var lightIntensity = 2;
+    var lightIntensity = 1;
     var lightDistance = 50;
-    var lightColor = 0xf3f6e0;
+    var lightColor = 0xffffff;
     
-    var myLight = new THREE.SpotLight( lightColor, lightIntensity, lightDistance );
+    var myLight = new THREE.PointLight( lightColor, lightIntensity, lightDistance );
     myLight.castShadow = true;
     myLight.receiveShadow = true;
     myLight.shadowCameraNear = 0.1;
-    myLight.shadowCameraFar = 30;
-    myLight.shadowCameraVisible = true;
+    myLight.shadowCameraFar = 300;
     myLight.shadowMapWidth = 2048;
     myLight.shadowMapHeight = 2048;
     myLight.shadowBias = 0.01;
-    myLight.shadowDarkness = 0.5;
+    myLight.shadowDarkness = 1;
 
     // DEBUG Sphere
-    var sphere = new THREE.SphereGeometry( 0.25, 16, 8 );
-    myLight.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: lightColor } ) ) );
+    // var sphere = new THREE.SphereGeometry( 0.25, 16, 8 );
+    // myLight.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: lightColor } ) ) );
     
     // Position
     myLight.position.set(x, y, z);
-    myLight.target.position.set(myLight.position.x, myLight.position.y - 10, myLight.position.z);
-    myLight.target.updateMatrixWorld();
     
     scene.add(myLight);
 }
-*/
+
 
 
 // Generates level 1.
@@ -40,9 +37,15 @@ function generateLevel1() {
 
     // Load Level 1
     objLoader.load('models/level_01/level_01.obj', 'models/level_01/level_01.mtl', level1LoadedCallback);
+
+    // Load Flare
+    objLoader.load('models/objects/flare/flare.obj', 'models/objects/flare/flare.mtl', flareLoadedCallback);
+    
+    // Load Flare Box
+    objLoader.load('models/objects/flare_box/flare_box.obj', 'models/objects/flare_box/flare_box.mtl', flareBoxLoadedCallback);
     
     // Lights
-    ambientLight = new THREE.AmbientLight(0xffffff);
+    ambientLight = new THREE.AmbientLight(0xd3d3d3);
     scene.add(ambientLight);
     
    
@@ -54,8 +57,10 @@ function generateLevel1() {
     // loader.load('models/char.js', characterLoadedCallback);
     // loader.load('models/level_01.js', level1loadedCallback);
     loader.load('models/trap.js', trapLoadedCallback);
-    loader.load('models/cone.js', coneLoadedCallback);
-    loader.load('models/cones.js', conesLoadedCallback);
+    
+    
+    // loader.load('models/cone.js', coneLoadedCallback);
+    // loader.load('models/cones.js', conesLoadedCallback);
 
     var crateTexture = textureLoader.load('images/crate.jpg');
     crateMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
@@ -165,6 +170,8 @@ function generateLevel1() {
     addWall(basicWall2, 11, 9, 1, 1, 2.5);
     addWall(basicWall2, 14.5, -9, 1, 1, 10);
     addWall(basicWall2, 25, 15.5, 1, 1, 3);
+    
+    // Crate Object
     crate = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 1, 1.5),
                     crateMaterial, 15);
     moveableObjects.push(crate);
@@ -185,18 +192,25 @@ function generateLevel1() {
     scene.add(crate);
     pickUpItems.push(crate);
     
+    
+    // Exit Sign
     exitSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2),
                     exitMaterial, 0);
     exitSign.position.x += 24.5;
     exitSign.position.z += 23.2;
     exitSign.position.y += 3;
     scene.add(exitSign);
+    
+    
     crushingSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2),
                     crushingMaterial, 0);
     crushingSign.position.x -= 10.6;
     crushingSign.position.z += 16.5;
     crushingSign.position.y += 3;
     scene.add(crushingSign);
+    
+    
+    
     exit = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 6, 3), Physijs
                     .createMaterial(new THREE.MeshPhongMaterial({
                             color : 0x00ff00,
@@ -236,6 +250,12 @@ function generateLevel2(){
 
     // Load Level 2
     objLoader.load('models/level_02/level_02.obj', 'models/level_02/level_02.mtl', level2LoadedCallback);
+    
+    // Load Flare
+    objLoader.load('models/objects/flare/flare.obj', 'models/objects/flare/flare.mtl', flareLoadedCallback);
+    
+    // Load Flare Box
+    objLoader.load('models/objects/flare_box/flare_box.obj', 'models/objects/flare_box/flare_box.mtl', flareBoxLoadedCallback);
     
     // Collision
     floor = new Physijs.BoxMesh(new THREE.BoxGeometry(130, 1, 130), Physijs
@@ -454,15 +474,48 @@ function trapLoadedCallback(geometry) {
 	trap2.add(trap2Mesh);
 }
 
-function coneLoadedCallback(geometry){
-	coneGeometry = geometry;
+// Runs after Flare item geometry is loaded
+function flareLoadedCallback(object){
+    // coneGeometry = object;
+    // ASDSA
+    var col_material = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ color: 0xFFFF00, visible: false }),
+        .8, // high friction
+        .4 // low restitution
+    );
+    
+    // Add physics box around the object
+    coneGeometry = new Physijs.BoxMesh(
+        new THREE.BoxGeometry(0.18, 0.18, 0.8),
+        col_material,
+        0 // mass
+    );
+    
+    object.rotation.set(Math.PI/2, 0, 0);
+    
+    coneGeometry.add(object);
 }
 
-function conesLoadedCallback(geometry){
-	cones = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xff8800}), 1, .1), 10);
-	cones.position.z = -5;
-	cones.position.y += 1;
-	cones.scale.set(0.2, 0.2, 0.2);
+// Runs after Flare Box item geometry is loaded
+function flareBoxLoadedCallback(object){
+         // ASDSA
+         var col_material = Physijs.createMaterial(
+            new THREE.MeshLambertMaterial({ color: 0xFFFFFF, visible: false }),
+            1, // high friction
+            .1 // low restitution
+        );
+        
+        // Add physics box around the object
+        cones = new Physijs.BoxMesh(
+            new THREE.CubeGeometry(0.4, 0.32, 0.2),
+            col_material,
+            10 // mass
+        );
+
+	object.scale.set(0.4, 0.4, 0.4);
+        object.position.y += 0.04;
+        
+        cones.add(object);
 	scene.add(cones);
 	pickUpItems.push(cones);
 }

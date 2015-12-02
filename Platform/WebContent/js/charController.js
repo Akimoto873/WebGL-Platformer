@@ -270,6 +270,7 @@ function checkFallDmg() {
 }
 
 
+// Drops a flare on the ground (if you have flares)
 function dropCone(){
     if (carriedCones > 0){
         carriedCones -= 1;
@@ -278,11 +279,19 @@ function dropCone(){
         var positionDiff = new THREE.Vector3(0, 0, 1);
         var finalPosition = positionDiff.applyMatrix4(rotationMatrix);
         var oldPosition = charMesh.position
-        var cone = new Physijs.BoxMesh(coneGeometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xff8800}), 1, .1), 5);
-        cone.scale.set(0.2, 0.2, 0.2);
+
+        var cone = coneGeometry.clone();
         cone.position.x = oldPosition.x + finalPosition.x;
         cone.position.y = oldPosition.y - 1;
         cone.position.z = oldPosition.z + finalPosition.z;
+        
+        // Adding some randomness to the placement of flares
+        var randomAngle = Math.floor((Math.random() * Math.PI*2) + 0); // Get an random angle between 0 and 2PI
+        cone.rotation.set(randomAngle * Math.random(), randomAngle, 0);
+        
+        createLight(cone.position.x, cone.position.y, cone.position.z);
+        
+        // Add flare to scene and list of items we can pick up
         scene.add(cone);
         pickUpItems.push(cone);
     }

@@ -175,7 +175,7 @@ function init() {
     textureLoader = new THREE.TextureLoader();
     
     // Create level 1
-    generateLevel2();  //For debugging level 2, just change this to level2, works flawlessly now.
+    generateLevel1();  //For debugging level 2, just change this to level2, works flawlessly now.
     
     // Add window resize listener
     window.addEventListener('resize', onWindowResize, false);
@@ -363,43 +363,41 @@ function onDocumentMouseDown(e)
 }
 
 
-
 // Listener: On mouse move
 function onDocumentMouseMove(e) 
 {
-	e.preventDefault();
-        //console.log("Mouse Coord: (" + e.clientX + ", " + e.clientY + ")");
-        
-        // Check if hovering menu items
-	if(menu && !controls){
-	    if(hasClickedButton(e, toScreenXY(menuItems["play"].position)))
+    e.preventDefault();
+    //console.log("Mouse Coord: (" + e.clientX + ", " + e.clientY + ")");
+
+    // Check if hovering menu items
+    if(menu && !controls){
+        if(hasClickedButton(e, toScreenXY(menuItems["play"].position)))
         {
-           playSprite.material.map = playSelectedTexture; 
+            menuItems["play"].material.map = playSelectedTexture; 
         }
         else
         {
-            playSprite.material.map = playTexture; 
+            menuItems["play"].material.map = playTexture; 
         }
-        
-	    if(hasClickedButton(e, toScreenXY(menuItems["options"].position)))
+
+            if(hasClickedButton(e, toScreenXY(menuItems["options"].position)))
         {
-           optionsSprite.material.map = optionsSelectedTexture; 
+            menuItems["options"].material.map = optionsSelectedTexture; 
         }
         else
         {
-           optionsSprite.material.map = optionsTexture; 
+            menuItems["options"].material.map = optionsTexture; 
         }
-        
-	    if(hasClickedButton(e, toScreenXY(menuItems["help"].position)))
+
+            if(hasClickedButton(e, toScreenXY(menuItems["help"].position)))
         {
-            controlsSprite.material.map = controlsSelectedTexture; 
+            menuItems["help"].material.map = controlsSelectedTexture; 
         }
         else
         {
-            controlsSprite.material.map = controlsTexture; 
+            menuItems["help"].material.map = controlsTexture; 
         }
-	}
-        
+    }
 }
 
 
@@ -419,7 +417,9 @@ function hasClickedButton(e, vec2)
     return false;
 }
 
-// Given a Vector 3, returns "on screen" Vector2 screen coordinates
+
+// Given a Vector 3, returns "on screen" Vector2 screen coordinates.
+// It also takes render size in account, when calculating coordinates.
 function toScreenXY(pos3D)
 {
     var v = pos3D.clone();
@@ -430,7 +430,6 @@ function toScreenXY(pos3D)
     var top = percY * renderSizeY;
     return new THREE.Vector2(left, top);
 }
-
 
 
 //Creates the character mesh
@@ -459,27 +458,28 @@ function createChar() {
 	charLoaded = true;
 	scene.simulate();
 	checkTick();
-
 }
 
 
-//Checks if everything is loaded, and starts the tick loop if it is.
+// Checks if everything is loaded, and starts the tick loop if it is.
+// TODO: Does this work? A work in progress?
 function checkTick() {
-	if (charLoaded && levelLoaded) {
-		
-	}
-}
-function onWindowResize() {
+    if (charLoaded && levelLoaded) {
 
-	//camera.aspect = window.innerWidth / window.innerHeight;
-        // camera.aspect = 16 / 9;
-        
+    }
+}
+
+
+function onWindowResize() {
         // Update menu size
         buttonSizeX = window.innerWidth * (200/window.innerWidth);
 	buttonSizeY = (window.innerWidth * (9/16)) * (50/(window.innerWidth * (9/16)));
         
         // Update canvas
 	camera.updateProjectionMatrix();
+        
+        // This makes sure regardless if width or height is changes, 
+        // the aspect stays the same, as well as updating
         if(window.innerWidth < window.innerHeight * 16/9){
             renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
             renderSizeX = window.innerWidth;
@@ -498,7 +498,7 @@ function log(param) {
 	}, 0);
 }
 
-//Called when the level is complete. Starts next level
+//Called when the level 1 is complete. Starts next level
 function levelComplete() {
     level = 0;
     scene = new Physijs.Scene();
@@ -594,7 +594,6 @@ function resetCones(){
 	cones = clone;
 	scene.add(cones);
 	pickUpItems.push(cones);
-	
 }
 
 //resets the traps
