@@ -474,20 +474,8 @@ function createChar() {
 
 	charCaster = new THREE.Raycaster();
 	moveableObjects.push(charMesh);
-	charLoaded = true;
 	scene.simulate();
-	checkTick();
 }
-
-
-// Checks if everything is loaded, and starts the tick loop if it is.
-// TODO: Does this work? A work in progress?
-function checkTick() {
-    if (charLoaded && levelLoaded) {
-
-    }
-}
-
 
 function onWindowResize() {
     
@@ -596,7 +584,11 @@ function resetChar() {
 //Resets the crate.
 function resetCrate() {
     scene.remove(crate);
+    crate.setLinearVelocity(new THREE.Vector3(0,0,0));
     crate.position.set(9, 0, -12);
+    crate.rotation.x = 0;
+    crate.rotation.y = 0;
+    crate.rotation.z = 0;
     scene.add(crate);
 }
 

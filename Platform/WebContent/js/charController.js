@@ -214,7 +214,7 @@ function checkTraps() {
         }
         
         if (applyForce) {
-                trap.applyCentralForce(new THREE.Vector3(0, 1100, 0));
+                trap.applyCentralForce(new THREE.Vector3(0, 2000, 0));
 
         }
         
@@ -222,6 +222,7 @@ function checkTraps() {
                 trap.setLinearVelocity(new THREE.Vector3(0, 0, 0));
                 trap.setLinearFactor(new THREE.Vector3(0, 0, 0));
                 applyForce = false;
+                log("test");
 
         }
 

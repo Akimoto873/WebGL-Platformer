@@ -252,8 +252,6 @@ function generateLevel1() {
 
     });
 
-    levelLoaded = true;
-    checkTick();
 }
 
 // Generates level 2
@@ -275,12 +273,11 @@ function generateLevel2(){
     floor = new Physijs.BoxMesh(new THREE.BoxGeometry(130, 1, 130), Physijs
                     .createMaterial(new THREE.MeshBasicMaterial({
                             color : 0xee2233,
-                            visible : true, opacity: 1
+                            visible : false, opacity: 1
                     }), 0.99, 0.2), 0);
 
     floor.position.y = -0.5;
     scene.add(floor);
-    floor.visible = false;
     
     
         
@@ -289,7 +286,7 @@ function generateLevel2(){
     scene.add(ambientLight);
     
     
-    var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
+    var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 15, 2),
             Physijs.createMaterial(new THREE.MeshBasicMaterial({
                     color : 0x22ee44
             }), 0.0, 0.1), 0);
