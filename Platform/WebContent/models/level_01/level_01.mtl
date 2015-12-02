@@ -12,8 +12,8 @@ newmtl Material__103
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka level_01_wallsCompleteMap.png
-	map_Kd level_01_wallsCompleteMap.png
+	map_Ka level_01_wallsCompleteMap.jpg
+	map_Kd level_01_wallsCompleteMap.jpg
 
 newmtl Material__82
 	Ns 10.0000
@@ -26,8 +26,8 @@ newmtl Material__82
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka level_01_RoofCompleteMap.png
-	map_Kd level_01_RoofCompleteMap.png
+	map_Ka level_01_RoofCompleteMap.jpg
+	map_Kd level_01_RoofCompleteMap.jpg
 
 newmtl Material__102
 	Ns 10.0000
@@ -40,5 +40,5 @@ newmtl Material__102
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka level_01_floorCompleteMap__new.png
-	map_Kd level_01_floorCompleteMap__new.png
+	map_Ka level_01_floorCompleteMap__new.jpg
+	map_Kd level_01_floorCompleteMap__new.jpg
