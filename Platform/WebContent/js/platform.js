@@ -305,33 +305,7 @@ function init() {
     // Mouse click listener
     // document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 
-    // Mouseclick event handler
-    renderer.domElement.addEventListener('click', function(e){
-            e = e || event;
-            
-            // On Screen Coordinates of the buttons
-            var playVec2 = toScreenXY(playSprite.position);
-            var optionsVec2 = toScreenXY(optionsSprite.position);
-            var helpVec2 = toScreenXY(controlsSprite.position);
-            
-            // Play Button
-            if(hasClickedButton(e, playVec2))
-            {
-                removeMenu();
-            }
-            
-            // Options Button
-            if(hasClickedButton(e, optionsVec2))
-            {
-                // Do something
-            }
-            
-            // Options Button
-            if(hasClickedButton(e, helpVec2))
-            {
-                showControls();
-            }
-    });
+   
     
     
     
@@ -361,25 +335,27 @@ function init() {
 // Listener: On mouse click
 function onDocumentMouseDown(e) 
 {
-    e = e || event;
-            
-    // Play Button
-    if(hasClickedButton(e, toScreenXY(menuItems["play"])))
-    {
-        removeMenu();
-    }
-
-    // Options Button
-    if(hasClickedButton(e, toScreenXY(menuItems["options"])))
-    {
-        // Do something
-    }
-
-    // Options Button
-    if(hasClickedButton(e, toScreenXY(menuItems["help"])))
-    {
-        showControls();
-    }
+	if(menu && !controls){
+	    e = e || event;
+	            
+	    // Play Button
+	    if(hasClickedButton(e, toScreenXY(menuItems["play"].position)))
+	    {
+	        removeMenu();
+	    }
+	
+	    // Options Button
+	    if(hasClickedButton(e, toScreenXY(menuItems["options"].position)))
+	    {
+	        // Do something
+	    }
+	
+	    // Options Button
+	    if(hasClickedButton(e, toScreenXY(menuItems["help"].position)))
+	    {
+	        showControls();
+	    }
+	}
 }
 
 
@@ -387,11 +363,12 @@ function onDocumentMouseDown(e)
 // Listener: On mouse move
 function onDocumentMouseMove(e) 
 {
-	// event.preventDefault();
+	e.preventDefault();
         //console.log("Mouse Coord: (" + e.clientX + ", " + e.clientY + ")");
         
         // Check if hovering menu items
-        if(hasClickedButton(e, toScreenXY(playSprite.position)))
+	if(menu && !controls){
+	    if(hasClickedButton(e, toScreenXY(menuItems["play"].position)))
         {
            playSprite.material.map = playSelectedTexture; 
         }
@@ -400,7 +377,7 @@ function onDocumentMouseMove(e)
             playSprite.material.map = playTexture; 
         }
         
-        if(hasClickedButton(e, toScreenXY(optionsSprite.position)))
+	    if(hasClickedButton(e, toScreenXY(menuItems["options"].position)))
         {
            optionsSprite.material.map = optionsSelectedTexture; 
         }
@@ -409,14 +386,15 @@ function onDocumentMouseMove(e)
            optionsSprite.material.map = optionsTexture; 
         }
         
-        if(hasClickedButton(e, toScreenXY(controlsSprite.position)))
+	    if(hasClickedButton(e, toScreenXY(menuItems["help"].position)))
         {
-            controlsSprite.material.map = helpSelectedTexture; 
+            controlsSprite.material.map = controlsSelectedTexture; 
         }
         else
         {
-            controlsSprite.material.map = helpTexture; 
+            controlsSprite.material.map = controlsTexture; 
         }
+	}
         
 }
 
@@ -430,7 +408,7 @@ function hasClickedButton(e, vec2)
             
     // Calculate if the mouse click was within the button area of given vector2
     if(menu && xPos > vec2.x - buttonSizeX / 2 && xPos < vec2.x + buttonSizeX / 2){
-        if(yPos > vec2.y && yPos < vec2.y + buttonSizeY * 2){
+        if(yPos > vec2.y - buttonSizeY / 2 && yPos < vec2.y + buttonSizeY / 2){
             return true;
         }
     }
@@ -694,6 +672,7 @@ function createWelcome(){
 	playSprite.position.set(8, -buttonSizeY + 60 , -80);
 	playSprite.scale.set(buttonSizeX, buttonSizeY, 1);
 	orthoScene.add(playSprite);
+	menuItems["play"] = playSprite;
 	playSprite.visible = false;
 	
         
@@ -705,6 +684,7 @@ function createWelcome(){
 	optionsSprite.position.set(8, -buttonSizeY*2 + 30 , -80);
 	optionsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
 	orthoScene.add(optionsSprite);
+	menuItems["options"] = optionsSprite;
 	optionsSprite.visible = false;
         
         // Help / Controls Button
@@ -715,6 +695,7 @@ function createWelcome(){
 	controlsSprite.position.set(8, -buttonSizeY*3, -80);
 	controlsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
 	orthoScene.add(controlsSprite);
+	menuItems["help"] = controlsSprite;
 	controlsSprite.visible = false;
         
         
@@ -729,7 +710,8 @@ function createWelcome(){
 	menu = true;
 	removeLoadingScreen();
 	showMenu();
-	renderer.domElement.addEventListener('mousemove', onDocumentMouseDown);
+	renderer.domElement.addEventListener('mousemove', onDocumentMouseMove);
+	renderer.domElement.addEventListener('click', onDocumentMouseDown);
 	tick();
 	
 }
