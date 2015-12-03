@@ -42,6 +42,8 @@ var restartTexture;
 var gameOverScreen = false;
 var level = 1;
 var ambience;
+var ambience2;
+var playingSound = false;
 var textureLoader;
 var menu = false;
 var charMeshPosition = new THREE.Vector3(5, 1, 0); //for debugging purposes
@@ -139,13 +141,7 @@ function init() {
 
     keyboard = new THREEx.KeyboardState();
 
-    // Camera
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 300000);
-
-    if (!charCam) {
-            camera.position.y += 15;
-            controls = new THREE.OrbitControls(camera);
-    }
+   
 
     // Renderer
     renderer = new THREE.WebGLRenderer({
@@ -160,6 +156,14 @@ function init() {
         renderer.setSize(window.innerHeight * 16/9, innerHeight);
         renderSizeX = window.innerHeight * 16/9;
         renderSizeY = window.innerHeight;
+    }
+    
+    // Camera
+    camera = new THREE.PerspectiveCamera(75, renderSizeX / renderSizeY, 0.01, 300000);
+
+    if (!charCam) {
+            camera.position.y += 15;
+            controls = new THREE.OrbitControls(camera);
     }
         
     renderer.shadowMap.enabled = true;
@@ -176,7 +180,7 @@ function init() {
     }), 0.4, 0.8);
     
     // Create level 1
-    generateLevel2();  
+     
     
     // Add window resize listener
     window.addEventListener('resize', onWindowResize, false);
@@ -235,9 +239,17 @@ function init() {
                             if (ambience.volume != 0) {
                                     gameOverAudio.volume = 0;
                                     ambience.volume = 0;
+                                    ambience2.volume = 0;
+                                    damageSound.volume = 0;
+                                    jumpSound.volume = 0;
+                                    walkSound.volume = 0;
                             } else {
                                     gameOverAudio.volume = 0.5;
                                     ambience.volume = 0.2;
+                                    ambience2.volume = 0.2;
+                                    damageSound.volume = 0.5;
+                                    jumpSound.volume = 0.4;
+                                    walkSound.volume = 0.2;
                             }
                     }
             }
@@ -296,9 +308,10 @@ function init() {
 
    
     
-    
+    /*TODO: MIGHT WANT TO COMPRESS SOME OF THESE SOUNDFILES */
     
     gameOverAudio = new Audio('audio/gameOver.mp3');
+    gameOverAudio.volume = 0.5;
     ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
     /* TODO: DEBUG: TURNED OFF MUSIC WHILE WORKING ON THE GAME */
     ambience.volume = 0;
@@ -307,15 +320,29 @@ function init() {
         this.play();
     }, false);
     ambience.play();
-    /*TODO: Find a fitting music file*/
-//    ambience2 = new Audio('audioPath');
-//    ambience2.volume = 0.4;
-//    ambience2.addEventListener('ended', function(){
-//    	this.currentTime = 0;
-//    	this.play();
-//    }, false);
+    ambience2 = new Audio('audio/172937__setuniman__creepy-0v55m2.mp3');
+    ambience2.volume = 0.2;
+    ambience2.addEventListener('ended', function(){
+    	this.currentTime = 0;
+    	this.play();
+    }, false);
+    damageSound = new Audio('audio/262279__dirtjm__grunts-male.wav');
+    damageSound.addEventListener('ended', function(){
+    	this.currentTime = 0;
+    });
+    walkSound = new Audio('audio/166304__fantozzi__mco-walk-f01.wav');
+    walkSound.volume = 0.2;
+    walkSound.addEventListener('ended', function(){
+    	this.currentTime = 0;
+    	this.play();
+    })
+    jumpSound = new Audio('audio/319664__manuts__jump-1.wav');
+    jumpSound.volume = 0.5;
+    jumpSound.addEventListener('ended', function(){
+    	this.currentTime = 0;
+    });
     
-
+    generateLevel2(); 
     createOverlay();
     createChar();
     createMenu();

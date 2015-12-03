@@ -106,6 +106,20 @@ function checkMovement() {
 	    charMesh.setLinearVelocity(new THREE.Vector3(finalForceVector.x, oldVelocityVector.y,
 	                   finalForceVector.z));
     }
+    if(runForward){
+    	walkSound.playbackRate = 2;
+    }
+    else{
+    	walkSound.playbackRate = 1;
+    }
+    if(move && !playingSound && !airborne1){
+    	walkSound.play();
+    	playingSound = true;
+    }
+    else if((!move || airborne1) && playingSound){
+    	walkSound.pause();
+    	playingSound = false;
+    }
     
     
     if (jump) { 
@@ -113,6 +127,7 @@ function checkMovement() {
         	if(airborne1){
         		waitForKeyUp = true;
         	}
+        	jumpSound.play();
             airTime = new THREE.Clock();
             charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
             stamina -= 20;
@@ -228,7 +243,6 @@ function checkTraps() {
 	                trap.setLinearVelocity(new THREE.Vector3(0, 0, 0));
 	                trap.setLinearFactor(new THREE.Vector3(0, 0, 0));
 	                applyForce = false;
-	                log("test");
 	
 	        }
 	
@@ -281,8 +295,7 @@ function checkFallDmg() {
             if (charMesh.getLinearVelocity().y < -14 && intersects[0].distance < 2) {
                     if (fallClock.getElapsedTime() > 1) {
                             var damage = Math.abs(charMesh.getLinearVelocity().y) * 1.5;
-                            health -= damage;
-                            damaged = true;
+                            takeDamage(damage);
                             fallClock = new THREE.Clock();
                     }
             }
@@ -326,6 +339,20 @@ function dropCone(){
 
         pickUpItems.push(cone);
     }
+}
+
+function takeDamage(amount){
+	if(health > 0){
+		if(health - amount > 0){
+			health -= amount;
+		}
+		else{
+			health = 0;
+		}
+	
+		damaged = true;
+		damageSound.play();
+	}
 }
 
 //resets all values before next run through.
