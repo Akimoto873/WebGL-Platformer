@@ -28,7 +28,7 @@ function createOverlay()
             color : 0x00ff00
     });
     healthSprite = new THREE.Sprite(spriteMaterial);
-    healthSprite.position.set(spriteXPosition, -(window.innerHeight / 2) + 100, 10);
+    healthSprite.position.set(spriteXPosition, -(renderSizeY / 2) + 100, 10);
     healthSprite.scale.set(spriteXScale, spriteYScale, 1);
     orthoScene.add(healthSprite);
 
@@ -38,7 +38,7 @@ function createOverlay()
             color : 0x000000
     });
     healthSprite2 = new THREE.Sprite(spriteMaterial2);
-    healthSprite2.position.set(spriteXPosition, -(window.innerHeight / 2) + 100, 8);
+    healthSprite2.position.set(spriteXPosition, -(renderSizeY / 2) + 100, 8);
     healthSprite2.scale.set(spriteXScale2, spriteYScale2, 1);
     orthoScene.add(healthSprite2);
 

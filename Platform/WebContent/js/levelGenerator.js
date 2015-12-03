@@ -326,6 +326,8 @@ function generateLevel2(){
 
 });
     level = 2;
+    ambience.pause();
+//    ambience2.play();
         
 }
 

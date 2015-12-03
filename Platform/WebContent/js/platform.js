@@ -344,12 +344,19 @@ function init() {
         this.play();
     }, false);
     ambience.play();
+    /*TODO: Find a fitting music file*/
+//    ambience2 = new Audio('audioPath');
+//    ambience2.volume = 0.4;
+//    ambience2.addEventListener('ended', function(){
+//    	this.currentTime = 0;
+//    	this.play();
+//    }, false);
+    
 
     createOverlay();
     createChar();
     createMenu();
     fallClock = new THREE.Clock();
-    timer = new THREE.Clock();
     
     //For collision box placement
 //    var box = new THREE.Mesh(new THREE.BoxGeometry(2, 6, 2),
@@ -437,8 +444,14 @@ function onDocumentMouseMove(e)
         	oldMouseY = e.clientY;
         }
     	var diffY = e.clientY - oldMouseY;
-        camera.rotation.x += diffY / 200;
-        oldMouseY = e.clientY;
+    	log(camera.rotation.x);
+    	if(camera.rotation.x + diffY / 200 > -Math.PI*3/2 && camera.rotation.x + diffY / 200 < -Math.PI/2){
+			camera.rotation.x += diffY / 200;
+			
+    	}
+    	oldMouseY = e.clientY;
+      
+       
     }
     
 }
