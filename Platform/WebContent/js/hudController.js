@@ -179,6 +179,7 @@ function removeMenu(){
     controlsScreenSprite.visible = false;
     backSprite.visible = false;
     controls = false;
+    scene.simulate();
 }
 
 // Shows the menu

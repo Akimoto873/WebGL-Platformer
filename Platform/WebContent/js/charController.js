@@ -14,6 +14,7 @@ var walkSpeed = 4;
 var runSpeed = 8;
 var forceVector;
 var move = false;
+var carriedItem = 0;
 
 
 //checks keyinputs on every loop turn.
@@ -127,13 +128,11 @@ function checkMovement() {
         for (var i = 0; i < pickUpItems.length; i++){
             var distance = new THREE.Vector3();
             distance.subVectors(charMesh.position, pickUpItems[i].position);
-            
-            if (distance.length() < 3) {
-                scene.remove(pickUpItems[i]);
-                for(var j = 0; j < crates.length; j++){    
-	                if(pickUpItems[i].position == crates[j].position && !carrying) {
-	                	log(pickUpItems[i].position.z);
-	                	log(crates[j].position.z);
+            if (distance.length() < 2.5) {
+                
+                for(var j = 0; j < crates.length; j++){
+	                if(pickUpItems[i]== crates[j] && !carrying) {
+	                	scene.remove(pickUpItems[i]);
 	                        crates[j].position.x = 0;
 	                        crates[j].position.y = -1;
 	                        crates[j].position.z = 0;
@@ -145,17 +144,21 @@ function checkMovement() {
 	                        i = pickUpItems.length + 1;
 	                        pickUpItems.splice(i, 1);
 	                }
-	                else if(pickUpItems[i] == cones){
+                }
+            
+	            if(pickUpItems[i] == cones){
+	            	scene.remove(pickUpItems[i]);
 	                        pickUpItems.splice(i, 1);
 	                        carriedCones += 5;
 	                        i = pickUpItems.length + 1;
-	                }
-	                else {
+	            }
+	            else if(!carrying){
+	            	scene.remove(pickUpItems[i]);
 	                        pickUpItems.splice(i, 1);
 	                        carriedCones += 1;
 	                        i = pickUpItems.length + 1;
 	                }
-                }
+                
             }
         }
         

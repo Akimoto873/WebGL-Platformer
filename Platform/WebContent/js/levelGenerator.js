@@ -248,8 +248,6 @@ function generateLevel1() {
 
 }
 
-var crates = [];
-var lasers = [];
 
 // Generates level 2
 function generateLevel2(){
@@ -323,12 +321,12 @@ function generateLevel2(){
     
     // Crate Object
     for(var i = 0; i<4; i++){
-	    crates[i] = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 1, 1.5),
+	    var temp = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 1, 1.5),
 	                    crateMaterial, 15);
-	    moveableObjects.push(crates[i]);
-	    crates[i].position.x = -12;
-	    crates[i].position.y = 1 + i;
-	    crates[i].position.z = -20 + i;
+	    moveableObjects.push(temp);
+	    temp.position.x = -12;
+	    temp.position.y = 1 + i;
+	    temp.position.z = -22 + 2*i;
 //	    crates[i].addEventListener('collision', function(other_object,
 //	                    relative_velocity, relative_rotation, contact_normal) {
 //	            if (other_object == trap || other_object == trap2) {
@@ -341,15 +339,18 @@ function generateLevel2(){
 //	
 //	            }
 //	    });
-	    scene.add(crates[i]);
-	    pickUpItems.push(crates[i]);
+	    scene.add(temp);
+	    pickUpItems.push(temp);
+	    crates.push(temp);
     }
     for(var i = 0; i< 3; i++){
-    	lasers[i] = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 5, 8), new THREE.MeshBasicMaterial({color : 0xff0000}));
+    	lasers[i] = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.1, 0.1, 5, 8), 
+    			Physijs.createMaterial(new THREE.MeshBasicMaterial({color : 0xff0000}), 0.0, 0.0),0);
     	lasers[i].position.x = -16;
     	lasers[i].position.y = 0.5;
     	lasers[i].position.z = -6*i + 5;
     	lasers[i].rotation.z = Math.PI / 2;
+    	lasers[i]._physijs.collision_flags = 4;
     	scene.add(lasers[i]);
     }
     
@@ -360,7 +361,6 @@ function generateLevel2(){
 
         if (node instanceof Physijs.BoxMesh) {
 
-                // insert your code here, for example:
                 objects.push(node);
         }
 

@@ -62,6 +62,8 @@ var playTexture;
 var oldMouseX = 0;
 var oldMouseY = 0;
 var mouseDown = false;
+var crates = [];
+var lasers = [];
 
 // Clock for delta
 var clock = new THREE.Clock();
@@ -94,7 +96,7 @@ function main() {
 
 //Game Loop
 function tick() {
-    if (level == 1) {
+    if (level != 0) {
     	if(!menu){
             scene.simulate();
     	}
@@ -108,14 +110,6 @@ function tick() {
         if(loadingScreen){
     		loadingBarTexture.offset.x += 0.1;
     	}
-    } else if (level == 2) {
-            scene.simulate();
-            stats.update();
-            // updateCamera(); //removed since camera is now attached to character.
-            renderer.clear();
-            renderer.render(scene, camera);
-            renderer.clearDepth();
-            renderer.render(orthoScene, orthoCamera);
     } else {
 
     }
@@ -136,27 +130,7 @@ function init() {
     scene = new Physijs.Scene({fixedTimeStep: 1/60});
     scene.fog = new THREE.Fog(0x202020, 10, 100);
     scene.setGravity(new THREE.Vector3(0, -20, 0)); // set gravity
-    scene.addEventListener('update', function() {
-    	if(!menu){
-            checkKeys();
-            checkMovement();
-    	}
-        
-        checkChangesToHUD();
-        resetValues();
-        
-        if(!menu){
-            scene.simulate();
-
-            // Update animation
-            var delta = clock.getDelta();
-            if(flareAnimation != null){
-            	flareAnimation.update(delta * 1000);
-            }
-        }
-
-
-    });
+    scene.addEventListener('update', sceneUpdate);
 
     orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2,
         window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10, 1000);
@@ -284,25 +258,7 @@ function init() {
             // TEMP DEBUG KEY: 2 
             // Change to level 2
             if(e.keyCode == 50 && e.type == 'keyup'){
-                level = 0;
-                scene = new Physijs.Scene();
-                scene.fog = new THREE.Fog(0x202020, 10, 100);
-                scene.setGravity(new THREE.Vector3(0, -20, 0)); // set gravity
-                scene.addEventListener('update', function() {
-
-                    scene.simulate();
-                    checkKeys();
-                    checkMovement();
-                    checkChangesToHUD();
-                    resetValues();
-                    
-                    // Update animation
-                    var delta = clock.getDelta();
-                    flareAnimation.update(delta * 1000);
-                });
-                generateLevel2();
-                resetChar();
-                level = 2;
+                levelComplete();
             }
             /*TODO: FOR CREATING COLLISION BOXES*/
 //            if(e.keyCode == 37 && e.type == 'keydown'){
@@ -505,6 +461,21 @@ function toScreenXY(pos3D)
     return new THREE.Vector2(left, top);
 }
 
+function sceneUpdate(){
+	if(!menu){
+        checkKeys();
+        checkMovement();
+	}
+    checkChangesToHUD();
+    resetValues();
+    // Update animation
+    var delta = clock.getDelta();
+    if(flareAnimation != null){
+    	flareAnimation.update(delta * 1000);
+    }
+    
+}
+
 
 //Creates the character mesh
 function createChar() {
@@ -523,7 +494,7 @@ function createChar() {
 		charMesh.add(camera);
 		charMesh.material.visible = false;
 	}
-	charMesh.setAngularFactor(new THREE.Vector3(0, 0.1, 0));
+	charMesh.setAngularFactor(new THREE.Vector3(0, 1, 0));
 	
 //	charMesh.setDamping(0.1, 0.9);
 
@@ -570,19 +541,13 @@ function levelComplete() {
     level = 0;
     scene = new Physijs.Scene();
     scene.fog = new THREE.Fog(0x202020, 10, 100);
-    scene.setGravity(new THREE.Vector3(0, -10, 0)); // set gravity
-    scene.addEventListener('update', function() {
-
-            scene.simulate();
-            checkKeys();
-            checkMovement();
-            checkChangesToHUD();
-            resetValues();
-
-    });
+    scene.setGravity(new THREE.Vector3(0, -20, 0)); // set gravity
+    scene.addEventListener('update', sceneUpdate);
+    crates = [];
+    objects = [];
+    moveableObjects = [];
     generateLevel2();
     resetChar();
-    crates = [];
     level = 2;
 }
 
@@ -621,7 +586,7 @@ function resetChar() {
     camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
     charMesh.add(camera);
     charMesh.material.visible = false;
-    charMesh.setAngularFactor(new THREE.Vector3(0, 0.1, 0));
+    charMesh.setAngularFactor(new THREE.Vector3(0, 1, 0));
     charMesh.addEventListener('collision', function(other_object,
                     relative_velocity, relative_rotation, contact_normal) {
             if (other_object == trap || other_object == trap2) {
@@ -632,7 +597,6 @@ function resetChar() {
                     levelComplete();
             }
     });
-    charMesh.setDamping(0.1, 0.9);
     moveableObjects.push(charMesh);
     carrying = false;
 }
