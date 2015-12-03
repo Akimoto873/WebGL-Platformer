@@ -249,6 +249,7 @@ function generateLevel1() {
 }
 
 var crates = [];
+var lasers = [];
 
 // Generates level 2
 function generateLevel2(){
@@ -342,6 +343,14 @@ function generateLevel2(){
 //	    });
 	    scene.add(crates[i]);
 	    pickUpItems.push(crates[i]);
+    }
+    for(var i = 0; i< 3; i++){
+    	lasers[i] = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 5, 8), new THREE.MeshBasicMaterial({color : 0xff0000}));
+    	lasers[i].position.x = -16;
+    	lasers[i].position.y = 0.5;
+    	lasers[i].position.z = -6*i + 5;
+    	lasers[i].rotation.z = Math.PI / 2;
+    	scene.add(lasers[i]);
     }
     
     

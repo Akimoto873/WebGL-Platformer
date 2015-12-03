@@ -131,14 +131,16 @@ function checkMovement() {
             if (distance.length() < 3) {
                 scene.remove(pickUpItems[i]);
                 for(var j = 0; j < crates.length; j++){    
-	                if(pickUpItems[i] == crates[i] && !carrying) {
-	                        crates[i].position.x = 0;
-	                        crates[i].position.y = -1;
-	                        crates[i].position.z = 0;
-	                        charMesh.add(crates[i]);
-	                        crates[i].position.z += 1;
+	                if(pickUpItems[i].position == crates[j].position && !carrying) {
+	                	log(pickUpItems[i].position.z);
+	                	log(crates[j].position.z);
+	                        crates[j].position.x = 0;
+	                        crates[j].position.y = -1;
+	                        crates[j].position.z = 0;
+	                        charMesh.add(crates[j]);
+	                        crates[j].position.z += 1;
 	                        carrying = true;
-	                        carriedItem = i;
+	                        carriedItem = j;
 	                        pickupThisFrame = true;
 	                        i = pickUpItems.length + 1;
 	                        pickUpItems.splice(i, 1);
