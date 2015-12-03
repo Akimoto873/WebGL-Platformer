@@ -175,9 +175,7 @@ function checkMovement() {
             carrying = false;
         }
     }
-    if(level == 1){
-    	checkTraps();
-    }
+	checkTraps();
     checkFallDmg();
 
     // If we have lost all our health, set game over
@@ -188,65 +186,79 @@ function checkMovement() {
 
 //Checks if traps are triggered, and handles what happens then.
 function checkTraps() {
-	for(var i = 0;  i < moveableObjects.length; i++){
-	    if (moveableObjects[i]._physijs.touches.indexOf(tile._physijs.id) === 1) {
-	        if (!triggered) {
-	            scene.remove(trap);
-	            scene.add(trap);
-	            trap.setLinearFactor(new THREE.Vector3(0, 1, 0));
-	            trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
-	            triggered = true;
-	            trapTime = new THREE.Clock();
-
+	if(level == 1){
+		for(var i = 0;  i < moveableObjects.length; i++){
+		    if (moveableObjects[i]._physijs.touches.indexOf(tile._physijs.id) === 1) {
+		        if (!triggered) {
+		            scene.remove(trap);
+		            scene.add(trap);
+		            trap.setLinearFactor(new THREE.Vector3(0, 1, 0));
+		            trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
+		            triggered = true;
+		            trapTime = new THREE.Clock();
+	
+		        }
+		    }
+	    }
+		for(var i = 0;  i < pickUpItems.length; i++){
+		    if (pickUpItems[i]._physijs.touches.indexOf(tile._physijs.id) === 1) {
+		        if (!triggered) {
+		            scene.remove(trap);
+		            scene.add(trap);
+		            trap.setLinearFactor(new THREE.Vector3(0, 1, 0));
+		            trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
+		            triggered = true;
+		            trapTime = new THREE.Clock();
+	
+		        }
+		    }
+	    }
+	    if (triggered) {
+	
+	        if (trap.position.y < 2) {
+	                applyForce = true;
+	        }
+	        
+	        if (applyForce) {
+	                trap.applyCentralForce(new THREE.Vector3(0, 2500, 0));
+	
+	        }
+	        
+	        if (trap.position.y > 4 && trapTime.getElapsedTime() > 2) {
+	                trap.setLinearVelocity(new THREE.Vector3(0, 0, 0));
+	                trap.setLinearFactor(new THREE.Vector3(0, 0, 0));
+	                applyForce = false;
+	                log("test");
+	
+	        }
+	
+	        if (trapTime.getElapsedTime() > 10) {
+	                trapTime.stop();
+	                triggered = false;
 	        }
 	    }
-    }
-	for(var i = 0;  i < pickUpItems.length; i++){
-	    if (pickUpItems[i]._physijs.touches.indexOf(tile._physijs.id) === 1) {
-	        if (!triggered) {
-	            scene.remove(trap);
-	            scene.add(trap);
-	            trap.setLinearFactor(new THREE.Vector3(0, 1, 0));
-	            trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
-	            triggered = true;
-	            trapTime = new THREE.Clock();
-
+	
+	    var intersects = trapCaster2.intersectObjects(moveableObjects);
+	    if (intersects.length > 0) {
+	        if (!triggered2) {
+	
+	            trap2.setLinearVelocity(new THREE.Vector3(0, 0, -7));
+	            triggered2 = true;
+	
 	        }
 	    }
-    }
-    if (triggered) {
-
-        if (trap.position.y < 2) {
-                applyForce = true;
-        }
-        
-        if (applyForce) {
-                trap.applyCentralForce(new THREE.Vector3(0, 2500, 0));
-
-        }
-        
-        if (trap.position.y > 4 && trapTime.getElapsedTime() > 2) {
-                trap.setLinearVelocity(new THREE.Vector3(0, 0, 0));
-                trap.setLinearFactor(new THREE.Vector3(0, 0, 0));
-                applyForce = false;
-                log("test");
-
-        }
-
-        if (trapTime.getElapsedTime() > 10) {
-                trapTime.stop();
-                triggered = false;
-        }
-    }
-
-    var intersects = trapCaster2.intersectObjects(moveableObjects);
-    if (intersects.length > 0) {
-        if (!triggered2) {
-
-            trap2.setLinearVelocity(new THREE.Vector3(0, 0, -7));
-            triggered2 = true;
-
-        }
+	}
+    if(level == 2){
+	    if(level2Trap1Triggered){
+	    	if(level2Trap1.position.y < 9){
+	    		level2Trap1.applyCentralForce(new THREE.Vector3(0,500, 0));
+	    	}
+	    	else if(level2Trap1.position.y > 9){
+	    		level2Trap1Triggered = false;
+	    		level2Trap1.setLinearVelocity(new THREE.Vector3(0,0,0));
+	    		level2Trap1.setLinearFactor(new THREE.Vector3(0,0,0));
+	    	}
+	    }
     }
 }
 

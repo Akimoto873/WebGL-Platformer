@@ -176,7 +176,7 @@ function init() {
     }), 0.4, 0.8);
     
     // Create level 1
-    generateLevel1();  
+    generateLevel2();  
     
     // Add window resize listener
     window.addEventListener('resize', onWindowResize, false);
@@ -554,22 +554,41 @@ function levelComplete() {
 
 // Restarts the level (after death for example).
 function restartLevel() { // Currently not finished.
-    level = 0;
-    scene.remove(charMesh);
-    resetChar();
-    resetCrate();
-    resetTraps();
-    health = 100;
-    damaged = true;
-    if (gameOverScreen) {
-            gameOverScreen = false;
-            orthoScene.remove(bloodSprite);
-            orthoScene.remove(gameOverSprite);
-            orthoScene.remove(restartSprite);
-    }
-    carriedCones = 0;
-    resetCones();
-    level = 1;
+	if(level == 1){
+	    level = 0;
+	    scene.remove(charMesh);
+	    resetChar();
+	    resetCrate();
+	    resetTraps();
+	    health = 100;
+	    damaged = true;
+	    if (gameOverScreen) {
+	            gameOverScreen = false;
+	            orthoScene.remove(bloodSprite);
+	            orthoScene.remove(gameOverSprite);
+	            orthoScene.remove(restartSprite);
+	    }
+	    carriedCones = 0;
+	    resetCones();
+	    level = 1;
+	}
+	if(level == 2){
+		level = 0;
+	    scene.remove(charMesh);
+	    resetChar();
+	    resetCrates();
+	    health = 100;
+	    damaged = true;
+	    if (gameOverScreen) {
+	            gameOverScreen = false;
+	            orthoScene.remove(bloodSprite);
+	            orthoScene.remove(gameOverSprite);
+	            orthoScene.remove(restartSprite);
+	    }
+	    carriedCones = 0;
+	    resetCones();
+	    level = 2;
+	}
 }
 
 // Resets the character mesh.
@@ -587,29 +606,29 @@ function resetChar() {
     charMesh.add(camera);
     charMesh.material.visible = false;
     charMesh.setAngularFactor(new THREE.Vector3(0, 1, 0));
-    charMesh.addEventListener('collision', function(other_object,
-                    relative_velocity, relative_rotation, contact_normal) {
-            if (other_object == trap || other_object == trap2) {
-                    health -= 100;
-                    damaged = true;
-            }
-            if (other_object == exit) {
-                    levelComplete();
-            }
-    });
     moveableObjects.push(charMesh);
     carrying = false;
 }
 
 //Resets the crate.
 function resetCrate() {
-    scene.remove(crate);
-    crate.setLinearVelocity(new THREE.Vector3(0,0,0));
-    crate.position.set(9, 0, -12);
-    crate.rotation.x = 0;
-    crate.rotation.y = 0;
-    crate.rotation.z = 0;
-    scene.add(crate);
+    scene.remove(crates[0]);
+    crates[0].setLinearVelocity(new THREE.Vector3(0,0,0));
+    crates[0].position.set(9, 0, -12);
+    crates[0].rotation.x = 0;
+    crates[0].rotation.y = 0;
+    crates[0].rotation.z = 0;
+    scene.add(crates[0]);
+}
+
+function resetCrates(){
+	for(var i = 0; i < crates.length; i++){
+		scene.remove(crates[i]);
+//		crates[i].rotation.set(0,0,0);
+		crates[i].position.set(-12, 1 + i, -22 + 2*i);
+		scene.add(crates[i]);
+		
+	}
 }
 
 //Resets the cones

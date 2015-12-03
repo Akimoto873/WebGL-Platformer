@@ -139,8 +139,8 @@ function checkChangesToHUD() {
                 
                 // TODO: Fix so it scales properly
 	        // Update the size of the health bar according to your amount of health
-	        healthSprite.scale.set((Math.abs(health) / 200) * spriteXScale, spriteYScale, 1);
-	        healthSprite.position.x = (spriteXPosition)  - (1 - (Math.abs(health)/200)) * spriteXScale / 2;
+	        healthSprite.scale.set((Math.abs(health) / 100) * spriteXScale, spriteYScale, 1);
+	        healthSprite.position.x = (spriteXPosition)  - (1 - (Math.abs(health)/100)) * spriteXScale / 2;
 	        
 	        // Color codes your health bar according to amount of health
 	        if (health > 80) {

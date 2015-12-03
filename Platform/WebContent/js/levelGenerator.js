@@ -248,6 +248,10 @@ function generateLevel1() {
 
 }
 
+level2Trap1Triggered = false;
+level2Trap2TargetSpeed = 2;
+level2Trap2TargetSpeed_2 = 3;
+level2Trap2TargetSpeed_3 = 2.5;
 
 // Generates level 2
 function generateLevel2(){
@@ -281,7 +285,7 @@ function generateLevel2(){
     scene.add(ambientLight);
     
     
-    var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 15, 2),
+    var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 30, 2),
             Physijs.createMaterial(new THREE.MeshBasicMaterial({
                     color : 0x22ee44
             }), 0.0, 0.1), 0);
@@ -343,6 +347,25 @@ function generateLevel2(){
 	    pickUpItems.push(temp);
 	    crates.push(temp);
     }
+    
+    level2Trap1 = new Physijs.BoxMesh(new THREE.BoxGeometry(5, 1, 15),
+            Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x332255}), 0.0, 0.1), 20);
+    level2Trap1.position.x = -16;
+    level2Trap1.position.y = 9;
+    level2Trap1.position.z = 0;
+    level2Trap1.addEventListener('collision', function(other_object){
+    	if(other_object == floor){
+    		level2Trap1Triggered = true;
+    	}
+    	else if(other_object == charMesh){
+    		health -= 100;
+    		damaged = true;
+    	}
+    })
+    scene.add(level2Trap1);
+    level2Trap1.setLinearFactor(new THREE.Vector3(0,0,0));
+    level2Trap1.setAngularFactor(new THREE.Vector3(0,0,0));
+    
     for(var i = 0; i< 3; i++){
     	lasers[i] = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.1, 0.1, 5, 8), 
     			Physijs.createMaterial(new THREE.MeshBasicMaterial({color : 0xff0000}), 0.0, 0.0),0);
@@ -351,8 +374,110 @@ function generateLevel2(){
     	lasers[i].position.z = -6*i + 5;
     	lasers[i].rotation.z = Math.PI / 2;
     	lasers[i]._physijs.collision_flags = 4;
+    	lasers[i].addEventListener('collision', function(other_object){
+    		if(other_object == charMesh){
+    			scene.remove(level2Trap1);
+    			scene.add(level2Trap1);
+    			level2Trap1.setLinearFactor(new THREE.Vector3(0,1,0));
+    			level2Trap1.setAngularFactor(new THREE.Vector3(0,0,0));
+    			
+    		}
+    	})
     	scene.add(lasers[i]);
     }
+    
+    level2Trap2_1 = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.1, 0.1, 8, 8), 
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({color : 0xff0000}), 0.0, 0.0),10);
+    level2Trap2_1.position.z = -8;
+    level2Trap2_1.position.y = 5;
+    level2Trap2_1.position.x = 10;
+    scene.add(level2Trap2_1);
+    var level2Trap2Constraint = new Physijs.HingeConstraint(
+    	    level2Trap2_1, // First object to be constrained
+    	    null, // OPTIONAL second object - if omitted then physijs_mesh_1 will be constrained to the scene
+    	    new THREE.Vector3( 10, 10, -8 ), // point in the scene to apply the level2Trap2Constraint
+    	    new THREE.Vector3( 0, 0, 1 ) // Axis along which the hinge lies - in this case it is the X axis
+    	);
+    	scene.addConstraint( level2Trap2Constraint );
+    	level2Trap2Constraint.setLimits(
+    	    -Math.PI/3, // minimum angle of motion, in radians
+    	    Math.PI/3, // maximum angle of motion, in radians
+    	    0.1, // applied as a factor to level2Trap2Constraint error
+    	    0.0 // controls bounce at limit (0.0 == no bounce)
+    	);
+    	level2Trap2Constraint.enableAngularMotor( level2Trap2TargetSpeed, 10 );
+    	level2Trap2_1.addEventListener('collision', function(other_object){
+    		if(other_object == charMesh){
+    			health -= 40;
+    			damaged = true;
+    		}
+    		else{
+    			level2Trap2TargetSpeed = -level2Trap2TargetSpeed;
+    			level2Trap2Constraint.enableAngularMotor(level2Trap2TargetSpeed, 10);
+    		}
+    	});
+    	
+    	level2Trap2_2 = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.1, 0.1, 8, 8), 
+    			Physijs.createMaterial(new THREE.MeshBasicMaterial({color : 0xff0000}), 0.0, 0.0),10);
+        level2Trap2_2.position.z = -11;
+        level2Trap2_2.position.y = 5;
+        level2Trap2_2.position.x = 10;
+        scene.add(level2Trap2_2);
+        var level2Trap2Constraint_2 = new Physijs.HingeConstraint(
+        	    level2Trap2_2, // First object to be constrained
+        	    null, // OPTIONAL second object - if omitted then physijs_mesh_1 will be constrained to the scene
+        	    new THREE.Vector3( 10, 10, -11 ), // point in the scene to apply the level2Trap2Constraint
+        	    new THREE.Vector3( 0, 0, 1 ) // Axis along which the hinge lies - in this case it is the X axis
+        	);
+        	scene.addConstraint( level2Trap2Constraint_2 );
+        	level2Trap2Constraint_2.setLimits(
+        	    -Math.PI/3, // minimum angle of motion, in radians
+        	    Math.PI/3, // maximum angle of motion, in radians
+        	    0.1, // applied as a factor to level2Trap2Constraint error
+        	    0.0 // controls bounce at limit (0.0 == no bounce)
+        	);
+        	level2Trap2Constraint_2.enableAngularMotor( level2Trap2TargetSpeed_2, 10 );
+        	level2Trap2_2.addEventListener('collision', function(other_object){
+        		if(other_object == charMesh){
+        			health -= 40;
+        			damaged = true;
+        		}
+        		else{
+        			level2Trap2TargetSpeed_2 = -level2Trap2TargetSpeed_2;
+        			level2Trap2Constraint_2.enableAngularMotor(level2Trap2TargetSpeed_2, 10);
+        		}
+        	});
+        	
+        	level2Trap2_3 = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.1, 0.1, 8, 8), 
+        			Physijs.createMaterial(new THREE.MeshBasicMaterial({color : 0xff0000}), 0.0, 0.0),10);
+            level2Trap2_3.position.z = -14;
+            level2Trap2_3.position.y = 5;
+            level2Trap2_3.position.x = 10;
+            scene.add(level2Trap2_3);
+            var level2Trap2Constraint_3 = new Physijs.HingeConstraint(
+            	    level2Trap2_3, // First object to be constrained
+            	    null, // OPTIONAL second object - if omitted then physijs_mesh_1 will be constrained to the scene
+            	    new THREE.Vector3( 10, 10, -14 ), // point in the scene to apply the level2Trap2Constraint
+            	    new THREE.Vector3( 0, 0, 1 ) // Axis along which the hinge lies - in this case it is the X axis
+            	);
+            	scene.addConstraint( level2Trap2Constraint_3 );
+            	level2Trap2Constraint_3.setLimits(
+            	    -Math.PI/3, // minimum angle of motion, in radians
+            	    Math.PI/3, // maximum angle of motion, in radians
+            	    0.1, // applied as a factor to level2Trap2Constraint error
+            	    0.0 // controls bounce at limit (0.0 == no bounce)
+            	);
+            	level2Trap2Constraint_3.enableAngularMotor( level2Trap2TargetSpeed_3, 10 );
+            	level2Trap2_3.addEventListener('collision', function(other_object){
+            		if(other_object == charMesh){
+            			health -= 40;
+            			damaged = true;
+            		}
+            		else{
+            			level2Trap2TargetSpeed_3 = -level2Trap2TargetSpeed_3;
+            			level2Trap2Constraint_3.enableAngularMotor(level2Trap2TargetSpeed_3, 10);
+            		}
+            	});
     
     
     
