@@ -113,7 +113,7 @@ function checkMovement() {
         		waitForKeyUp = true;
         	}
             airTime = new THREE.Clock();
-            charMesh.applyCentralImpulse(new THREE.Vector3(0, 80, 0));
+            charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
             stamina -= 20;
             // health -= 10;
             // damaged = true; //for testing purposes
@@ -130,41 +130,43 @@ function checkMovement() {
             
             if (distance.length() < 3) {
                 scene.remove(pickUpItems[i]);
-                    
-                if(pickUpItems[i] == crate && !carrying) {
-                        crate.position.x = 0;
-                        crate.position.y = -1;
-                        crate.position.z = 0;
-                        charMesh.add(crate);
-                        crate.position.z += 1;
-                        carrying = true;
-                        pickupThisFrame = true;
-                        i = pickUpItems.length + 1;
-                        pickUpItems.splice(i, 1);
-                }
-                else if(pickUpItems[i] == cones){
-                        pickUpItems.splice(i, 1);
-                        carriedCones += 5;
-                        i = pickUpItems.length + 1;
-                }
-                else {
-                        pickUpItems.splice(i, 1);
-                        carriedCones += 1;
-                        i = pickUpItems.length + 1;
+                for(var j = 0; j < crates.length; j++){    
+	                if(pickUpItems[i] == crates[i] && !carrying) {
+	                        crates[i].position.x = 0;
+	                        crates[i].position.y = -1;
+	                        crates[i].position.z = 0;
+	                        charMesh.add(crates[i]);
+	                        crates[i].position.z += 1;
+	                        carrying = true;
+	                        carriedItem = i;
+	                        pickupThisFrame = true;
+	                        i = pickUpItems.length + 1;
+	                        pickUpItems.splice(i, 1);
+	                }
+	                else if(pickUpItems[i] == cones){
+	                        pickUpItems.splice(i, 1);
+	                        carriedCones += 5;
+	                        i = pickUpItems.length + 1;
+	                }
+	                else {
+	                        pickUpItems.splice(i, 1);
+	                        carriedCones += 1;
+	                        i = pickUpItems.length + 1;
+	                }
                 }
             }
         }
         
         if (carrying && !pickupThisFrame) {
-            charMesh.remove(crate);
+            charMesh.remove(crates[carriedItem]);
             var positionDiff = new THREE.Vector3(0, 0, 1);
             var finalPosition = positionDiff.applyMatrix4(rotationMatrix);
             var oldPosition = charMesh.position
-            crate.position.x = oldPosition.x + finalPosition.x;
-            crate.position.y = oldPosition.y - 1;
-            crate.position.z = oldPosition.z + finalPosition.z;
-            scene.add(crate);
-            pickUpItems.push(crate);
+            crates[carriedItem].position.x = oldPosition.x + finalPosition.x;
+            crates[carriedItem].position.y = oldPosition.y - 1;
+            crates[carriedItem].position.z = oldPosition.z + finalPosition.z;
+            scene.add(crates[carriedItem]);
+            pickUpItems.push(crates[carriedItem]);
             carrying = false;
         }
     }

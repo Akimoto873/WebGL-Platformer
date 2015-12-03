@@ -150,7 +150,9 @@ function init() {
 
             // Update animation
             var delta = clock.getDelta();
-            flareAnimation.update(delta * 1000);
+            if(flareAnimation != null){
+            	flareAnimation.update(delta * 1000);
+            }
         }
 
 
@@ -193,6 +195,11 @@ function init() {
     renderer.setClearColor( scene.fog.color );
     
     textureLoader = new THREE.TextureLoader();
+    
+    var crateTexture = textureLoader.load('images/crate.jpg');
+    crateMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
+            map : crateTexture
+    }), 0.4, 0.8);
     
     // Create level 1
     generateLevel1();  
@@ -439,12 +446,11 @@ function onDocumentMouseMove(e)
         	//loadSelectedTexture
     	}
     }
-    if(!menu){
+    if(!menu && charCam){
         if(oldMouseY == 0){
         	oldMouseY = e.clientY;
         }
     	var diffY = e.clientY - oldMouseY;
-    	log(camera.rotation.x);
     	if(camera.rotation.x + diffY / 200 > -Math.PI*3/2 && camera.rotation.x + diffY / 200 < -Math.PI/2){
 			camera.rotation.x += diffY / 200;
 			
@@ -576,6 +582,7 @@ function levelComplete() {
     });
     generateLevel2();
     resetChar();
+    crates = [];
     level = 2;
 }
 
