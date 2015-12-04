@@ -72,7 +72,8 @@ function checkKeys() {
     }
 }
 
-
+var jumpableDoorOpen = false;
+var jumpableDoorOpening = false;
 // Handles all character movement.
 function checkMovement() {
 	
@@ -144,6 +145,7 @@ function checkMovement() {
             var distance = new THREE.Vector3();
             distance.subVectors(charMesh.position, pickUpItems[i].position);
             if (distance.length() < 2.5) {
+            	
                 
                 for(var j = 0; j < crates.length; j++){
 	                if(pickUpItems[i]== crates[j] && !carrying) {
@@ -176,6 +178,12 @@ function checkMovement() {
                 
             }
         }
+        distance.subVectors(charMesh.position, lever.position);
+        if(!jumpableDoorOpen && distance.length() < 2.5){
+        	lever.rotation.x += Math.Pi/6;
+        	jumpableDoorOpen = true;
+        	jumpableDoorOpening = true;
+        }
         
         if (carrying && !pickupThisFrame) {
             charMesh.remove(crates[carriedItem]);
@@ -196,6 +204,15 @@ function checkMovement() {
     // If we have lost all our health, set game over
     if (health < 1 && !gameOverScreen) {
             showGameOver();
+    }
+    if(jumpableDoorOpening){
+    	if(jumpableDoor.position.y < 7){
+    		jumpableDoor.setLinearVelocity(new THREE.Vector3(0,1,0));
+    	}
+    	else{
+    		jumpableDoor.setLinearFactor(new THREE.Vector3(0,0,0));
+    		jumpableDoorOpening = false;
+    	}
     }
 }
 

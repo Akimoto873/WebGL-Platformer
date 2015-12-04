@@ -301,13 +301,7 @@ function generateLevel2() {
 	addWall(basicWall1, 4.00, 21.60, 25.60, 1, 5.20);
 	addWall(basicWall1, 31.00, 26.00, 3.00, 1, 0.60);
 	addWall(basicWall1, 25.20, 1.80, 0.40, 1, 1.80);
-	var stoppingWall = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44
-			}), 0.0, 0.1), 0);
-	stoppingWall.position.set(16.6, 3, 14.4);
-	stoppingWall.scale.set(1.40, 1, 1.60);
-	scene.add(stoppingWall);
+	createJumpableDoor();
 	doorway = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0x22ee44, visible : false
@@ -693,6 +687,26 @@ function textureAnimator(textureSource, tileHori, tileVert, tileNumber,
 		}
 	};
 
+}
+var lever;
+
+function createJumpableDoor(){
+	jumpableDoor = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44
+			}), 0.0, 0.1), 20);
+	jumpableDoor.position.set(16.6, 3, 14.4);
+	jumpableDoor.scale.set(1, 1, 1.60);
+	scene.add(jumpableDoor);
+	jumpableDoor.setLinearFactor(new THREE.Vector3(0,1,0));
+	jumpableDoor.setAngularFactor(new THREE.Vector3(0,0,0));
+	lever = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.1, 0.1, 1, 8), 
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee3355
+			}), 0.0, 0.1), 0);
+	lever.position.set(19, 2, 12.8);
+	lever.rotation.x = Math.PI / 6;
+	scene.add(lever);
 }
 
 function createLevel2Floors(){
