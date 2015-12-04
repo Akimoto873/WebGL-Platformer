@@ -469,7 +469,7 @@ function onDocumentMouseClick(e)
 				}
 			}
 			if(complete){
-				//Play sound?
+				puzzleSound.play();
 				puzzle.material.transparent = true;
 				for(var i = 0; i< puzzlePoints.length; i++){
 					puzzlePoints[i].material.transparent = true;
@@ -721,7 +721,9 @@ function restartLevel() { // Currently not finished.
 	    }
 	    carriedCones = 0;
 	    resetCones();
-	    keysPickedUp = 0;
+	    resetKeys();
+	    resetPuzzle();
+	    resetJumpableDoor();
 	    level = 2;
 	}
 }
@@ -793,6 +795,43 @@ function resetTraps() {
     scene.add(trap2);
     trap2.setAngularFactor(new THREE.Vector3(0, 0, 0));
     triggered2 = false;
+}
+
+function resetKeys(){
+	keysPickedUp = 0;
+	scene.remove(key1);
+	scene.add(key1);
+	key1.setLinearFactor(new THREE.Vector3(0,0,0));
+	key1.setAngularVelocity(new THREE.Vector3(0,1,0));
+	scene.remove(key2);
+	scene.add(key2);
+	key2.setLinearFactor(new THREE.Vector3(0,0,0));
+	key2.setAngularVelocity(new THREE.Vector3(0,1,0));
+	scene.remove(key3);
+	scene.add(key3);
+	key3.setLinearFactor(new THREE.Vector3(0,0,0));
+	key3.setAngularVelocity(new THREE.Vector3(0,1,0));
+}
+
+function resetPuzzle(){
+	for(var i = 0; i < puzzlePoints.length; i++){
+		if(puzzlePoints[i].material.color.equals(new THREE.Color(0x00FF00))){
+			puzzlePoints[i].material.color.setHex(0xFF0000);
+			
+		}
+		puzzlePoints[i].material.opacity = 1;
+		scene.add(puzzlePoints[i]);
+	}
+	puzzle.material.opacity = 1;
+	scene.add(puzzle);
+}
+
+function resetJumpableDoor(){
+	scene.remove(jumpableDoor);
+	jumpableDoor.position.set(16.6, 3, 14.4);
+	scene.add(jumpableDoor);
+	jumpableDoor.setLinearFactor(new THREE.Vector3(0,1,0));
+	jumpableDoor.setAngularFactor(new THREE.Vector3(0,0,0));
 }
 
 //Creates the menu

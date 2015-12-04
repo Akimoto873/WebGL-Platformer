@@ -241,8 +241,8 @@ function generateLevel1() {
 
 level2Trap1Triggered = false;
 level2Trap2TargetSpeed = 2.5;
-level2Trap2TargetSpeed_2 = 3.5;
-level2Trap2TargetSpeed_3 = 3;
+level2Trap2TargetSpeed_2 = -3;
+level2Trap2TargetSpeed_3 = 3.5;
 
 // Generates level 2
 function generateLevel2() {
@@ -302,6 +302,7 @@ function generateLevel2() {
 	addWall(basicWall1, 31.00, 26.00, 3.00, 1, 0.60);
 	addWall(basicWall1, 25.20, 1.80, 0.40, 1, 1.80);
 	createJumpableDoor();
+	objLoader.load('models/objects/giant_door/giant_door.obj', 'models/objects/giant_door/giant_door.mtl', giantDoorLoadedCallback);
 	objLoader.load('models/objects/doorway_door/doorway_door.obj', 'models/objects/doorway_door/doorway_door.mtl', doorwayDoorLoadedCallback);
 	doorway = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
@@ -562,8 +563,8 @@ function flareBoxLoadedCallback(object) {
 }
 
 function trapBladeLoadedCallback(object){
-	object.scale.set(0.3,0.4,0.2);
-	object.position.y -= 4;
+	object.scale.set(0.2,0.4,0.2);
+	object.position.y -= 3;
 	var blade1 = object.clone();
 	var blade2 = object.clone();
 	level2Trap2_1.add(blade1);
@@ -594,6 +595,12 @@ function trapSpikesLoadedCallback(object){
 
 function createKeys(){
 	
+	keySound = new Audio('audio/270408__littlerobotsoundfactory__pickup-gold-00.wav');
+	keySound.volume = 0.5;
+	keySound.addEventListener('ended', function(){
+		this.currentTime = 0;
+	});
+	
 	key1 = new Physijs.BoxMesh(new THREE.BoxGeometry(0.2, 0.2, 0.2), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0xee2233,
@@ -606,6 +613,7 @@ function createKeys(){
 	key1.setAngularVelocity(new THREE.Vector3(0,1,0));
 	key1.addEventListener('collision', function(other_object){
 		if(other_object == charMesh){
+			keySound.play();
 			scene.remove(key1);
 			keysPickedUp += 1;
 		}
@@ -620,6 +628,7 @@ function createKeys(){
 	scene.add(key2);
 	key2.addEventListener('collision', function(other_object){
 		if(other_object == charMesh){
+			keySound.play();
 			scene.remove(key2);
 			keysPickedUp += 1;
 		}
@@ -636,6 +645,7 @@ function createKeys(){
 	scene.add(key3);
 	key3.addEventListener('collision', function(other_object){
 		if(other_object == charMesh){
+			keySound.play();
 			scene.remove(key3);
 			keysPickedUp += 1;
 		}
@@ -722,21 +732,27 @@ function createJumpableDoor(){
 }
 
 function doorwayDoorLoadedCallback(object){
-	clone1 = object.clone();
+	
 	clone2 = object.clone();
-	clone1.rotation.y += Math.PI/2;
-	clone1.position.y -= 3;
-	clone1.scale.set(0.6,0.8,2);
-	jumpableDoor.add(clone1);
+	
 	clone2.position.y -= 3;
 	clone2.position.x += 0.03;
 	clone2.scale.set(0.16, 0.6, 3);
 	doorway.add(clone2);
 }
 
+function giantDoorLoadedCallback(object){
+	clone1 = object.clone();
+	clone1.rotation.y += Math.PI/2;
+	clone1.position.y -= 3;
+	clone1.scale.set(0.45,0.7,1.5);
+	jumpableDoor.add(clone1);
+}
+
 var puzzlePoints = [];
 var puzzle;
 function createPuzzle(){
+	puzzleSound = new Audio('audio/162473__kastenfrosch__successful.mp3');
 	puzzleCaster = new THREE.Raycaster();
 	puzzle = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
