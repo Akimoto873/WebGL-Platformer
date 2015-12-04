@@ -240,9 +240,9 @@ function generateLevel1() {
 }
 
 level2Trap1Triggered = false;
-level2Trap2TargetSpeed = 2;
-level2Trap2TargetSpeed_2 = 3;
-level2Trap2TargetSpeed_3 = 2.5;
+level2Trap2TargetSpeed = 2.5;
+level2Trap2TargetSpeed_2 = 3.5;
+level2Trap2TargetSpeed_3 = 3;
 
 // Generates level 2
 function generateLevel2() {
@@ -261,17 +261,12 @@ function generateLevel2() {
 	// Load Flare Box
 	objLoader.load('models/objects/flare_box/flare_box.obj',
 			'models/objects/flare_box/flare_box.mtl', flareBoxLoadedCallback);
+	
+	objLoader.load('models/objects/trap_blade/trap_blade.obj', 'models/objects/trap_blade/trap_blade.mtl', trapBladeLoadedCallback);
 
-	// Collision
-	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(130, 1, 130), Physijs
-			.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0xee2233,
-				visible : false,
-				opacity : 1
-			}), 0.99, 0.2), 0);
-
-	floor.position.y = -0.5;
-	scene.add(floor);
+	
+	
+	createLevel2Floors();
 
 	// Lights
 	var ambientLight = new THREE.AmbientLight(0xffffff);
@@ -313,6 +308,14 @@ function generateLevel2() {
 	stoppingWall.position.set(16.6, 3, 14.4);
 	stoppingWall.scale.set(1.40, 1, 1.60);
 	scene.add(stoppingWall);
+	doorway = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible : false
+			}), 0.0, 0.1), 0);
+	doorway.position.set(9.80, 3, -23.60);
+	doorway.scale.set(2.60,1,0.60);
+	scene.add(doorway);
+	objLoader.load('models/objects/doorway/doorway.obj', 'models/objects/doorway/doorway.mtl', doorwayLoadedCallback);
 
 	// Crate Object
 	for (var i = 0; i < 4; i++) {
@@ -340,6 +343,7 @@ function generateLevel2() {
 	}
 
 	createLevel2Traps();
+	objLoader.load('models/objects/trap_spikes/trap_spikes.obj', 'models/objects/trap_spikes/trap_spikes.mtl', trapSpikesLoadedCallback);
 
 	scene.traverse(function(node) {
 
@@ -551,6 +555,35 @@ function flareBoxLoadedCallback(object) {
 	pickUpItems.push(cones);
 }
 
+function trapBladeLoadedCallback(object){
+	object.scale.set(0.3,0.4,0.2);
+	object.position.y -= 4;
+	var blade1 = object.clone();
+	var blade2 = object.clone();
+	level2Trap2_1.add(blade1);
+	level2Trap2_2.add(blade2);
+	level2Trap2_3.add(object);
+}
+
+function doorwayLoadedCallback(object){
+	object.scale.set(0.3, 0.6, 0.6);
+	object.position.y -= 3;
+	doorway.add(object);
+}
+
+function trapSpikesLoadedCallback(object){
+	object.scale.set(0.5,0.5,0.5);
+	var clone1 = object.clone();
+	var clone2 = object.clone();
+	var clone3 = object.clone();
+	clone1.position.z += 5;
+	clone2.position.z -= 5;
+	clone3.position.z -= 0;
+	level2Trap1.add(clone1);
+	level2Trap1.add(clone2);
+	level2Trap1.add(clone3);
+}
+
 // Texture Animation Function:
 // Returns an object that can be added to scene, and must be updated in order to
 // animate
@@ -598,16 +631,108 @@ function textureAnimator(textureSource, tileHori, tileVert, tileNumber,
 
 }
 
+function createLevel2Floors(){
+	// Collision
+	floor1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0);
+
+	floor1.position.set(7.8, -0.5, -3.8);
+	floor1.scale.set(12.5, 1, 20.2);
+	scene.add(floor1);
+	
+	floor2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0);
+
+	floor2.position.set(-14.8, -0.5, -3.8);
+	floor2.scale.set(5.6, 1, 20.2);
+	scene.add(floor2);
+	floor3 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0);
+
+	floor3.position.set(-7, -0.5, -1);
+	floor3.scale.set(2.5, 1, 18.2);
+	scene.add(floor3);
+	floor4 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0);
+
+	floor4.position.set(27.2, -0.5, -3.8);
+	floor4.scale.set(2.2, 1,20.2 );
+	scene.add(floor4);
+	
+	floor5 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0);
+
+	floor5.position.set(36.2, -0.5, 8.2);
+	floor5.scale.set(2.2, 1, 10.2);
+	scene.add(floor5);
+	floor6 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0);
+	floor6.position.set(31.8, -0.5, 18.8);
+	floor6.scale.set(2.2, 1, 10.2);
+	scene.add(floor6);
+	floor7 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0);
+	floor7.position.set(31.6, -0.5, 1.6);
+	floor7.scale.set(2.2, 1, 2.6);
+	scene.add(floor7);
+	floor8 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0);
+	floor8.position.set(22.6, -0.5, -25.4);
+	floor8.scale.set(2.2, 1, 5.2);
+	scene.add(floor8);
+	floor9 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0);
+	floor9.position.set(22.6, -0.5, 0.8);
+	floor9.scale.set(2.6, 1, 16);
+	scene.add(floor9);
+}
+
 function createLevel2Traps() {
 	level2Trap1 = new Physijs.BoxMesh(new THREE.BoxGeometry(5, 1, 15), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x332255
+				color : 0x332255, visible : false
 			}), 0.0, 0.1), 20);
 	level2Trap1.position.x = -16;
 	level2Trap1.position.y = 9;
 	level2Trap1.position.z = 0;
 	level2Trap1.addEventListener('collision', function(other_object) {
-		if (other_object == floor) {
+		if (other_object == floor2) {
 			level2Trap1Triggered = true;
 		} else if (other_object == charMesh) {
 			takeDamage(100);
@@ -618,8 +743,8 @@ function createLevel2Traps() {
 	level2Trap1.setAngularFactor(new THREE.Vector3(0, 0, 0));
 
 	for (var i = 0; i < 3; i++) {
-		lasers[i] = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.1,
-				0.1, 5, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial(
+		lasers[i] = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.05,
+				0.05, 5, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial(
 				{
 					color : 0xff0000
 				}), 0.0, 0.0), 0);
@@ -642,7 +767,7 @@ function createLevel2Traps() {
 
 	level2Trap2_1 = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.1,
 			0.1, 8, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial({
-		color : 0xff0000
+		color : 0xff0000, visible:false
 	}), 0.0, 0.0), 10);
 	level2Trap2_1.position.z = -8;
 	level2Trap2_1.position.y = 5;
@@ -672,9 +797,9 @@ function createLevel2Traps() {
 
 	level2Trap2_2 = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.1,
 			0.1, 8, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial({
-		color : 0xff0000
+		color : 0xff0000, visible:false
 	}), 0.0, 0.0), 10);
-	level2Trap2_2.position.z = -11;
+	level2Trap2_2.position.z = -12;
 	level2Trap2_2.position.y = 5;
 	level2Trap2_2.position.x = 10;
 	scene.add(level2Trap2_2);
@@ -703,9 +828,9 @@ function createLevel2Traps() {
 
 	level2Trap2_3 = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.1,
 			0.1, 8, 8), Physijs.createMaterial(new THREE.MeshBasicMaterial({
-		color : 0xff0000
+		color : 0xff0000, visible:false
 	}), 0.0, 0.0), 10);
-	level2Trap2_3.position.z = -14;
+	level2Trap2_3.position.z = -16;
 	level2Trap2_3.position.y = 5;
 	level2Trap2_3.position.x = 10;
 	scene.add(level2Trap2_3);

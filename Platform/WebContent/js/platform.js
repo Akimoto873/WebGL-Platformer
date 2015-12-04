@@ -348,7 +348,7 @@ function init() {
     createMenu();
     fallClock = new THREE.Clock();
     
-    //For collision box placement
+//    For collision box placement
 //    var box = new THREE.Mesh(new THREE.BoxGeometry(2, 6, 2),
 //            new THREE.MeshBasicMaterial({
 //                    color : 0x22ee44
