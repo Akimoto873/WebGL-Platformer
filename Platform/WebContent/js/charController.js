@@ -292,6 +292,21 @@ function checkTraps() {
 	    		level2Trap1.setLinearFactor(new THREE.Vector3(0,0,0));
 	    	}
 	    }
+	    if(puzzleComplete){
+	    	if(puzzle.material.opacity > 0){
+	    		puzzle.material.opacity -= 0.01;
+	    		for(var i = 0; i < puzzlePoints.length; i++){
+	    			puzzlePoints[i].material.opacity -= 0.01;
+	    		}
+	    	}
+	    	else{
+	    		scene.remove(puzzle);
+	    		for(var i = 0; i < puzzlePoints.length; i++){
+	    			scene.remove(puzzlePoints[i]);
+	    		}
+	    		puzzleComplete = false;
+	    	}
+	    }
     }
 }
 

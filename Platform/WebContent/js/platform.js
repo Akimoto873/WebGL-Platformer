@@ -17,6 +17,7 @@ var keyMap = [];
 var level1Texture;
 var floor;
 var charCaster;
+var puzzleCaster;
 var objects = [];
 var moveableObjects = [];
 var airTime;
@@ -67,6 +68,7 @@ var mouseDown = false;
 var crates = [];
 var lasers = [];
 var keysPickedUp = 0;
+var puzzleComplete = false;
 
 // Clock for delta
 var clock = new THREE.Clock();
@@ -90,6 +92,7 @@ var menuItems = [];
 
 /* DEBUG VARS */
 var charCam = true;  // Set to false for easier bugtesting.
+var enableDebugging = false;
 var box; //For easier collision box placement.
 
 function main() {
@@ -272,33 +275,35 @@ function init() {
                 levelComplete();
             }
             /*TODO: FOR CREATING COLLISION BOXES*/
-//            if(e.keyCode == 37 && e.type == 'keydown'){
-//            	box.position.x -= 0.2;
-//            }
-//            if(e.keyCode == 38 && e.type == 'keydown'){
-//            	box.position.z += 0.2;
-//            }
-//            if(e.keyCode == 39 && e.type == 'keydown'){
-//            	box.position.x += 0.2;
-//            }
-//            if(e.keyCode == 40 && e.type == 'keydown'){
-//            	box.position.z -= 0.2;
-//            }
-//            if(e.keyCode == 73 && e.type == 'keydown'){
-//            	box.scale.x -= 0.2
-//            }
-//            if(e.keyCode == 79 && e.type == 'keydown'){
-//            	box.scale.x += 0.2;
-//            }
-//            if(e.keyCode == 75 && e.type == 'keydown'){
-//            	box.scale.z -= 0.2;
-//            }
-//            if(e.keyCode == 76 && e.type == 'keydown'){
-//            	box.scale.z += 0.2;
-//            }
-//            if(e.keyCode == 78 && e.type == 'keyup'){
-//            	log((box.position.x).toFixed(2) + "," + (box.position.z).toFixed(2) + "," + (box.scale.x).toFixed(2) + "," + "1," + (box.scale.z).toFixed(2));
-//            }
+            if(enableDebugging){
+	            if(e.keyCode == 37 && e.type == 'keydown'){
+	            	box.position.x -= 0.2;
+	            }
+	            if(e.keyCode == 38 && e.type == 'keydown'){
+	            	box.position.z += 0.2;
+	            }
+	            if(e.keyCode == 39 && e.type == 'keydown'){
+	            	box.position.x += 0.2;
+	            }
+	            if(e.keyCode == 40 && e.type == 'keydown'){
+	            	box.position.z -= 0.2;
+	            }
+	            if(e.keyCode == 73 && e.type == 'keydown'){
+	            	box.scale.x -= 0.2
+	            }
+	            if(e.keyCode == 79 && e.type == 'keydown'){
+	            	box.scale.x += 0.2;
+	            }
+	            if(e.keyCode == 75 && e.type == 'keydown'){
+	            	box.scale.z -= 0.2;
+	            }
+	            if(e.keyCode == 76 && e.type == 'keydown'){
+	            	box.scale.z += 0.2;
+	            }
+	            if(e.keyCode == 78 && e.type == 'keyup'){
+	            	log((box.position.x).toFixed(2) + "," + (box.position.z).toFixed(2) + "," + (box.scale.x).toFixed(2) + "," + "1," + (box.scale.z).toFixed(2));
+	            }
+            }
 
     };
 
@@ -348,11 +353,13 @@ function init() {
     fallClock = new THREE.Clock();
     
 //    For collision box placement
-//    var box = new THREE.Mesh(new THREE.BoxGeometry(2, 6, 2),
-//            new THREE.MeshBasicMaterial({
-//                    color : 0x22ee44
-//            }));
-//    scene.add(box);
+    if(enableDebugging){
+	    var box = new THREE.Mesh(new THREE.BoxGeometry(2, 6, 2),
+	            new THREE.MeshBasicMaterial({
+	                    color : 0x22ee44
+	            }));
+	    scene.add(box);
+    }
 }
 
 // Listener: On mouse click
@@ -386,6 +393,93 @@ function onDocumentMouseClick(e)
 		    	backToMenu();
 	    	}
 	    }
+	}
+	if(level == 2 && !menu){
+		var distance = new THREE.Vector3();
+		distance.subVectors(charMesh.position, puzzle.position);
+		if(distance.length() < 10){
+			var point = 0;
+			for(var j = 0; j<4; j++){
+				for(var k = 0; k<4; k++){
+					var vector = new THREE.Vector3();
+					var canvas = renderer.domElement;
+
+					vector.x = puzzlePoints[point].position.x;
+					vector.y = puzzlePoints[point].position.y;
+					vector.z = puzzlePoints[point].position.z;
+
+					// map to normalized device coordinate (NDC) space
+					vector.project( camera );
+
+					// map to 2D screen space
+					vector.x = Math.round( (   vector.x + 1 ) * window.innerWidth  / 2 ),
+					vector.y = Math.round( ( - vector.y + 1 ) * window.innerHeight / 2 );
+					vector.z = 0;
+					
+					if(Math.abs(e.clientX - vector.x) < 50 && Math.abs(e.clientY  - vector.y) < 50){
+						var color1 = new THREE.Color( 0xff0000 );
+						var color2 = new THREE.Color( 0x00ff00 );
+						var color3 = new THREE.Color( 0x0000ff );
+						if(puzzlePoints[point].material.color.equals(color1)){
+							puzzlePoints[point].material.color.setHex(0x00FF00);
+						}
+						else{
+							puzzlePoints[point].material.color.setHex(0xFF0000);
+						}
+						if(k > 0){
+							if(puzzlePoints[point - 1].material.color.equals(color1)){
+								puzzlePoints[point -1].material.color.setHex(0x00FF00);
+							}
+							else{
+								puzzlePoints[point-1].material.color.setHex(0xFF0000);
+							}
+						}
+						if(k < 3){
+							if(puzzlePoints[point + 1].material.color.equals(color1)){
+								puzzlePoints[point +1].material.color.setHex(0x00FF00);
+							}
+							else{
+								puzzlePoints[point+1].material.color.setHex(0xFF0000);
+							}
+						}
+						if(j>0){
+							if(puzzlePoints[point - 4].material.color.equals(color1)){
+								puzzlePoints[point -4].material.color.setHex(0x00FF00);
+							}
+							else{
+								puzzlePoints[point-4].material.color.setHex(0xFF0000);
+							}
+						}
+						if(j<3){
+							if(puzzlePoints[point + 4].material.color.equals(color1)){
+								puzzlePoints[point +4].material.color.setHex(0x00FF00);
+							}
+							else{
+								puzzlePoints[point+4].material.color.setHex(0xFF0000);
+							}
+						}
+					}
+					point += 1;
+				}
+			}
+			var complete = true;
+			for(var i = 0; i < puzzlePoints.length; i++){
+				if(puzzlePoints[i].material.color.equals(new THREE.Color(0xFF0000))){
+					complete = false;
+				}
+			}
+			if(complete){
+				//Play sound?
+				puzzle.material.transparent = true;
+				for(var i = 0; i< puzzlePoints.length; i++){
+					puzzlePoints[i].material.transparent = true;
+				}
+				puzzleComplete = true;
+			}
+			
+		}
+		
+		
 	}
 }
 

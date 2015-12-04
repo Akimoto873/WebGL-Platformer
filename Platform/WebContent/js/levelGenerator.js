@@ -340,6 +340,8 @@ function generateLevel2() {
 
 	createLevel2Traps();
 	objLoader.load('models/objects/trap_spikes/trap_spikes.obj', 'models/objects/trap_spikes/trap_spikes.mtl', trapSpikesLoadedCallback);
+	
+	createPuzzle();
 
 	scene.traverse(function(node) {
 
@@ -707,6 +709,40 @@ function createJumpableDoor(){
 	lever.position.set(19, 2, 12.8);
 	lever.rotation.x = Math.PI / 6;
 	scene.add(lever);
+}
+
+var puzzlePoints = [];
+var puzzle;
+function createPuzzle(){
+	puzzleCaster = new THREE.Raycaster();
+	puzzle = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44
+			}), 0.0, 0.1), 0);
+	puzzle.position.set(-4.8, 3, -22);
+	puzzle.scale.set(0.2, 1, 2.2);
+	scene.add(puzzle);
+	var puzzlePoint = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.3, 8), 
+			new THREE.MeshBasicMaterial({color: 0xFF0000}));
+	puzzlePoint.position.x = -4.8;
+	puzzlePoint.position.y = 3;
+	puzzlePoint.position.z = -22;
+	puzzlePoint.position.x += 0.3;
+	puzzlePoint.position.z -= 1;
+	puzzlePoint.position.y -= 2;
+	puzzlePoint.rotation.z += Math.PI / 2;
+	var point = 0;
+	for(var i = 0; i < 4; i++){
+		for(var j = 0; j < 4; j++){
+			point += 1;
+			var clone = puzzlePoint.clone();
+			clone.material = new THREE.MeshBasicMaterial({color: 0xFF0000});
+			clone.position.y += (0.7 * i);
+			clone.position.z += (0.7 * j);
+			puzzlePoints.push(clone);
+			scene.add(clone);
+		}
+	}
 }
 
 function createLevel2Floors(){
