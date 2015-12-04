@@ -130,7 +130,7 @@ function checkMovement() {
         	}
         	jumpSound.play();
             airTime = new THREE.Clock();
-            charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
+            charMesh.applyCentralImpulse(new THREE.Vector3(0, 120, 0));
             stamina -= 20;
             // health -= 10;
             // damaged = true; //for testing purposes
@@ -181,7 +181,6 @@ function checkMovement() {
         if(level == 2){
 	        distance.subVectors(charMesh.position, lever.position);
 	        if(!jumpableDoorOpen && distance.length() < 2.5){
-	        	lever.rotation.x += Math.Pi/6;
 	        	jumpableDoorOpen = true;
 	        	jumpableDoorOpening = true;
 	        }
@@ -200,6 +199,19 @@ function checkMovement() {
             carrying = false;
         }
     }
+    if(level == 2 && keysPickedUp == 3){
+    	var distance = new THREE.Vector3();
+        distance.subVectors(charMesh.position, doorway.position);
+        if(distance.length() < 6){
+        	if(doorway.children[0].position.y > -3){
+        		doorway.children[0].position.y -= 0.02;
+        	}
+        	else{
+        		scene.remove(doorway);
+        		keysPickedUp = 0;
+        	}
+        }
+    }
 	checkTraps();
     checkFallDmg();
 
@@ -210,6 +222,7 @@ function checkMovement() {
     if(jumpableDoorOpening){
     	if(jumpableDoor.position.y < 7){
     		jumpableDoor.setLinearVelocity(new THREE.Vector3(0,1,0));
+    		lever.rotation.x += 0.005;
     	}
     	else{
     		jumpableDoor.setLinearFactor(new THREE.Vector3(0,0,0));

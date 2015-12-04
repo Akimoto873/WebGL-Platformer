@@ -302,13 +302,21 @@ function generateLevel2() {
 	addWall(basicWall1, 31.00, 26.00, 3.00, 1, 0.60);
 	addWall(basicWall1, 25.20, 1.80, 0.40, 1, 1.80);
 	createJumpableDoor();
+	objLoader.load('models/objects/doorway_door/doorway_door.obj', 'models/objects/doorway_door/doorway_door.mtl', doorwayDoorLoadedCallback);
 	doorway = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0x22ee44, visible : false
 			}), 0.0, 0.1), 0);
-	doorway.position.set(9.80, 3, -23.60);
-	doorway.scale.set(2.60,1,0.60);
+	doorway.position.set(9.80, 3, -22.0);
+	doorway.scale.set(5.5,1,0.60);
 	scene.add(doorway);
+	portal = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible : true
+			}), 0.0, 0.1), 0);
+	portal.position.set(9.80, 3, -23.50);
+	portal.scale.set(2,1,0.60);
+	scene.add(portal);
 	objLoader.load('models/objects/doorway/doorway.obj', 'models/objects/doorway/doorway.mtl', doorwayLoadedCallback);
 	createKeys();
 	objLoader.load('models/objects/key/key.obj', 'models/objects/key/key.mtl', keyLoadedCallback);
@@ -564,9 +572,11 @@ function trapBladeLoadedCallback(object){
 }
 
 function doorwayLoadedCallback(object){
-	object.scale.set(0.3, 0.6, 0.6);
-	object.position.y -= 3;
-	doorway.add(object);
+	object.scale.set(0.82,0.6,1);
+	object.position.x = doorway.position.x;
+	object.position.y = doorway.position.y - 3;
+	object.position.z = doorway.position.z;
+	scene.add(object);
 }
 
 function trapSpikesLoadedCallback(object){
@@ -695,20 +705,33 @@ var lever;
 function createJumpableDoor(){
 	jumpableDoor = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44
+				color : 0x22ee44, visible:false
 			}), 0.0, 0.1), 20);
 	jumpableDoor.position.set(16.6, 3, 14.4);
 	jumpableDoor.scale.set(1, 1, 1.60);
 	scene.add(jumpableDoor);
 	jumpableDoor.setLinearFactor(new THREE.Vector3(0,1,0));
 	jumpableDoor.setAngularFactor(new THREE.Vector3(0,0,0));
-	lever = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.1, 0.1, 1, 8), 
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+	lever = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1, 8), 
+			new THREE.MeshBasicMaterial({
 				color : 0xee3355
-			}), 0.0, 0.1), 0);
+			}));
 	lever.position.set(19, 2, 12.8);
 	lever.rotation.x = Math.PI / 6;
 	scene.add(lever);
+}
+
+function doorwayDoorLoadedCallback(object){
+	clone1 = object.clone();
+	clone2 = object.clone();
+	clone1.rotation.y += Math.PI/2;
+	clone1.position.y -= 3;
+	clone1.scale.set(0.6,0.8,2);
+	jumpableDoor.add(clone1);
+	clone2.position.y -= 3;
+	clone2.position.x += 0.03;
+	clone2.scale.set(0.16, 0.6, 3);
+	doorway.add(clone2);
 }
 
 var puzzlePoints = [];
