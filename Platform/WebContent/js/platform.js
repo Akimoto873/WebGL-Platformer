@@ -66,6 +66,7 @@ var oldMouseY = 0;
 var mouseDown = false;
 var crates = [];
 var lasers = [];
+var keysPickedUp = 0;
 
 // Clock for delta
 var clock = new THREE.Clock();
@@ -626,6 +627,7 @@ function restartLevel() { // Currently not finished.
 	    }
 	    carriedCones = 0;
 	    resetCones();
+	    keysPickedUp = 0;
 	    level = 2;
 	}
 }

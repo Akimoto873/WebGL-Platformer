@@ -316,6 +316,8 @@ function generateLevel2() {
 	doorway.scale.set(2.60,1,0.60);
 	scene.add(doorway);
 	objLoader.load('models/objects/doorway/doorway.obj', 'models/objects/doorway/doorway.mtl', doorwayLoadedCallback);
+	createKeys();
+	objLoader.load('models/objects/key/key.obj', 'models/objects/key/key.mtl', keyLoadedCallback);
 
 	// Crate Object
 	for (var i = 0; i < 4; i++) {
@@ -582,6 +584,68 @@ function trapSpikesLoadedCallback(object){
 	level2Trap1.add(clone1);
 	level2Trap1.add(clone2);
 	level2Trap1.add(clone3);
+}
+
+function createKeys(){
+	
+	key1 = new Physijs.BoxMesh(new THREE.BoxGeometry(0.2, 0.2, 0.2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0.1);
+	key1.position.set(-7, 4, -22);
+	scene.add(key1);
+	key1.setLinearFactor(new THREE.Vector3(0,0,0));
+	key1.setAngularVelocity(new THREE.Vector3(0,1,0));
+	key1.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			scene.remove(key1);
+			keysPickedUp += 1;
+		}
+	});
+	key2 = new Physijs.BoxMesh(new THREE.BoxGeometry(0.2, 0.2, 0.2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0.1);
+	key2.position.set(22.4, 4, -17.8);
+	scene.add(key2);
+	key2.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			scene.remove(key2);
+			keysPickedUp += 1;
+		}
+	});
+	key2.setLinearFactor(new THREE.Vector3(0,0,0));
+	key2.setAngularVelocity(new THREE.Vector3(0,1,0));
+	key3 = new Physijs.BoxMesh(new THREE.BoxGeometry(0.2, 0.2, 0.2), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : false,
+				opacity : 1
+			}), 0.99, 0.2), 0.1);
+	key3.position.set(31.6, 4, 6.4);
+	scene.add(key3);
+	key3.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			scene.remove(key3);
+			keysPickedUp += 1;
+		}
+	});
+	key3.setLinearFactor(new THREE.Vector3(0,0,0));
+	key3.setAngularVelocity(new THREE.Vector3(0,1,0));
+}
+
+function keyLoadedCallback(object){
+	object.scale.set(0.3,0.3,0.3);
+	var key1Skin = object.clone();
+	var key2Skin = object.clone();
+	var key3Skin = object.clone();
+	key1.add(key1Skin);
+	key2.add(key2Skin);
+	key3.add(key3Skin);
 }
 
 // Texture Animation Function:

@@ -300,6 +300,9 @@ function checkFallDmg() {
                     }
             }
     }
+    if(charMesh.position.y < -5){
+    	takeDamage(100);
+    }
 }
 
 
