@@ -178,11 +178,13 @@ function checkMovement() {
                 
             }
         }
-        distance.subVectors(charMesh.position, lever.position);
-        if(!jumpableDoorOpen && distance.length() < 2.5){
-        	lever.rotation.x += Math.Pi/6;
-        	jumpableDoorOpen = true;
-        	jumpableDoorOpening = true;
+        if(level == 2){
+	        distance.subVectors(charMesh.position, lever.position);
+	        if(!jumpableDoorOpen && distance.length() < 2.5){
+	        	lever.rotation.x += Math.Pi/6;
+	        	jumpableDoorOpen = true;
+	        	jumpableDoorOpening = true;
+	        }
         }
         
         if (carrying && !pickupThisFrame) {
