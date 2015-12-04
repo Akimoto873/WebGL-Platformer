@@ -326,17 +326,17 @@ function init() {
     	this.currentTime = 0;
     	this.play();
     }, false);
-    damageSound = new Audio('audio/262279__dirtjm__grunts-male.wav');
+    damageSound = new Audio('audio/262279__dirtjm__grunts-male.mp3');
     damageSound.addEventListener('ended', function(){
     	this.currentTime = 0;
     });
-    walkSound = new Audio('audio/166304__fantozzi__mco-walk-f01.wav');
+    walkSound = new Audio('audio/166304__fantozzi__mco-walk-f01.mp3');
     walkSound.volume = 0.2;
     walkSound.addEventListener('ended', function(){
     	this.currentTime = 0;
     	this.play();
     })
-    jumpSound = new Audio('audio/319664__manuts__jump-1.wav');
+    jumpSound = new Audio('audio/319664__manuts__jump-1.mp3');
     jumpSound.volume = 0.5;
     jumpSound.addEventListener('ended', function(){
     	this.currentTime = 0;
@@ -396,38 +396,52 @@ function onDocumentMouseMove(e)
 {
     e.preventDefault();
     //console.log("Mouse Coord: (" + e.clientX + ", " + e.clientY + ")");
+    //
     // Check if hovering menu items
-    if(menu && !controls){
-        if(hasClickedButton(e, toScreenXY(menuItems["play"].position)))
-        {
-            menuItems["play"].material.map = playSelectedTexture; 
-        }
-        else
-        {
-            menuItems["play"].material.map = playTexture; 
-        }
+    if(menu){
+        if(!controls){
+            // Hovering Play
+            if(hasClickedButton(e, toScreenXY(menuItems["play"].position)))
+            {
+                menuItems["play"].material.map = playSelectedTexture; 
+            }
+            else
+            {
+                menuItems["play"].material.map = playTexture; 
+            }
 
+            // Hovering Options
             if(hasClickedButton(e, toScreenXY(menuItems["options"].position)))
-        {
-            menuItems["options"].material.map = optionsSelectedTexture; 
-        }
-        else
-        {
-            menuItems["options"].material.map = optionsTexture; 
-        }
+            {
+                menuItems["options"].material.map = optionsSelectedTexture; 
+            }
+            else
+            {
+                menuItems["options"].material.map = optionsTexture; 
+            }
 
-        if(hasClickedButton(e, toScreenXY(menuItems["help"].position)))
-        {
-            menuItems["help"].material.map = controlsSelectedTexture; 
+            // Hovering Help
+            if(hasClickedButton(e, toScreenXY(menuItems["help"].position)))
+            {
+                menuItems["help"].material.map = controlsSelectedTexture; 
+            }
+            else
+            {
+                menuItems["help"].material.map = controlsTexture; 
+            }
         }
         else
         {
-            menuItems["help"].material.map = controlsTexture; 
+            // Hovering "Back" arrow
+            if(hasClickedButton(e, toScreenXY(menuItems["back"].position)))
+            {
+                menuItems["back"].material.map = backSelectedTexture;
+            }
+            else
+            {
+                menuItems["back"].material.map = backTexture;
+            }
         }
-        if(hasClickedButton(e, toScreenXY(menuItems["back"].position)))
-    	{
-        	//loadSelectedTexture
-    	}
     }
     if(!menu && charCam){
         if(oldMouseY == 0){
@@ -697,7 +711,8 @@ function createMenu(){
 	controlsTexture = textureLoader.load('images/menu/menu_help.png');
 	controlsSelectedTexture = textureLoader.load('images/menu/menu_help_selected.png');
 	controlsScreenTexture = textureLoader.load('images/menu/menu_controls.jpg');
-	backTexture = textureLoader.load('images/backButton.jpg');
+	backTexture = textureLoader.load('images/menu/menu_back_arrow.png');
+        backSelectedTexture = textureLoader.load('images/menu/menu_back_arrow_selected.png');
 	loadingBackgroundTexture = textureLoader.load('images/loadingBackground.jpg');
 	loadingBarTexture = textureLoader.load('images/loadingBar.jpg');
 	loadingBarTexture.wrapS = THREE.RepeatWrapping;
@@ -788,15 +803,18 @@ function createMenu(){
 	controlsSprite.visible = false;
         
         
+        // Back (Arrow)
 	var spriteMaterial = new THREE.SpriteMaterial({
 		map : backTexture
 	});
 	backSprite = new THREE.Sprite(spriteMaterial);
-	backSprite.position.set(-buttonSizeX*2, -menuSizeY/2 + buttonSizeY, -80);
-	backSprite.scale.set(buttonSizeX, buttonSizeY, 1);
-	backSprite.visible = false;
+	backSprite.position.set(-buttonSizeX*1.5, -menuSizeY/2.25 + buttonSizeY , -80);
+	backSprite.scale.set(buttonSizeX, buttonSizeY*3, 1);
 	orthoScene.add(backSprite);
 	menuItems["back"] = backSprite;
+        backSprite.visible = false;  
+        
+        
 	menu = true;
 	removeLoadingScreen();
 	showMenu();
