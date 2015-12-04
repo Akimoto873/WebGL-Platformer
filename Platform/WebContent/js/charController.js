@@ -203,7 +203,7 @@ function checkMovement() {
     	var distance = new THREE.Vector3();
         distance.subVectors(charMesh.position, doorway.position);
         if(distance.length() < 6){
-        	if(doorway.children[0].position.y > -3){
+        	if(doorway.children[0].position.y > -8){
         		doorway.children[0].position.y -= 0.02;
         	}
         	else{
