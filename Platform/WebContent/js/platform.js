@@ -99,9 +99,7 @@ function main() {
 //Game Loop
 function tick() {
     if (level != 0) {
-    	if(!menu){
-            scene.simulate();
-    	}
+        scene.simulate();
         stats.update();
         renderer.clear();
         if(!loadingScreen){
