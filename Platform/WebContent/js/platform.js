@@ -321,7 +321,7 @@ function init() {
     }, false);
     ambience.play();
     ambience2 = new Audio('audio/172937__setuniman__creepy-0v55m2.mp3');
-    ambience2.volume = 0.2;
+    ambience2.volume = 0;
     ambience2.addEventListener('ended', function(){
     	this.currentTime = 0;
     	this.play();
@@ -489,7 +489,7 @@ function toScreenXY(pos3D)
 }
 
 function sceneUpdate(){
-	if(!menu){
+	if(!menu && !gameOverScreen){
         checkKeys();
         checkMovement();
 	}
