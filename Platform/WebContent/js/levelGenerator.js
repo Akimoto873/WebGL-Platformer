@@ -360,6 +360,8 @@ function generateLevel2() {
 
 			objects.push(node);
 		}
+		
+		
 
 	});
 	level = 2;

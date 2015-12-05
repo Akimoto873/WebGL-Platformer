@@ -346,7 +346,7 @@ function init() {
     	this.currentTime = 0;
     });
     
-    generateLevel1(); 
+    generateLevel2(); 
     createOverlay();
     createChar();
     createMenu();
@@ -709,7 +709,7 @@ function restartLevel() { // Currently not finished.
 	    scene.remove(charMesh);
 	    resetChar();
 	    resetCrates();
-	    resetTraps();
+	    resetTraps2();
 	    health = 100;
 	    damaged = true;
 	    if (gameOverScreen) {
@@ -719,7 +719,7 @@ function restartLevel() { // Currently not finished.
 	            orthoScene.remove(restartSprite);
 	    }
 	    carriedCones = 0;
-	    resetCones();
+	    resetCones(); /*TODO: This is not working properly*/
 	    resetKeys();
 	    resetPuzzle();
 	    resetJumpableDoor();
@@ -738,9 +738,11 @@ function resetChar() {
     charMesh.position.y = charMeshPosition.y;
     charMesh.position.z = charMeshPosition.z;
     scene.add(charMesh);
-    camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
-    charMesh.add(camera);
-    charMesh.material.visible = false;
+    if(charCam){
+    	camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
+        charMesh.add(camera);
+    	charMesh.material.visible = false;
+    }
     charMesh.setAngularFactor(new THREE.Vector3(0, 1, 0));
     moveableObjects.push(charMesh);
     carrying = false;
@@ -789,23 +791,25 @@ function resetCones(){
 
 //resets the traps
 function resetTraps() {
-	if(level == 1){
 	    scene.remove(trap2);
 	    trap2.position.set(-20, 1.5, 24.5);
 	    scene.add(trap2);
 	    trap2.setAngularFactor(new THREE.Vector3(0, 0, 0));
 	    triggered2 = false;
-	}
-	if(level == 2){
-		level2Trap1Triggered = false;
-		scene.remove(level2Trap1);
-		level2Trap1.position.x = -16;
-		level2Trap1.position.y = 9;
-		level2Trap1.position.z = 0;
-		scene.add(level2Trap1);
-		level2Trap1.setLinearFactor(new THREE.Vector3(0, 0, 0));
-		level2Trap1.setAngularFactor(new THREE.Vector3(0, 0, 0));
-	}
+	
+		
+}
+
+function resetTraps2(){
+	level2Trap1Triggered = false;
+	scene.remove(level2Trap1);
+	level2Trap1.position.x = -16;
+	level2Trap1.position.y = 9;
+	level2Trap1.position.z = 0;
+	scene.add(level2Trap1);
+	level2Trap1.setLinearFactor(new THREE.Vector3(0, 0, 0));
+	level2Trap1.setAngularFactor(new THREE.Vector3(0, 0, 0));
+
 }
 
 function resetKeys(){

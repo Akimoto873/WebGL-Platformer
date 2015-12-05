@@ -320,6 +320,7 @@ function checkTraps() {
 	    		puzzleComplete = false;
 	    	}
 	    }
+	    /*TODO: Fix platforms getting stuck somehow*/
 	    if( platform1.position.z < -10 || platform1.position.z > -2.5){
 	    	platform1Velocity = -platform1Velocity;
 	    }
