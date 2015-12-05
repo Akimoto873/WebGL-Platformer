@@ -320,12 +320,22 @@ function checkTraps() {
 	    		puzzleComplete = false;
 	    	}
 	    }
-	    if( platform1.position.y < -17){
-	    	platform1.setLinearVelocity(new THREE.Vector3(0,0,1));
+	    if( platform1.position.z < -10 || platform1.position.z > -3){
+	    	platform1Velocity = -platform1Velocity;
 	    }
-	    else if (platform1.position.y > -3){
-	    	platform1.setLinearVelocity(new THREE.Vector3(0,0,-1));
+	    if(platform2.position.z < -22.5 || platform2.position.z > -13){
+	    	platform2Velocity = -platform2Velocity;
 	    }
+	    if(platform3.position.x > 27 || platform3.position.x < 17.5){
+	    	platform3Velocity = -platform3Velocity;
+	    }
+	    if(platform4.position.z < -22.5 || platform4.position.z > -13){
+	    	platform4Velocity = -platform4Velocity;
+	    }
+	    platform1.setLinearVelocity(new THREE.Vector3(0,0,platform1Velocity));
+	    platform2.setLinearVelocity(new THREE.Vector3(0,0,platform2Velocity));
+	    platform3.setLinearVelocity(new THREE.Vector3(platform3Velocity,0,0));
+	    platform4.setLinearVelocity(new THREE.Vector3(0,0,platform4Velocity));
     }
 }
 

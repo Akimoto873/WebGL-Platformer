@@ -797,6 +797,10 @@ function createPuzzle(){
 		}
 	}
 }
+var platform1Velocity = -2;
+var platform2Velocity = -2;
+var platform3Velocity = -3;
+var platform4Velocity = 2.5;
 
 function createGroundSpikes(){
 	spikes1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
@@ -923,11 +927,53 @@ function createGroundSpikes(){
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0x222222
 			}), 1, 0.1), 100);
-	platform1.position.set(22.40, 1.2, -2);
+	platform1.position.set(22.40, 1.2, -3);
 	scene.add(platform1);
 	platform1.setLinearFactor(new THREE.Vector3(0,0,1));
 	platform1.setAngularFactor(new THREE.Vector3(0,0,0));
-	platform1.setLinearVelocity(new THREE.Vector3(0,0,-1));
+	platform1.setLinearVelocity(new THREE.Vector3(0,0,platform1Velocity));
+	platform2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2,0.2,2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x222222
+			}), 1, 0.1), 100);
+	platform2.position.set(27, 1.2, -13);
+	platform2.addEventListener('collision', function(other_object){
+		if(other_object == platform3){
+			platform2Velocity = -platform2Velocity;
+		}
+	})
+	scene.add(platform2);
+	platform2.setLinearFactor(new THREE.Vector3(0,0,1));
+	platform2.setAngularFactor(new THREE.Vector3(0,0,0));
+	platform2.setLinearVelocity(new THREE.Vector3(0,0,platform2Velocity));
+	platform3 = new Physijs.BoxMesh(new THREE.BoxGeometry(2,0.2,2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x222222
+			}), 1, 0.1), 100);
+	platform3.position.set(22.40, 1.2, -22.4);
+	platform3.addEventListener('collision', function(other_object){
+		if(other_object == platform2 || other_object == platform4){
+			platform3Velocity = -platform3Velocity;
+		}
+	});
+	scene.add(platform3);
+	platform3.setLinearFactor(new THREE.Vector3(1,0,0));
+	platform3.setAngularFactor(new THREE.Vector3(0,0,0));
+	platform3.setLinearVelocity(new THREE.Vector3(platform3Velocity,0,0));
+	platform4 = new Physijs.BoxMesh(new THREE.BoxGeometry(2,0.2,2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x222222
+			}), 1, 0.1), 100);
+	platform4.position.set(17.8, 1.2, -22.4);
+	platform4.addEventListener('collision', function(other_object){
+		if(other_object == platform3){
+			platform4Velocity = -platform4Velocity;
+		}
+	})
+	scene.add(platform4);
+	platform4.setLinearFactor(new THREE.Vector3(0,0,1));
+	platform4.setAngularFactor(new THREE.Vector3(0,0,0));
+	platform4.setLinearVelocity(new THREE.Vector3(0,0,platform4Velocity));
 }
 
 function groundSpikesBloodyLoadedCallback(object){

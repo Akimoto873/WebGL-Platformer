@@ -346,7 +346,7 @@ function init() {
     	this.currentTime = 0;
     });
     
-    generateLevel2(); 
+    generateLevel1(); 
     createOverlay();
     createChar();
     createMenu();
