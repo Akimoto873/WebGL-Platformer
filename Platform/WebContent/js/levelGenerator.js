@@ -919,7 +919,15 @@ function createGroundSpikes(){
 		}
 	});
 	scene.add(spikes10);
-	
+	platform1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2,0.2,2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x222222
+			}), 1, 0.1), 100);
+	platform1.position.set(22.40, 1.2, -2);
+	scene.add(platform1);
+	platform1.setLinearFactor(new THREE.Vector3(0,0,1));
+	platform1.setAngularFactor(new THREE.Vector3(0,0,0));
+	platform1.setLinearVelocity(new THREE.Vector3(0,0,-1));
 }
 
 function groundSpikesBloodyLoadedCallback(object){

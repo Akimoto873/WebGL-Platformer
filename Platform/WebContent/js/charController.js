@@ -320,6 +320,12 @@ function checkTraps() {
 	    		puzzleComplete = false;
 	    	}
 	    }
+	    if( platform1.position.y < -17){
+	    	platform1.setLinearVelocity(new THREE.Vector3(0,0,1));
+	    }
+	    else if (platform1.position.y > -3){
+	    	platform1.setLinearVelocity(new THREE.Vector3(0,0,-1));
+	    }
     }
 }
 
