@@ -53,6 +53,12 @@ function checkKeys() {
     if (keyMap[68]) { 
             clockwiseRotation = -2; // charMesh.setAngularVelocity(new    // THREE.Vector3(0, -1.5, 0));
     }
+    if(keyMap[65] || keyMap[68]){
+    	charMesh.setAngularFactor(new THREE.Vector3(0,1,0));
+    }
+    else{
+    	charMesh.setAngularFactor(new THREE.Vector3(0,0,0));
+    }
 
     // Q - strafe
     if (keyMap[69]) {

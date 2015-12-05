@@ -91,7 +91,7 @@ var projector, mouse = { x: 0, y: 0 };
 var menuItems = [];
 
 /* DEBUG VARS */
-var charCam = false;  // Set to false for easier bugtesting.
+var charCam = true;  // Set to false for easier bugtesting.
 var enableDebugging = false;
 var box; //For easier collision box placement.
 
@@ -614,7 +614,7 @@ function createChar() {
 	charMesh = new Physijs.CapsuleMesh(new THREE.CylinderGeometry(0.8, 0.8, 3, 16), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0xeeff33
-			}), 0.5, .1), 10);
+			}), 0.5, 0.1), 10);
 	charMesh.position.x = charMeshPosition.x;
 	charMesh.position.y = charMeshPosition.y;
 	charMesh.position.z = charMeshPosition.z;

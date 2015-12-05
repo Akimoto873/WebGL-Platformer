@@ -1024,7 +1024,7 @@ function createLevel2Floors(){
 				color : 0xee2233,
 				visible : false,
 				opacity : 1
-			}), 0.99, 0.2), 0);
+			}), 1, 0.2), 0);
 
 	floor1.position.set(7.8, -0.5, -3.8);
 	floor1.scale.set(12.5, 1, 20.2);
@@ -1035,7 +1035,7 @@ function createLevel2Floors(){
 				color : 0xee2233,
 				visible : false,
 				opacity : 1
-			}), 0.99, 0.2), 0);
+			}), 1, 0.2), 0);
 
 	floor2.position.set(-14.8, -0.5, -3.8);
 	floor2.scale.set(5.6, 1, 20.2);
@@ -1045,7 +1045,7 @@ function createLevel2Floors(){
 				color : 0xee2233,
 				visible : false,
 				opacity : 1
-			}), 0.99, 0.2), 0);
+			}), 1, 0.2), 0);
 
 	floor3.position.set(-7, -0.5, -1);
 	floor3.scale.set(2.5, 1, 18.2);
@@ -1055,7 +1055,7 @@ function createLevel2Floors(){
 				color : 0xee2233,
 				visible : false,
 				opacity : 1
-			}), 0.99, 0.2), 0);
+			}), 1, 0.2), 0);
 
 	floor4.position.set(27.2, -0.5, -3.8);
 	floor4.scale.set(2.2, 1,20.2 );
@@ -1066,7 +1066,7 @@ function createLevel2Floors(){
 				color : 0xee2233,
 				visible : false,
 				opacity : 1
-			}), 0.99, 0.2), 0);
+			}), 1, 0.2), 0);
 
 	floor5.position.set(36.2, -0.5, 8.2);
 	floor5.scale.set(2.2, 1, 10.2);
@@ -1076,7 +1076,7 @@ function createLevel2Floors(){
 				color : 0xee2233,
 				visible : false,
 				opacity : 1
-			}), 0.99, 0.2), 0);
+			}), 1, 0.2), 0);
 	floor6.position.set(31.8, -0.5, 18.8);
 	floor6.scale.set(2.2, 1, 10.2);
 	scene.add(floor6);
@@ -1085,7 +1085,7 @@ function createLevel2Floors(){
 				color : 0xee2233,
 				visible : false,
 				opacity : 1
-			}), 0.99, 0.2), 0);
+			}), 1, 0.2), 0);
 	floor7.position.set(31.6, -0.5, 1.6);
 	floor7.scale.set(2.2, 1, 2.6);
 	scene.add(floor7);
@@ -1094,7 +1094,7 @@ function createLevel2Floors(){
 				color : 0xee2233,
 				visible : false,
 				opacity : 1
-			}), 0.99, 0.2), 0);
+			}), 1, 0.2), 0);
 	floor8.position.set(22.6, -0.5, -25.4);
 	floor8.scale.set(2.2, 1, 5.2);
 	scene.add(floor8);
@@ -1103,7 +1103,7 @@ function createLevel2Floors(){
 				color : 0xee2233,
 				visible : false,
 				opacity : 1
-			}), 0.99, 0.2), 0);
+			}), 1, 0.2), 0);
 	floor9.position.set(22.6, -0.5, 0.8);
 	floor9.scale.set(2.6, 1, 16);
 	scene.add(floor9);
