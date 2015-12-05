@@ -318,20 +318,32 @@ function checkTraps() {
 	    			scene.remove(puzzlePoints[i]);
 	    		}
 	    		puzzleComplete = false;
+	    		reAddPuzzle = true;
 	    	}
 	    }
-	    /*TODO: Fix platforms getting stuck somehow*/
-	    if( platform1.position.z < -10 || platform1.position.z > -2.5){
-	    	platform1Velocity = -platform1Velocity;
+	    if( platform1.position.z < -10 ){
+	    	platform1Velocity = 2;
 	    }
-	    if(platform2.position.z < -22.5 || platform2.position.z > -13){
-	    	platform2Velocity = -platform2Velocity;
+	    else if(platform1.position.z > -2.5){
+	    	platform1Velocity = -2;
 	    }
-	    if(platform3.position.x > 27 || platform3.position.x < 17.5){
-	    	platform3Velocity = -platform3Velocity;
+	    if(platform2.position.z < -22.5 ){
+	    	platform2Velocity = 2;
 	    }
-	    if(platform4.position.z < -22.5 || platform4.position.z > -13){
-	    	platform4Velocity = -platform4Velocity;
+	    else if( platform2.position.z > -13){
+	    	platform2Velocity = -2;
+	    }
+	    if(platform3.position.x > 27 ){
+	    	platform3Velocity = -3;
+	    }
+	    else if( platform3.position.x < 17.5){
+	    	platform3Velocity = 3;
+	    }
+	    if(platform4.position.z < -22.5 ){
+	    	platform4Velocity = 2.5;
+	    }
+	    else if(platform4.position.z > -13){
+	    	platform4Velocity = -2.5;
 	    }
 	    platform1.setLinearVelocity(new THREE.Vector3(0,0,platform1Velocity));
 	    platform2.setLinearVelocity(new THREE.Vector3(0,0,platform2Velocity));

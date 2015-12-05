@@ -91,7 +91,7 @@ var projector, mouse = { x: 0, y: 0 };
 var menuItems = [];
 
 /* DEBUG VARS */
-var charCam = true;  // Set to false for easier bugtesting.
+var charCam = false;  // Set to false for easier bugtesting.
 var enableDebugging = false;
 var box; //For easier collision box placement.
 
@@ -827,7 +827,7 @@ function resetKeys(){
 	key3.setLinearFactor(new THREE.Vector3(0,0,0));
 	key3.setAngularVelocity(new THREE.Vector3(0,1,0));
 }
-
+var reAddPuzzle = false;
 function resetPuzzle(){
 	for(var i = 0; i < puzzlePoints.length; i++){
 		if(puzzlePoints[i].material.map == puzzleLightOnTexture){
@@ -836,18 +836,27 @@ function resetPuzzle(){
 		}
 		puzzlePoints[i].material.opacity = 1;
 		puzzlePoints[i].material.transparent = false;
-		scene.add(puzzlePoints[i]);
+		if(reAddPuzzle){
+			scene.add(puzzlePoints[i]);
+			
+		}
 	}
 	puzzle.material.opacity = 1;
-	scene.add(puzzle);
+	puzzle.material.transparent = false;
+	if(reAddPuzzle){
+		scene.add(puzzle);
+		reAddPuzzle = false;
+	}
 }
 
 function resetJumpableDoor(){
-	scene.remove(jumpableDoor);
-	jumpableDoor.position.set(16.6, 3, 14.4);
-	scene.add(jumpableDoor);
-	jumpableDoor.setLinearFactor(new THREE.Vector3(0,1,0));
-	jumpableDoor.setAngularFactor(new THREE.Vector3(0,0,0));
+	if(jumpableDoorOpen){
+		scene.remove(jumpableDoor);
+		jumpableDoor.position.y -= 4;
+		scene.add(jumpableDoor);
+		jumpableDoor.setLinearFactor(new THREE.Vector3(0,1,0));
+		jumpableDoor.setAngularFactor(new THREE.Vector3(0,0,0));
+	}
 }
 
 //Creates the menu
