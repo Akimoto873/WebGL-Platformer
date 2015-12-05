@@ -351,7 +351,9 @@ function generateLevel2() {
 	objLoader.load('models/objects/trap_spikes/trap_spikes.obj', 'models/objects/trap_spikes/trap_spikes.mtl', trapSpikesLoadedCallback);
 	
 	createPuzzle();
-
+	createGroundSpikes();
+	objLoader.load('models/objects/trap_spikes_ground/bloody/trap_spikes_ground_bloody.obj', 'models/objects/trap_spikes_ground/bloody/trap_spikes_ground_bloody.mtl', groundSpikesBloodyLoadedCallback);
+	objLoader.load('models/objects/trap_spikes_ground/normal/trap_spikes_ground.obj', 'models/objects/trap_spikes_ground/normal/trap_spikes_ground.mtl', groundSpikesLoadedCallback);
 	scene.traverse(function(node) {
 
 		if (node instanceof Physijs.BoxMesh) {
@@ -751,18 +753,30 @@ function giantDoorLoadedCallback(object){
 
 var puzzlePoints = [];
 var puzzle;
+var puzzleLightOnTexture;
+var puzzleLightOffTexture;
 function createPuzzle(){
+	var puzzleTexture = textureLoader.load('images/lightwall/lightwall_texture.jpg');
+    puzzleMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
+            map : puzzleTexture
+    }), 0.4, 0.8);
+    puzzleLightOnTexture = textureLoader.load('images/lightwall/on_state.png');
+    puzzleLightOnTexture.name = "puzzleLightOnTexture";
+    puzzleLightOffTexture = textureLoader.load('images/lightwall/off_state.png');
+    puzzleLightOffTexture.name = "puzzleLightOffTexture";
+    puzzleLightMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
+            map : puzzleLightOffTexture
+    }), 0.4, 0.8);
+    
 	puzzleSound = new Audio('audio/162473__kastenfrosch__successful.mp3');
 	puzzleCaster = new THREE.Raycaster();
 	puzzle = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44
-			}), 0.0, 0.1), 0);
+			puzzleMaterial, 0);
 	puzzle.position.set(-4.8, 3, -22);
 	puzzle.scale.set(0.2, 1, 2.2);
 	scene.add(puzzle);
 	var puzzlePoint = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.3, 8), 
-			new THREE.MeshBasicMaterial({color: 0xFF0000}));
+			new THREE.MeshBasicMaterial());
 	puzzlePoint.position.x = -4.8;
 	puzzlePoint.position.y = 3;
 	puzzlePoint.position.z = -22;
@@ -775,13 +789,176 @@ function createPuzzle(){
 		for(var j = 0; j < 4; j++){
 			point += 1;
 			var clone = puzzlePoint.clone();
-			clone.material = new THREE.MeshBasicMaterial({color: 0xFF0000});
+			clone.material = puzzleLightMaterial.clone();
 			clone.position.y += (0.7 * i);
 			clone.position.z += (0.7 * j);
 			puzzlePoints.push(clone);
 			scene.add(clone);
 		}
 	}
+}
+
+function createGroundSpikes(){
+	spikes1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible:false
+			}), 0.0, 0.1), 0);
+	spikes1.position.set(22.40, -0.6, -4);
+	spikes1.scale.set(2, 1, 2);
+	spikes1.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			takeDamage(5);
+		}
+	});
+	scene.add(spikes1);
+	spikes2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible:false
+			}), 0.0, 0.1), 0);
+	spikes2.position.set(22.40, -0.6, -8.6);
+	spikes2.scale.set(2, 1, 2);
+	spikes2.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			takeDamage(5);
+		}
+	});
+	scene.add(spikes2);
+	spikes3 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible:false
+			}), 0.0, 0.1), 0);
+	spikes3.position.set(22.40, -0.6, -13.2);
+	spikes3.scale.set(2, 1, 2);
+	spikes3.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			takeDamage(5);
+		}
+	});
+	scene.add(spikes3);
+	spikes4 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible:false
+			}), 0.0, 0.1), 0);
+	spikes4.position.set(27, -0.6, -13.2);
+	spikes4.scale.set(2, 1, 2);
+	spikes4.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			takeDamage(5);
+		}
+	});
+	scene.add(spikes4);
+	spikes5 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible:false
+			}), 0.0, 0.1), 0);
+	spikes5.position.set(17.8, -0.6, -13.2);
+	spikes5.scale.set(2, 1, 2);
+	spikes5.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			takeDamage(5);
+		}
+	});
+	scene.add(spikes5);
+	spikes6 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible:false
+			}), 0.0, 0.1), 0);
+	spikes6.position.set(17.8, -0.6, -17.8);
+	spikes6.scale.set(2, 1, 2);
+	spikes6.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			takeDamage(5);
+		}
+	});
+	scene.add(spikes6);
+	spikes7 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible:false
+			}), 0.0, 0.1), 0);
+	spikes7.position.set(17.8, -0.6, -22.4);
+	spikes7.scale.set(2, 1, 2);
+	spikes7.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			takeDamage(5);
+		}
+	});
+	scene.add(spikes7);
+	spikes8 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible:false
+			}), 0.0, 0.1), 0);
+	spikes8.position.set(22.4, -0.6, -22.4);
+	spikes8.scale.set(2, 1, 2);
+	spikes8.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			takeDamage(5);
+		}
+	});
+	scene.add(spikes8);
+	spikes9 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible:false
+			}), 0.0, 0.1), 0);
+	spikes9.position.set(27, -0.6, -22.4);
+	spikes9.scale.set(2, 1, 2);
+	spikes9.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			takeDamage(5);
+		}
+	});
+	scene.add(spikes9);
+	spikes10 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44, visible:false
+			}), 0.0, 0.1), 0);
+	spikes10.position.set(27, -0.6, -17.8);
+	spikes10.scale.set(2, 1, 2);
+	spikes10.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			takeDamage(5);
+		}
+	});
+	scene.add(spikes10);
+	
+}
+
+function groundSpikesBloodyLoadedCallback(object){
+	object.scale.set(0.3,0.3,0.3);
+	object.position.y += 0.2;
+	clone1 = object.clone();
+	clone3 = object.clone();
+	
+	clone5 = object.clone();
+	
+	clone7 = object.clone();
+	clone8 = object.clone();
+	
+	clone10 = object.clone();
+	spikes1.add(clone1);
+	spikes3.add(clone3);
+	
+	spikes5.add(clone5);
+	
+	spikes7.add(clone7);
+	spikes8.add(clone8);
+	
+	spikes10.add(clone10);
+}
+
+function groundSpikesLoadedCallback(object){
+	object.scale.set(0.3,0.3,0.3);
+	object.position.y += 0.2;
+	
+	clone2 = object.clone();
+	clone4 = object.clone();
+	clone6 = object.clone();
+	clone9 = object.clone();
+	
+	
+	spikes2.add(clone2);
+	spikes4.add(clone4);
+	spikes6.add(clone6);
+	spikes9.add(clone9);
 }
 
 function createLevel2Floors(){

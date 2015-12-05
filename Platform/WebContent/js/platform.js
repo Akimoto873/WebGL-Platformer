@@ -417,45 +417,43 @@ function onDocumentMouseClick(e)
 					vector.z = 0;
 					
 					if(Math.abs(e.clientX - vector.x) < 50 && Math.abs(e.clientY  - vector.y) < 50){
-						var color1 = new THREE.Color( 0xff0000 );
-						var color2 = new THREE.Color( 0x00ff00 );
-						var color3 = new THREE.Color( 0x0000ff );
-						if(puzzlePoints[point].material.color.equals(color1)){
-							puzzlePoints[point].material.color.setHex(0x00FF00);
+						
+						if(puzzlePoints[point].material.map == puzzleLightOffTexture){
+							puzzlePoints[point].material.map = puzzleLightOnTexture;
 						}
 						else{
-							puzzlePoints[point].material.color.setHex(0xFF0000);
+							puzzlePoints[point].material.map = puzzleLightOffTexture;
 						}
 						if(k > 0){
-							if(puzzlePoints[point - 1].material.color.equals(color1)){
-								puzzlePoints[point -1].material.color.setHex(0x00FF00);
+							if(puzzlePoints[point - 1].material.map == puzzleLightOffTexture){
+								puzzlePoints[point -1].material.map = puzzleLightOnTexture;
 							}
 							else{
-								puzzlePoints[point-1].material.color.setHex(0xFF0000);
+								puzzlePoints[point-1].material.map = puzzleLightOffTexture;
 							}
 						}
 						if(k < 3){
-							if(puzzlePoints[point + 1].material.color.equals(color1)){
-								puzzlePoints[point +1].material.color.setHex(0x00FF00);
+							if(puzzlePoints[point + 1].material.map == puzzleLightOffTexture){
+								puzzlePoints[point +1].material.map = puzzleLightOnTexture;
 							}
 							else{
-								puzzlePoints[point+1].material.color.setHex(0xFF0000);
+								puzzlePoints[point+1].material.map = puzzleLightOffTexture;
 							}
 						}
 						if(j>0){
-							if(puzzlePoints[point - 4].material.color.equals(color1)){
-								puzzlePoints[point -4].material.color.setHex(0x00FF00);
+							if(puzzlePoints[point - 4].material.map == puzzleLightOffTexture){
+								puzzlePoints[point -4].material.map = puzzleLightOnTexture;
 							}
 							else{
-								puzzlePoints[point-4].material.color.setHex(0xFF0000);
+								puzzlePoints[point-4].material.map = puzzleLightOffTexture;
 							}
 						}
 						if(j<3){
-							if(puzzlePoints[point + 4].material.color.equals(color1)){
-								puzzlePoints[point +4].material.color.setHex(0x00FF00);
+							if(puzzlePoints[point + 4].material.map == puzzleLightOffTexture){
+								puzzlePoints[point +4].material.map = puzzleLightOnTexture;
 							}
 							else{
-								puzzlePoints[point+4].material.color.setHex(0xFF0000);
+								puzzlePoints[point+4].material.map = puzzleLightOffTexture;
 							}
 						}
 					}
@@ -464,7 +462,7 @@ function onDocumentMouseClick(e)
 			}
 			var complete = true;
 			for(var i = 0; i < puzzlePoints.length; i++){
-				if(puzzlePoints[i].material.color.equals(new THREE.Color(0xFF0000))){
+				if(puzzlePoints[i].material.map.name == "puzzleLightOffTexture"){
 					complete = false;
 				}
 			}
@@ -828,11 +826,12 @@ function resetKeys(){
 
 function resetPuzzle(){
 	for(var i = 0; i < puzzlePoints.length; i++){
-		if(puzzlePoints[i].material.color.equals(new THREE.Color(0x00FF00))){
-			puzzlePoints[i].material.color.setHex(0xFF0000);
+		if(puzzlePoints[i].material.map == puzzleLightOnTexture){
+			puzzlePoints[i].material.map = puzzleLightOffTexture;
 			
 		}
 		puzzlePoints[i].material.opacity = 1;
+		puzzlePoints[i].material.transparent = false;
 		scene.add(puzzlePoints[i]);
 	}
 	puzzle.material.opacity = 1;
