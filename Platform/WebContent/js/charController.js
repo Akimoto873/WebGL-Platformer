@@ -320,7 +320,7 @@ function checkTraps() {
 	    		puzzleComplete = false;
 	    	}
 	    }
-	    if( platform1.position.z < -10 || platform1.position.z > -3){
+	    if( platform1.position.z < -10 || platform1.position.z > -2.5){
 	    	platform1Velocity = -platform1Velocity;
 	    }
 	    if(platform2.position.z < -22.5 || platform2.position.z > -13){
