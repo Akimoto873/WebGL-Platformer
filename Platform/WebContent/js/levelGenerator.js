@@ -717,7 +717,7 @@ function createJumpableDoor(){
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0x22ee44, visible:false
 			}), 0.0, 0.1), 20);
-	jumpableDoor.position.set(16.6, 3, 14.4);
+	jumpableDoor.position.set(16.6, 3, 14.3);
 	jumpableDoor.scale.set(1, 1, 1.60);
 	scene.add(jumpableDoor);
 	jumpableDoor.setLinearFactor(new THREE.Vector3(0,1,0));
@@ -745,7 +745,7 @@ function giantDoorLoadedCallback(object){
 	clone1 = object.clone();
 	clone1.rotation.y += Math.PI/2;
 	clone1.position.y -= 3;
-	clone1.scale.set(0.45,0.7,1.5);
+	clone1.scale.set(0.48,0.7,1.5);
 	jumpableDoor.add(clone1);
 }
 

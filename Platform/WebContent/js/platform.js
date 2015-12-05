@@ -711,6 +711,7 @@ function restartLevel() { // Currently not finished.
 	    scene.remove(charMesh);
 	    resetChar();
 	    resetCrates();
+	    resetTraps();
 	    health = 100;
 	    damaged = true;
 	    if (gameOverScreen) {
@@ -790,11 +791,23 @@ function resetCones(){
 
 //resets the traps
 function resetTraps() {
-    scene.remove(trap2);
-    trap2.position.set(-20, 1.5, 24.5);
-    scene.add(trap2);
-    trap2.setAngularFactor(new THREE.Vector3(0, 0, 0));
-    triggered2 = false;
+	if(level == 1){
+	    scene.remove(trap2);
+	    trap2.position.set(-20, 1.5, 24.5);
+	    scene.add(trap2);
+	    trap2.setAngularFactor(new THREE.Vector3(0, 0, 0));
+	    triggered2 = false;
+	}
+	if(level == 2){
+		level2Trap1Triggered = false;
+		scene.remove(level2Trap1);
+		level2Trap1.position.x = -16;
+		level2Trap1.position.y = 9;
+		level2Trap1.position.z = 0;
+		scene.add(level2Trap1);
+		level2Trap1.setLinearFactor(new THREE.Vector3(0, 0, 0));
+		level2Trap1.setAngularFactor(new THREE.Vector3(0, 0, 0));
+	}
 }
 
 function resetKeys(){

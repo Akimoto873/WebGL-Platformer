@@ -111,6 +111,7 @@ function showGameOver() {
         
         
 	gameOverScreen = true;
+	walkSound.pause();
 	gameOverAudio.play();
 }
 
