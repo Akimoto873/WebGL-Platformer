@@ -875,6 +875,8 @@ function createMenu(){
 	loadingBarTexture = textureLoader.load('images/loadingBar.jpg');
 	loadingBarTexture.wrapS = THREE.RepeatWrapping;
         loadingBarTexture.wrapT = THREE.RepeatWrapping;
+    damageTexture = textureLoader.load('images/damage.png');    
+    
 	
 
 	// Create and add container for our overlay (menu)
@@ -970,7 +972,16 @@ function createMenu(){
 	backSprite.scale.set(buttonSizeX, buttonSizeY*3, 1);
 	orthoScene.add(backSprite);
 	menuItems["back"] = backSprite;
-        backSprite.visible = false;  
+        backSprite.visible = false;
+    
+    var damageMaterial = new THREE.SpriteMaterial({
+    	map : damageTexture
+    });
+    damageSprite = new THREE.Sprite(damageMaterial);
+    damageSprite.position.set(0,0,-20);
+    damageSprite.scale.set(window.innerWidth, window.innerHeight, 1);
+    damageSprite.visible = false;
+    orthoScene.add(damageSprite);
         
         
 	menu = true;

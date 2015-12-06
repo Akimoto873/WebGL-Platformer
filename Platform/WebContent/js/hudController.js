@@ -115,6 +115,9 @@ function showGameOver() {
 	gameOverAudio.play();
 }
 
+var damageWarning = false;
+var damageFrames = 0;
+
 // Scales the health and stamina bars based on health and stamina remaining.
 function checkChangesToHUD() {
 	
@@ -134,9 +137,20 @@ function checkChangesToHUD() {
             // TODO: Fix so it scales properly
 	    staminaSprite.scale.set((Math.abs(stamina) / 200) * spriteXScale, spriteYScale, 1);
 	    staminaSprite.position.x = (spriteXPosition)  - (1 - (Math.abs(stamina)/200)) * spriteXScale / 2;
-	
+	    
+	    if(damageWarning){
+	    	if(damageFrames > 5){
+	    		damageSprite.visible = false;
+	    		damageWarning = false;
+	    	}
+	    	damageFrames += 1;
+	    }
+	    
 	    // If you have been hurt, we update the apperance of your health
 	    if (damaged) {
+	    	damageSprite.visible = true;
+	    	damageFrames = 0;
+	    	damageWarning = true;
                 
                 // TODO: Fix so it scales properly
 	        // Update the size of the health bar according to your amount of health
