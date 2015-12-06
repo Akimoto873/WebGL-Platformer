@@ -356,34 +356,40 @@ function checkTraps() {
 	    platform3.setLinearVelocity(new THREE.Vector3(platform3Velocity,0,0));
 	    platform4.setLinearVelocity(new THREE.Vector3(0,0,platform4Velocity));
 	    
-	    var distance = new THREE.Vector3();
-        distance.subVectors(charMesh.position, zombie.position);
-        distance.y = 0;
-        if(distance.length() < 10 && !zombieMoving){
-        	distance.normalize();
-        	zombieVelocityNormal = distance;
-        	zombieMoving = true;
-        	zombieMovingFrames = 0;
-        }
-        if(zombieMoving){
-        	var temp = new THREE.Vector3(0,0,0);
-        	temp = zombieVelocityNormal;
-        	temp.multiplyScalar(1.1);
-        	log(zombieVelocityNormal.x);
-        	log(temp.y);
-        	log(zombieVelocityNormal.z);
-        	zombie.setLinearVelocity(temp);
-        	zombieMovingFrames += 1;
-        	if(zombieMovingFrames > 100){
-        		zombieMoving = false;
-        	}
-        }
+	    if(zombieAlive){
+		    var distance = new THREE.Vector3();
+	        distance.subVectors(charMesh.position, zombie.position);
+	        distance.y = 0;
+	        
+	        if(distance.length() < 15 && !zombieMoving){
+	        	distance.normalize();
+	        	
+	        	zombieVelocityNormal = distance;
+	        	zombieMoving = true;
+	        	zombieMovingFrames = 0;
+	        	
+	        }
+	        if(zombieMoving){
+	        	var oldVelocity = zombie.getLinearVelocity();
+	        	zombie.setLinearVelocity(new THREE.Vector3(zombieVelocityNormal.x * 2, oldVelocity.y, zombieVelocityNormal.z * 2 ));
+	        	zombieMovingFrames += 1;
+	        	zombie.lookAt(new THREE.Vector3(charMesh.position.x, 1, charMesh.position.z));
+	        	if(zombieMovingFrames > 100){
+	        		zombieMoving = false;
+	        	}
+	        }
+	        if(zombie.position.y < -5){
+	    		scene.remove(zombie);
+	    		zombieAlive = false;
+	    	}
+	    }
     }
 }
 var zombie;
 var zombieVelocityNormal;
 var zombieMoving = false;
 var zombieMovingFrames = 0;
+var zombieAlive = true;
 // Checks if the character should take fall dmg.
 function checkFallDmg() {
     charCaster.set(charMesh.position, new THREE.Vector3(0, -1, 0));
