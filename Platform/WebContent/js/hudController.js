@@ -148,9 +148,7 @@ function checkChangesToHUD() {
 	    
 	    // If you have been hurt, we update the apperance of your health
 	    if (damaged) {
-	    	damageSprite.visible = true;
-	    	damageFrames = 0;
-	    	damageWarning = true;
+	    	
                 
                 // TODO: Fix so it scales properly
 	        // Update the size of the health bar according to your amount of health

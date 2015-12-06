@@ -152,7 +152,6 @@ function checkMovement() {
             distance.subVectors(charMesh.position, pickUpItems[i].position);
             if (distance.length() < 2.5) {
             	
-                
                 for(var j = 0; j < crates.length; j++){
 	                if(pickUpItems[i]== crates[j] && !carrying) {
 	                	scene.remove(pickUpItems[i]);
@@ -164,8 +163,8 @@ function checkMovement() {
 	                        carrying = true;
 	                        carriedItem = j;
 	                        pickupThisFrame = true;
-	                        i = pickUpItems.length + 1;
 	                        pickUpItems.splice(i, 1);
+	                        i = pickUpItems.length + 1;
 	                }
                 }
             
@@ -301,6 +300,13 @@ function checkTraps() {
 	    }
 	}
     if(level == 2){
+    	if(cratesRemoved){
+    		for(var i = 0; i < crates.length; i++){
+    			scene.add(crates[i]);
+    		}
+    		scene.add(hintCrate);
+    		cratesRemoved = false;
+    	}
 	    if(level2Trap1Triggered){
 	    	if(level2Trap1.position.y < 9){
 	    		level2Trap1.applyCentralForce(new THREE.Vector3(0,500, 0));
@@ -469,6 +475,9 @@ function takeDamage(amount){
 	
 		damaged = true;
 		damageSound.play();
+		damageSprite.visible = true;
+    	damageFrames = 0;
+    	damageWarning = true;
 	}
 }
 

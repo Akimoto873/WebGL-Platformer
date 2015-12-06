@@ -758,23 +758,23 @@ function resetCrate() {
     crates[0].rotation.z = 0;
     scene.add(crates[0]);
 }
-
+var cratesRemoved = false;
 function resetCrates(){
-	for(var i = 0; i < crates.length; i++){
+	for(var i = 0; i < 4; i++){
 		scene.remove(crates[i]);
 //		crates[i].rotation.set(0,0,0);
 		crates[i].position.set(-12, 1 + i, -22 + 2*i);
-		scene.add(crates[i]);
+		
 		
 	}
+	scene.remove(hintCrate);
+	hintCrate.position.set(14,1,14.3);
+	cratesRemoved= true;
 }
 
 //Resets the cones
 function resetCones(){
-	for(var i = pickUpItems.length - 1; i > 0; i--){
-		scene.remove(pickUpItems[i]);
-		pickUpItems.splice(i,1);
-	}
+	
 	var clone = new Physijs.BoxMesh(cones.clone().geometry, cones.material,
 			cones.mass);
 	clone.position.x = 0;
@@ -786,7 +786,6 @@ function resetCones(){
 	clone.scale.set(0.2, 0.2, 0.2);
 	cones = clone;
 	scene.add(cones);
-	pickUpItems.push(cones);
 }
 
 //resets the traps

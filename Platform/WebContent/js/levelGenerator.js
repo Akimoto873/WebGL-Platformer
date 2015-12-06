@@ -346,6 +346,14 @@ function generateLevel2() {
 		pickUpItems.push(temp);
 		crates.push(temp);
 	}
+	hintCrate = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 1, 1.5),
+			crateMaterial, 15);
+	moveableObjects.push(hintCrate);
+	hintCrate.position.set(14,1,14.3);
+	scene.add(hintCrate);
+	crates.push(hintCrate);
+	pickUpItems.push(hintCrate);
+	
 
 	createLevel2Traps();
 	objLoader.load('models/objects/trap_spikes/trap_spikes.obj', 'models/objects/trap_spikes/trap_spikes.mtl', trapSpikesLoadedCallback);
