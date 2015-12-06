@@ -118,61 +118,7 @@ function generateLevel1() {
 	roof.position.y += 6;
 	scene.add(roof);
 
-	var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(4, 6, 0.2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44
-			}), 0.0, 0.1), 0);
-
-	addWall(basicWall1, 3.5, 3.9, 3.5, 1, 1);
-	addWall(basicWall1, 0, 7.4, 3.5, 1, 1);
-	addWall(basicWall1, 2, -7.5, 1, 1, 1);
-	addWall(basicWall1, 2, -15, 1, 1, 1);
-	addWall(basicWall1, 7, -10.5, 1.6, 1, 1);
-	addWall(basicWall1, -10, -25, 12, 1, 1);
-	addWall(basicWall1, 1.8, 10.5, 1, 1, 1);
-	addWall(basicWall1, 20, 11, 2.8, 1, 1);
-	addWall(basicWall1, 16.5, 14.5, 2.8, 1, 1);
-	addWall(basicWall1, 18, 18, 3.5, 1, 1);
-	addWall(basicWall1, 4, 21.5, 11, 1, 1);
-	addWall(basicWall1, 0, 25, 15, 1, 1);
-	addWall(basicWall1, -5.2, 14.5, 1, 1, 1);
-	addWall(basicWall1, -5.4, 18, 2.8, 1, 1);
-	addWall(basicWall1, -24, 21.5, 1, 1, 1);
-	addWall(basicWall1, -12.5, 7.5, 0.8, 1, 1);
-	addWall(basicWall1, -16.5, 0, 0.8, 1, 1);
-	addWall(basicWall1, -20, -4, 0.8, 1, 1);
-	addWall(basicWall1, -12.5, -14, 1, 1, 1);
-	addWall(basicWall1, -11, -17.8, 1.8, 1, 1);
-	addWall(basicWall1, -18, -21.5, 1.8, 1, 1);
-
-	var basicWall2 = new Physijs.BoxMesh(new THREE.BoxGeometry(0.2, 6, 4),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x554444
-			}), 0.0, 0.1), 0);
-	addWall(basicWall2, -3.5, -12, 1, 1, 8);
-	addWall(basicWall2, -7, -3, 1, 1, 9);
-	addWall(basicWall2, -11, 2, 1, 1, 8);
-	addWall(basicWall2, -11, -23.5, 1, 1, 1);
-	addWall(basicWall2, -14.5, 16.2, 1, 1, 2.5);
-	addWall(basicWall2, -14.5, 5.2, 1, 1, 1);
-	addWall(basicWall2, -14.5, -6.5, 1, 1, 3.4);
-	addWall(basicWall2, -14.5, -19.8, 1, 1, 0.9);
-	addWall(basicWall2, -18, 10, 1, 1, 5.5);
-	addWall(basicWall2, -18, -11, 1, 1, 3.5);
-	addWall(basicWall2, -21.5, 0, 1, 1, 10);
-	addWall(basicWall2, -25, 0, 1, 1, 12);
-	addWall(basicWall2, -3.5, 12, 1, 1, 1);
-	addWall(basicWall2, 0, 14.5, 1, 1, 2);
-	addWall(basicWall2, 3.5, 14.5, 1, 1, 2);
-	addWall(basicWall2, 0, -11, 1, 1, 2);
-	addWall(basicWall2, 4, -3.5, 1, 1, 2);
-	addWall(basicWall2, 4, -20.5, 1, 1, 3);
-	addWall(basicWall2, 7.5, 12.5, 1, 1, 2.8);
-	addWall(basicWall2, 7, -11.5, 1, 1, 6);
-	addWall(basicWall2, 11, -10.5, 1, 1, 5.5);
-	addWall(basicWall2, 11, 9, 1, 1, 2.5);
-	addWall(basicWall2, 14.5, -9, 1, 1, 10);
-	addWall(basicWall2, 25, 15.5, 1, 1, 3);
+	createLevel1Walls();
 
 	// Crate Object
 	crates[0] = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 1, 1.5),
@@ -267,40 +213,13 @@ function generateLevel2() {
 	
 	
 	createLevel2Floors();
+	createLevel2Walls();
 
 	// Lights
 	var ambientLight = new THREE.AmbientLight(0xffffff);
 	scene.add(ambientLight);
 
-	var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 30, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44
-			}), 0.0, 0.1), 0);
-	addWall(basicWall1, 2, -8.2, 2.2, 1, 2);
-	addWall(basicWall1, 5.8, -3.6, 2.2, 1, 2.4);
-	addWall(basicWall1, 16.6, -3.6, 3.2, 1, 2.4);
-	addWall(basicWall1, 17.4, -8.2, 2.2, 1, 2.4);
-	addWall(basicWall1, 15.4, -18, 0.2, 1, 7.2);
-	addWall(basicWall1, 4.2, -14.8, 0.2, 1, 9.2);
-	addWall(basicWall1, -7.20, 5.80, 6.60, 1, 2.20);
-	addWall(basicWall1, -9.20, 10.20, 4.40, 1, 2.20);
-	addWall(basicWall1, 16.60, 10.20, 9.00, 1, 2.20);
-	addWall(basicWall1, 14.60, 5.80, 11.00, 1, 2.20);
-	addWall(basicWall1, -11.60, -10.20, 2.20, 1, 15.20);
-	addWall(basicWall1, -7.00, -12.60, 2.20, 1, 6.80);
-	addWall(basicWall1, -18.60, -5.00, 0.60, 1, 23.00);
-	addWall(basicWall1, -15.40, -25.60, 4.60, 1, 0.40);
-	addWall(basicWall1, 2.00, -24.60, 13.20, 1, 0.40);
-	addWall(basicWall1, 17.00, -28.20, 3.00, 1, 3.20);
-	addWall(basicWall1, 27.80, -28.20, 3.00, 1, 3.20);
-	addWall(basicWall1, 22.40, -30.00, 3.00, 1, 0.40);
-	addWall(basicWall1, 30.40, -18.40, 1.20, 1, 9.00);
-	addWall(basicWall1, 33.20, -5.40, 8.40, 1, 5.20);
-	addWall(basicWall1, 39.00, 8.80, 1.00, 1, 9.20);
-	addWall(basicWall1, 36.00, 21.60, 2.20, 1, 5.20);
-	addWall(basicWall1, 4.00, 21.60, 25.60, 1, 5.20);
-	addWall(basicWall1, 31.00, 26.00, 3.00, 1, 0.60);
-	addWall(basicWall1, 25.20, 1.80, 0.40, 1, 1.80);
+	
 	createJumpableDoor();
 	objLoader.load('models/objects/giant_door/giant_door.obj', 'models/objects/giant_door/giant_door.mtl', giantDoorLoadedCallback);
 	objLoader.load('models/objects/doorway_door/doorway_door.obj', 'models/objects/doorway_door/doorway_door.mtl', doorwayDoorLoadedCallback);
@@ -322,7 +241,7 @@ function generateLevel2() {
 	createKeys();
 	objLoader.load('models/objects/key/key.obj', 'models/objects/key/key.mtl', keyLoadedCallback);
 
-	// Crate Object
+	// Crate Objects
 	for (var i = 0; i < 4; i++) {
 		var temp = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 1, 1.5),
 				crateMaterial, 15);
@@ -330,18 +249,6 @@ function generateLevel2() {
 		temp.position.x = -12;
 		temp.position.y = 1 + i;
 		temp.position.z = -22 + 2 * i;
-		// crates[i].addEventListener('collision', function(other_object,
-		// relative_velocity, relative_rotation, contact_normal) {
-		// if (other_object == trap || other_object == trap2) {
-		// crates[i].setLinearVelocity(new THREE.Vector3(0, 0, 0));
-		// scene.remove(crates[i]);
-		// crates[i].position.x = -12;
-		// crates[i].position.y = 1 + i;
-		// crates[i].position.z = -20 + i;
-		// scene.add(crates[i]);
-		//	
-		// }
-		// });
 		scene.add(temp);
 		pickUpItems.push(temp);
 		crates.push(temp);
@@ -358,29 +265,7 @@ function generateLevel2() {
 	createLevel2Traps();
 	objLoader.load('models/objects/trap_spikes/trap_spikes.obj', 'models/objects/trap_spikes/trap_spikes.mtl', trapSpikesLoadedCallback);
 	
-	zombie = new Physijs.CapsuleMesh(new THREE.CylinderGeometry(1, 1, 3, 8),
-			crateMaterial, 10);
-	zombie.addEventListener('collision', function(other_object, relative_velocity, relative_rotation, contact_normal){
-		
-		if(other_object == charMesh){
-			takeDamage(30);
-		}
-		else if (contact_normal.y == 0){
-			var temp = new THREE.Vector3(contact_normal.x, 0, contact_normal.z);
-			zombieVelocityNormal.sub(temp);
-			zombieVelocityNormal.normalize();
-			
-		}
-	});
-	zombie.position.set(30, 1, 12);
-	
-	scene.add(zombie);
-	zombie.setAngularFactor(new THREE.Vector3(0,1,0));
-	zombieSound = new Audio('audio/163439__under7dude__zombie-2.wav');
-	zombieSound.addEventListener('ended', function(){
-		this.currentTime = 0;
-	});
-	zombieSound.volume = 0.15;
+	createZombieEnemy();
 	
 	createPuzzle();
 	createGroundSpikes();
@@ -829,129 +714,30 @@ var platform1Velocity = -2;
 var platform2Velocity = -2;
 var platform3Velocity = -3;
 var platform4Velocity = 2.5;
+var spikeArray = [];
 
 //Creates the spikes on the ground and the moving platforms in one of the keyrooms in level 2.
 function createGroundSpikes(){
-	spikes1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44, visible:false
-			}), 0.0, 0.1), 0);
-	spikes1.position.set(22.40, -0.6, -4);
-	spikes1.scale.set(2, 1, 2);
-	spikes1.addEventListener('collision', function(other_object){
-		if(other_object == charMesh){
-			takeDamage(5);
+	for(var i = 0; i < 5; i++){
+		for(var j = 0; j<3; j++){
+			if((i<2 && j == 1) || (i == 3 && (j == 0 || j == 2)) || (i==2) || (i == 4)){ //generates the correct pattern.
+				var spikes = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
+						Physijs.createMaterial(new THREE.MeshBasicMaterial({
+							color : 0x22ee44, visible:false
+						}), 0.0, 0.1), 0);
+				spikes.position.set(17.8 + (j*4.6), -0.6, -4 - (i * 4.6));
+				spikes.scale.set(2, 1, 2);
+				spikes.addEventListener('collision', function(other_object){
+					if(other_object == charMesh){
+						takeDamage(5);
+					}
+				});
+				spikeArray.push(spikes);
+				scene.add(spikes);
+			}
 		}
-	});
-	scene.add(spikes1);
-	spikes2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44, visible:false
-			}), 0.0, 0.1), 0);
-	spikes2.position.set(22.40, -0.6, -8.6);
-	spikes2.scale.set(2, 1, 2);
-	spikes2.addEventListener('collision', function(other_object){
-		if(other_object == charMesh){
-			takeDamage(5);
-		}
-	});
-	scene.add(spikes2);
-	spikes3 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44, visible:false
-			}), 0.0, 0.1), 0);
-	spikes3.position.set(22.40, -0.6, -13.2);
-	spikes3.scale.set(2, 1, 2);
-	spikes3.addEventListener('collision', function(other_object){
-		if(other_object == charMesh){
-			takeDamage(5);
-		}
-	});
-	scene.add(spikes3);
-	spikes4 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44, visible:false
-			}), 0.0, 0.1), 0);
-	spikes4.position.set(27, -0.6, -13.2);
-	spikes4.scale.set(2, 1, 2);
-	spikes4.addEventListener('collision', function(other_object){
-		if(other_object == charMesh){
-			takeDamage(5);
-		}
-	});
-	scene.add(spikes4);
-	spikes5 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44, visible:false
-			}), 0.0, 0.1), 0);
-	spikes5.position.set(17.8, -0.6, -13.2);
-	spikes5.scale.set(2, 1, 2);
-	spikes5.addEventListener('collision', function(other_object){
-		if(other_object == charMesh){
-			takeDamage(5);
-		}
-	});
-	scene.add(spikes5);
-	spikes6 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44, visible:false
-			}), 0.0, 0.1), 0);
-	spikes6.position.set(17.8, -0.6, -17.8);
-	spikes6.scale.set(2, 1, 2);
-	spikes6.addEventListener('collision', function(other_object){
-		if(other_object == charMesh){
-			takeDamage(5);
-		}
-	});
-	scene.add(spikes6);
-	spikes7 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44, visible:false
-			}), 0.0, 0.1), 0);
-	spikes7.position.set(17.8, -0.6, -22.4);
-	spikes7.scale.set(2, 1, 2);
-	spikes7.addEventListener('collision', function(other_object){
-		if(other_object == charMesh){
-			takeDamage(5);
-		}
-	});
-	scene.add(spikes7);
-	spikes8 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44, visible:false
-			}), 0.0, 0.1), 0);
-	spikes8.position.set(22.4, -0.6, -22.4);
-	spikes8.scale.set(2, 1, 2);
-	spikes8.addEventListener('collision', function(other_object){
-		if(other_object == charMesh){
-			takeDamage(5);
-		}
-	});
-	scene.add(spikes8);
-	spikes9 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44, visible:false
-			}), 0.0, 0.1), 0);
-	spikes9.position.set(27, -0.6, -22.4);
-	spikes9.scale.set(2, 1, 2);
-	spikes9.addEventListener('collision', function(other_object){
-		if(other_object == charMesh){
-			takeDamage(5);
-		}
-	});
-	scene.add(spikes9);
-	spikes10 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
-			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x22ee44, visible:false
-			}), 0.0, 0.1), 0);
-	spikes10.position.set(27, -0.6, -17.8);
-	spikes10.scale.set(2, 1, 2);
-	spikes10.addEventListener('collision', function(other_object){
-		if(other_object == charMesh){
-			takeDamage(5);
-		}
-	});
-	scene.add(spikes10);
+	}
+	
 	platform1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2,0.2,2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0x222222
@@ -1018,15 +804,15 @@ function groundSpikesBloodyLoadedCallback(object){
 	clone8 = object.clone();
 	
 	clone10 = object.clone();
-	spikes1.add(clone1);
-	spikes3.add(clone3);
+	spikeArray[0].add(clone1);
+	spikeArray[2].add(clone3);
 	
-	spikes5.add(clone5);
+	spikeArray[4].add(clone5);
 	
-	spikes7.add(clone7);
-	spikes8.add(clone8);
+	spikeArray[6].add(clone7);
+	spikeArray[7].add(clone8);
 	
-	spikes10.add(clone10);
+	spikeArray[9].add(clone10);
 }
 
 //Runs when the non-bloody spikes model for floor spikes in level 2 is loaded.
@@ -1040,10 +826,36 @@ function groundSpikesLoadedCallback(object){
 	clone9 = object.clone();
 	
 	
-	spikes2.add(clone2);
-	spikes4.add(clone4);
-	spikes6.add(clone6);
-	spikes9.add(clone9);
+	spikeArray[1].add(clone2);
+	spikeArray[3].add(clone4);
+	spikeArray[5].add(clone6);
+	spikeArray[8].add(clone9);
+}
+
+function createZombieEnemy(){
+	zombie = new Physijs.CapsuleMesh(new THREE.CylinderGeometry(1, 1, 3, 8),
+			crateMaterial, 10);
+	zombie.addEventListener('collision', function(other_object, relative_velocity, relative_rotation, contact_normal){
+		
+		if(other_object == charMesh){
+			takeDamage(30);
+		}
+		else if (contact_normal.y == 0){
+			var temp = new THREE.Vector3(contact_normal.x, 0, contact_normal.z);
+			zombieVelocityNormal.sub(temp);
+			zombieVelocityNormal.normalize();
+			
+		}
+	});
+	zombie.position.set(30, 1, 12);
+	
+	scene.add(zombie);
+	zombie.setAngularFactor(new THREE.Vector3(0,1,0));
+	zombieSound = new Audio('audio/163439__under7dude__zombie-2.wav');
+	zombieSound.addEventListener('ended', function(){
+		this.currentTime = 0;
+	});
+	zombieSound.volume = 0.15;
 }
 
 //Creates all the collision boxes for the floor in level 2.
@@ -1137,6 +949,96 @@ function createLevel2Floors(){
 	floor9.position.set(22.6, -0.5, 0.8);
 	floor9.scale.set(2.6, 1, 16);
 	scene.add(floor9);
+}
+
+function createLevel1Walls(){
+	var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(4, 6, 0.2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44
+			}), 0.0, 0.1), 0);
+
+	addWall(basicWall1, 3.5, 3.9, 3.5, 1, 1);
+	addWall(basicWall1, 0, 7.4, 3.5, 1, 1);
+	addWall(basicWall1, 2, -7.5, 1, 1, 1);
+	addWall(basicWall1, 2, -15, 1, 1, 1);
+	addWall(basicWall1, 7, -10.5, 1.6, 1, 1);
+	addWall(basicWall1, -10, -25, 12, 1, 1);
+	addWall(basicWall1, 1.8, 10.5, 1, 1, 1);
+	addWall(basicWall1, 20, 11, 2.8, 1, 1);
+	addWall(basicWall1, 16.5, 14.5, 2.8, 1, 1);
+	addWall(basicWall1, 18, 18, 3.5, 1, 1);
+	addWall(basicWall1, 4, 21.5, 11, 1, 1);
+	addWall(basicWall1, 0, 25, 15, 1, 1);
+	addWall(basicWall1, -5.2, 14.5, 1, 1, 1);
+	addWall(basicWall1, -5.4, 18, 2.8, 1, 1);
+	addWall(basicWall1, -24, 21.5, 1, 1, 1);
+	addWall(basicWall1, -12.5, 7.5, 0.8, 1, 1);
+	addWall(basicWall1, -16.5, 0, 0.8, 1, 1);
+	addWall(basicWall1, -20, -4, 0.8, 1, 1);
+	addWall(basicWall1, -12.5, -14, 1, 1, 1);
+	addWall(basicWall1, -11, -17.8, 1.8, 1, 1);
+	addWall(basicWall1, -18, -21.5, 1.8, 1, 1);
+
+	var basicWall2 = new Physijs.BoxMesh(new THREE.BoxGeometry(0.2, 6, 4),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x554444
+			}), 0.0, 0.1), 0);
+	addWall(basicWall2, -3.5, -12, 1, 1, 8);
+	addWall(basicWall2, -7, -3, 1, 1, 9);
+	addWall(basicWall2, -11, 2, 1, 1, 8);
+	addWall(basicWall2, -11, -23.5, 1, 1, 1);
+	addWall(basicWall2, -14.5, 16.2, 1, 1, 2.5);
+	addWall(basicWall2, -14.5, 5.2, 1, 1, 1);
+	addWall(basicWall2, -14.5, -6.5, 1, 1, 3.4);
+	addWall(basicWall2, -14.5, -19.8, 1, 1, 0.9);
+	addWall(basicWall2, -18, 10, 1, 1, 5.5);
+	addWall(basicWall2, -18, -11, 1, 1, 3.5);
+	addWall(basicWall2, -21.5, 0, 1, 1, 10);
+	addWall(basicWall2, -25, 0, 1, 1, 12);
+	addWall(basicWall2, -3.5, 12, 1, 1, 1);
+	addWall(basicWall2, 0, 14.5, 1, 1, 2);
+	addWall(basicWall2, 3.5, 14.5, 1, 1, 2);
+	addWall(basicWall2, 0, -11, 1, 1, 2);
+	addWall(basicWall2, 4, -3.5, 1, 1, 2);
+	addWall(basicWall2, 4, -20.5, 1, 1, 3);
+	addWall(basicWall2, 7.5, 12.5, 1, 1, 2.8);
+	addWall(basicWall2, 7, -11.5, 1, 1, 6);
+	addWall(basicWall2, 11, -10.5, 1, 1, 5.5);
+	addWall(basicWall2, 11, 9, 1, 1, 2.5);
+	addWall(basicWall2, 14.5, -9, 1, 1, 10);
+	addWall(basicWall2, 25, 15.5, 1, 1, 3);
+}
+
+function createLevel2Walls(){
+	var basicWall1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 30, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44
+			}), 0.0, 0.1), 0);
+	addWall(basicWall1, 2, -8.2, 2.2, 1, 2);
+	addWall(basicWall1, 5.8, -3.6, 2.2, 1, 2.4);
+	addWall(basicWall1, 16.6, -3.6, 3.2, 1, 2.4);
+	addWall(basicWall1, 17.4, -8.2, 2.2, 1, 2.4);
+	addWall(basicWall1, 15.4, -18, 0.2, 1, 7.2);
+	addWall(basicWall1, 4.2, -14.8, 0.2, 1, 9.2);
+	addWall(basicWall1, -7.20, 5.80, 6.60, 1, 2.20);
+	addWall(basicWall1, -9.20, 10.20, 4.40, 1, 2.20);
+	addWall(basicWall1, 16.60, 10.20, 9.00, 1, 2.20);
+	addWall(basicWall1, 14.60, 5.80, 11.00, 1, 2.20);
+	addWall(basicWall1, -11.60, -10.20, 2.20, 1, 15.20);
+	addWall(basicWall1, -7.00, -12.60, 2.20, 1, 6.80);
+	addWall(basicWall1, -18.60, -5.00, 0.60, 1, 23.00);
+	addWall(basicWall1, -15.40, -25.60, 4.60, 1, 0.40);
+	addWall(basicWall1, 2.00, -24.60, 13.20, 1, 0.40);
+	addWall(basicWall1, 17.00, -28.20, 3.00, 1, 3.20);
+	addWall(basicWall1, 27.80, -28.20, 3.00, 1, 3.20);
+	addWall(basicWall1, 22.40, -30.00, 3.00, 1, 0.40);
+	addWall(basicWall1, 30.40, -18.40, 1.20, 1, 9.00);
+	addWall(basicWall1, 33.20, -5.40, 8.40, 1, 5.20);
+	addWall(basicWall1, 39.00, 8.80, 1.00, 1, 9.20);
+	addWall(basicWall1, 36.00, 21.60, 2.20, 1, 5.20);
+	addWall(basicWall1, 4.00, 21.60, 25.60, 1, 5.20);
+	addWall(basicWall1, 31.00, 26.00, 3.00, 1, 0.60);
+	addWall(basicWall1, 25.20, 1.80, 0.40, 1, 1.80);
 }
 
 //Creates the falling spike trap, and the pendulum blade traps in level 2.

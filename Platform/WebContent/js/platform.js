@@ -159,6 +159,11 @@ function init() {
         renderSizeX = window.innerHeight * 16/9;
         renderSizeY = window.innerHeight;
     }
+    renderer.shadowMap.enabled = true;
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.type = THREE.PCFShadowMap;       // Softer shadow
+    renderer.autoClear = false;
+    renderer.setClearColor( scene.fog.color );
     
     // Camera
     camera = new THREE.PerspectiveCamera(75, renderSizeX / renderSizeY, 0.01, 300000);
@@ -167,12 +172,6 @@ function init() {
             camera.position.y += 15;
             controls = new THREE.OrbitControls(camera);
     }
-        
-    renderer.shadowMap.enabled = true;
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.type = THREE.PCFShadowMap;       // Softer shadow
-    renderer.autoClear = false;
-    renderer.setClearColor( scene.fog.color );
     
     textureLoader = new THREE.TextureLoader();
     
@@ -306,47 +305,9 @@ function init() {
             }
 
     };
-
-    // Mouse click listener
-    // document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-
-   
     
-    /*TODO: MIGHT WANT TO COMPRESS SOME OF THESE SOUNDFILES */
-    
-    gameOverAudio = new Audio('audio/gameOver.mp3');
-    gameOverAudio.volume = 0.5;
-    ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
-    /* TODO: DEBUG: TURNED OFF MUSIC WHILE WORKING ON THE GAME */
-    ambience.volume = 0;
-    ambience.addEventListener('ended', function() {
-        this.currentTime = 0; 
-        this.play();
-    }, false);
-    ambience.play();
-    ambience2 = new Audio('audio/172937__setuniman__creepy-0v55m2.mp3');
-    ambience2.volume = 0;
-    ambience2.addEventListener('ended', function(){
-    	this.currentTime = 0;
-    	this.play();
-    }, false);
-    damageSound = new Audio('audio/262279__dirtjm__grunts-male.mp3');
-    damageSound.addEventListener('ended', function(){
-    	this.currentTime = 0;
-    });
-    walkSound = new Audio('audio/166304__fantozzi__mco-walk-f01.mp3');
-    walkSound.volume = 0.2;
-    walkSound.addEventListener('ended', function(){
-    	this.currentTime = 0;
-    	this.play();
-    })
-    jumpSound = new Audio('audio/319664__manuts__jump-1.mp3');
-    jumpSound.volume = 0.5;
-    jumpSound.addEventListener('ended', function(){
-    	this.currentTime = 0;
-    });
-    
-    generateLevel2(); 
+    loadAudio();
+    generateLevel1(); 
     createOverlay();
     createChar();
     createMenu();
@@ -1000,4 +961,40 @@ function createMenu(){
 	renderer.domElement.addEventListener('mousedown', onDocumentMouseDown);
 	renderer.domElement.addEventListener('mouseup', onDocumentMouseUp);
 	tick();
+}
+
+function loadAudio(){
+/*TODO: MIGHT WANT TO COMPRESS SOME OF THESE SOUNDFILES */
+    
+    gameOverAudio = new Audio('audio/gameOver.mp3');
+    gameOverAudio.volume = 0.5;
+    ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
+    /* TODO: DEBUG: TURNED OFF MUSIC WHILE WORKING ON THE GAME */
+    ambience.volume = 0;
+    ambience.addEventListener('ended', function() {
+        this.currentTime = 0; 
+        this.play();
+    }, false);
+    ambience.play();
+    ambience2 = new Audio('audio/172937__setuniman__creepy-0v55m2.mp3');
+    ambience2.volume = 0;
+    ambience2.addEventListener('ended', function(){
+    	this.currentTime = 0;
+    	this.play();
+    }, false);
+    damageSound = new Audio('audio/262279__dirtjm__grunts-male.mp3');
+    damageSound.addEventListener('ended', function(){
+    	this.currentTime = 0;
+    });
+    walkSound = new Audio('audio/166304__fantozzi__mco-walk-f01.mp3');
+    walkSound.volume = 0.2;
+    walkSound.addEventListener('ended', function(){
+    	this.currentTime = 0;
+    	this.play();
+    })
+    jumpSound = new Audio('audio/319664__manuts__jump-1.mp3');
+    jumpSound.volume = 0.5;
+    jumpSound.addEventListener('ended', function(){
+    	this.currentTime = 0;
+    });
 }
