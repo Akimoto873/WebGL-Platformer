@@ -541,13 +541,14 @@ function onDocumentMouseMove(e)
         }
         if(mouseDown){
 	    	var diffY = e.clientY - oldMouseY;
-	    	if(camera.rotation.x + diffY / 200 > -Math.PI*3/2 && camera.rotation.x + diffY / 200 < -Math.PI/2){
-				camera.rotation.x += diffY / 200;
-				
-	    	}
+
 	    	var diffX = e.clientX - oldMouseX;
-	    	camera.rotation.y += diffX / 200;
-	    	cameraRotationSinceLastUpdate += diffX/200;
+	    	
+	        camera.rotation.x -= (diffY/200);
+	        camera.rotation.y -= diffX/200;
+				
+	    	
+	    	
         }
     	
     
@@ -558,7 +559,6 @@ function onDocumentMouseMove(e)
     }
     
 }
-var cameraRotationSinceLastUpdate = 0;
 
 //Not used. Saved in case we want to use it.
 function onDocumentMouseDown(e){
@@ -569,7 +569,6 @@ function onDocumentMouseDown(e){
 function onDocumentMouseUp(e){
 	if(!menu){
 		mouseDown = false;
-		log(charMesh.rotation.y);
 	}
 }
 
@@ -631,13 +630,14 @@ function createChar() {
 	charMesh.position.z = charMeshPosition.z;
 
 	scene.add(charMesh);
+	charMesh.setAngularFactor(new THREE.Vector3(0,0,0));
 	if (charCam) {
 		camera.position.z += 0;
+		camera.eulerOrder = "YXZ";
 		camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
 		charMesh.add(camera);
 		charMesh.material.visible = false;
 	}
-	charMesh.setAngularFactor(new THREE.Vector3(0, 1, 0));
 	
 //	charMesh.setDamping(0.1, 0.9);
 
@@ -754,7 +754,7 @@ function resetChar() {
         charMesh.add(camera);
     	charMesh.material.visible = false;
     }
-    charMesh.setAngularFactor(new THREE.Vector3(0, 1, 0));
+    charMesh.setAngularFactor(new THREE.Vector3(0, 0, 0));
     moveableObjects.push(charMesh);
     carrying = false;
 }

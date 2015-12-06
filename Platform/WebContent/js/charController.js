@@ -46,18 +46,12 @@ function checkKeys() {
 
     // A
     if (keyMap[65]) { 
-            counterClockwiseRotation = 2; // charMesh.setAngularVelocity(new
+            counterClockwiseRotation = 2/100; // charMesh.setAngularVelocity(new
     }
 
     // D
     if (keyMap[68]) { 
-            clockwiseRotation = -2; // charMesh.setAngularVelocity(new    // THREE.Vector3(0, -1.5, 0));
-    }
-    if(keyMap[65] || keyMap[68]){
-    	charMesh.setAngularFactor(new THREE.Vector3(0,1,0));
-    }
-    else{
-    	charMesh.setAngularFactor(new THREE.Vector3(0,0,0));
+            clockwiseRotation = -2/100; // charMesh.setAngularVelocity(new    // THREE.Vector3(0, -1.5, 0));
     }
 
     // Q - strafe
@@ -82,7 +76,6 @@ var jumpableDoorOpen = false;
 var jumpableDoorOpening = false;
 // Handles all character movement.
 function checkMovement() {
-	
 //	var oldVelocityVector = charMesh.getLinearVelocity();
 //	var oldVelocity = Math.sqrt(Math.pow(oldVelocityVector.x, 2) + Math.pow(oldVelocityVector.z, 2));
 //	var oldVelocityRun = oldVelocity;
@@ -98,15 +91,15 @@ function checkMovement() {
 	
 	//Get rotation and velocity of character
 	var rotationMatrix = new THREE.Matrix4();
-    rotationMatrix.extractRotation(charMesh.matrix);
+    rotationMatrix.extractRotation(camera.matrix);
     var oldVelocityVector = charMesh.getLinearVelocity();
     var currentVelocity = Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) 
             + Math.pow(charMesh.getLinearVelocity().z, 2));
     var maxSpeed = 4;
-    force = 4;
+    force = -4;
     if(runForward){
     	maxSpeed = 8;
-    	force = 8;
+    	force = -8;
     }
     if(move && currentVelocity < maxSpeed){
 	    var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
@@ -142,15 +135,7 @@ function checkMovement() {
             // damaged = true; //for testing purposes
         }
     }
-    if(move){
-    	charMesh.rotation.y -= cameraRotationSinceLastUpdate;
-    	charMesh.__dirtyRotation = true;
-    	charMesh.__dirtyPosition = true;
-    	camera.rotation.y -= cameraRotationSinceLastUpdate;
-    	cameraRotationSinceLastUpdate = 0;
-    	
-    }
-//    charMesh.setAngularVelocity(new THREE.Vector3(0, clockwiseRotation + counterClockwiseRotation, 0));
+    camera.rotation.y += (clockwiseRotation + counterClockwiseRotation);
 
 
     if (pickup) {
@@ -165,8 +150,8 @@ function checkMovement() {
 	                        crates[j].position.x = 0;
 	                        crates[j].position.y = -1;
 	                        crates[j].position.z = 0;
-	                        charMesh.add(crates[j]);
-	                        crates[j].position.z += 1;
+	                        camera.add(crates[j]);
+	                        crates[j].position.z -= 1;
 	                        carrying = true;
 	                        carriedItem = j;
 	                        pickupThisFrame = true;
@@ -199,8 +184,8 @@ function checkMovement() {
         }
         
         if (carrying && !pickupThisFrame) {
-            charMesh.remove(crates[carriedItem]);
-            var positionDiff = new THREE.Vector3(0, 0, 1);
+            camera.remove(crates[carriedItem]);
+            var positionDiff = new THREE.Vector3(0, 0, -1);
             var finalPosition = positionDiff.applyMatrix4(rotationMatrix);
             var oldPosition = charMesh.position
             crates[carriedItem].position.x = oldPosition.x + finalPosition.x;
