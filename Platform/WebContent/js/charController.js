@@ -136,7 +136,7 @@ function checkMovement() {
         	}
         	jumpSound.play();
             airTime = new THREE.Clock();
-            charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
+            charMesh.applyCentralImpulse(new THREE.Vector3(0, 120, 0));
             stamina -= 20;
             // health -= 10;
             // damaged = true; //for testing purposes
@@ -355,9 +355,35 @@ function checkTraps() {
 	    platform2.setLinearVelocity(new THREE.Vector3(0,0,platform2Velocity));
 	    platform3.setLinearVelocity(new THREE.Vector3(platform3Velocity,0,0));
 	    platform4.setLinearVelocity(new THREE.Vector3(0,0,platform4Velocity));
+	    
+	    var distance = new THREE.Vector3();
+        distance.subVectors(charMesh.position, zombie.position);
+        distance.y = 0;
+        if(distance.length() < 10 && !zombieMoving){
+        	distance.normalize();
+        	zombieVelocityNormal = distance;
+        	zombieMoving = true;
+        	zombieMovingFrames = 0;
+        }
+        if(zombieMoving){
+        	var temp = new THREE.Vector3(0,0,0);
+        	temp = zombieVelocityNormal;
+        	temp.multiplyScalar(1.1);
+        	log(zombieVelocityNormal.x);
+        	log(temp.y);
+        	log(zombieVelocityNormal.z);
+        	zombie.setLinearVelocity(temp);
+        	zombieMovingFrames += 1;
+        	if(zombieMovingFrames > 100){
+        		zombieMoving = false;
+        	}
+        }
     }
 }
-
+var zombie;
+var zombieVelocityNormal;
+var zombieMoving = false;
+var zombieMovingFrames = 0;
 // Checks if the character should take fall dmg.
 function checkFallDmg() {
     charCaster.set(charMesh.position, new THREE.Vector3(0, -1, 0));

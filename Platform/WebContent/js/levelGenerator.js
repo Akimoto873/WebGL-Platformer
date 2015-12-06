@@ -350,6 +350,25 @@ function generateLevel2() {
 	createLevel2Traps();
 	objLoader.load('models/objects/trap_spikes/trap_spikes.obj', 'models/objects/trap_spikes/trap_spikes.mtl', trapSpikesLoadedCallback);
 	
+	zombie = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 3, 2),
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0x22ee44
+			}), 1, 0.1), 10);
+	zombie.addEventListener('collision', function(other_object, relative_velocity, relative_rotation, contact_normal){
+		
+		if(other_object == charMesh){
+			takeDamage(30);
+		}
+		else{
+			var temp = new THREE.Vector3(contact_normal.x, 0, contact_normal.z);
+			zombieVelocityNormal.sub(temp);
+			zombieVelocityNormal.normalize();
+		}
+	});
+	zombie.position.set(30, 1, 12);
+	scene.add(zombie);
+	zombie.setAngularFactor(new THREE.Vector3(0,1,0));
+	
 	createPuzzle();
 	createGroundSpikes();
 	objLoader.load('models/objects/trap_spikes_ground/bloody/trap_spikes_ground_bloody.obj', 'models/objects/trap_spikes_ground/bloody/trap_spikes_ground_bloody.mtl', groundSpikesBloodyLoadedCallback);
