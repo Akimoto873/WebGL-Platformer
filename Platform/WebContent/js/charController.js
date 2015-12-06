@@ -46,12 +46,12 @@ function checkKeys() {
 
     // A
     if (keyMap[65]) { 
-            counterClockwiseRotation = 2/50; // charMesh.setAngularVelocity(new
+            counterClockwiseRotation = 2/50; // 
     }
 
     // D
     if (keyMap[68]) { 
-            clockwiseRotation = -2/50; // charMesh.setAngularVelocity(new    // THREE.Vector3(0, -1.5, 0));
+            clockwiseRotation = -2/50; // 
     }
 
     // Q - strafe
@@ -66,7 +66,7 @@ function checkKeys() {
             move = true;
     }
 
-    // Restart level is dead and R is pressed.
+    // Restart level if dead and R is pressed.
     if (keyMap[82] && gameOverScreen) { 
             restartLevel();
     }
@@ -76,17 +76,6 @@ var jumpableDoorOpen = false;
 var jumpableDoorOpening = false;
 // Handles all character movement.
 function checkMovement() {
-//	var oldVelocityVector = charMesh.getLinearVelocity();
-//	var oldVelocity = Math.sqrt(Math.pow(oldVelocityVector.x, 2) + Math.pow(oldVelocityVector.z, 2));
-//	var oldVelocityRun = oldVelocity;
-//	if(oldVelocityRun > 8){
-//		oldVelocityRun = 8;
-//	}
-//	if(oldVelocity > 4){
-//		oldVelocity = 4;
-//	}
-//	var force = 10*(4 - oldVelocity)/deltaT; //Force needed this frame to simulate setlinearvelocity
-//	var runForce = 10*(8 - oldVelocityRun)/deltaT;
    
 	
 	//Get rotation and velocity of character
@@ -95,113 +84,117 @@ function checkMovement() {
     var oldVelocityVector = charMesh.getLinearVelocity();
     var currentVelocity = Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) 
             + Math.pow(charMesh.getLinearVelocity().z, 2));
+    
+    //set the movement speed
     var maxSpeed = 4;
     force = -4;
     if(runForward){
+    	//and change it if running.
     	maxSpeed = 8;
     	force = -8;
     }
     if(move && currentVelocity < maxSpeed){
+    	//Give the character the intended velocity in the correct direction.
 	    var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
 	    charMesh.setLinearVelocity(new THREE.Vector3(finalForceVector.x, oldVelocityVector.y,
 	                   finalForceVector.z));
     }
     if(runForward){
-    	walkSound.playbackRate = 2;
+    	walkSound.playbackRate = 2; //If running, speed up the walking sound.
     }
     else{
     	walkSound.playbackRate = 1;
     }
     if(move && !playingSound && !airborne1){
+    	//If walking, play the walking sound.
     	walkSound.play();
     	playingSound = true;
     }
     else if((!move || airborne1) && playingSound){
+    	//If jumping, or not walking, stop the walking sound.
     	walkSound.pause();
     	playingSound = false;
     }
     
     
     if (jump) { 
-        if(airborne1 || airborne2){
+        if(airborne1 || airborne2){ //If not both jumps are used, give the character an impulse upwards.
         	if(airborne1){
-        		waitForKeyUp = true;
+        		waitForKeyUp = true; 
         	}
         	jumpSound.play();
             airTime = new THREE.Clock();
             charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
             stamina -= 20;
-            // health -= 10;
-            // damaged = true; //for testing purposes
         }
     }
-    camera.rotation.y += (clockwiseRotation + counterClockwiseRotation);
+    camera.rotation.y += (clockwiseRotation + counterClockwiseRotation); //For rotating the character with A and D.
 
 
-    if (pickup) {
-        for (var i = 0; i < pickUpItems.length; i++){
+    if (pickup) { //If F is pressed
+        for (var i = 0; i < pickUpItems.length; i++){ 
             var distance = new THREE.Vector3();
-            distance.subVectors(charMesh.position, pickUpItems[i].position);
-            if (distance.length() < 2.5) {
+            distance.subVectors(charMesh.position, pickUpItems[i].position); //Check distance to all items that can be picked up
+            if (distance.length() < 2.5) { //If distance is less than a set limit.
             	
-                for(var j = 0; j < crates.length; j++){
-	                if(pickUpItems[i]== crates[j] && !carrying) {
-	                	scene.remove(pickUpItems[i]);
+                for(var j = 0; j < crates.length; j++){ //Check the crates
+	                if(pickUpItems[i]== crates[j] && !carrying) { //If that crate is the object within distance
+	                	scene.remove(pickUpItems[i]); //remove it from the scene
 	                        crates[j].position.x = 0;
 	                        crates[j].position.y = -1;
 	                        crates[j].position.z = 0;
-	                        camera.add(crates[j]);
+	                        camera.add(crates[j]);  //and add it to the character
 	                        crates[j].position.z -= 1;
 	                        carrying = true;
 	                        carriedItem = j;
 	                        pickupThisFrame = true;
-	                        pickUpItems.splice(i, 1);
-	                        i = pickUpItems.length + 1;
+	                        pickUpItems.splice(i, 1); //remove it from the list of items that can be picked up.
+	                        i = pickUpItems.length + 1; //Stop the loop.
 	                }
                 }
             
-	            if(pickUpItems[i] == cones){
-	            	scene.remove(pickUpItems[i]);
-	                        pickUpItems.splice(i, 1);
-	                        carriedCones += 5;
-	                        i = pickUpItems.length + 1;
+	            if(pickUpItems[i] == cones){ //If the item within range is the flarebox
+	            	scene.remove(pickUpItems[i]); //remove it from the scene.
+	                        pickUpItems.splice(i, 1); //remove it from the list of items that can be picked up.
+	                        carriedCones += 5; //Give the player 5 reuseable flares.
+	                        i = pickUpItems.length + 1; //Stop the loop
 	            }
-	            else if(!carrying){
-	            	scene.remove(pickUpItems[i]);
-	                        pickUpItems.splice(i, 1);
-	                        carriedCones += 1;
-	                        i = pickUpItems.length + 1;
+	            else if(!carrying){ //Else, the item has to be a single flar
+	            	scene.remove(pickUpItems[i]); //So we remove the flare form the scene
+	                        pickUpItems.splice(i, 1); //and from the list of items that can be picked up.
+	                        carriedCones += 1; //And add it to the players available flares for use.
+	                        i = pickUpItems.length + 1; //Stop the loop
 	                }
                 
             }
         }
-        if(level == 2){
-	        distance.subVectors(charMesh.position, lever.position);
-	        if(!jumpableDoorOpen && distance.length() < 2.5){
-	        	jumpableDoorOpen = true;
-	        	jumpableDoorOpening = true;
+        if(level == 2){ //If in level 2, there's more things to check.
+	        distance.subVectors(charMesh.position, lever.position); //check the distance to the lever.
+	        if(!jumpableDoorOpen && distance.length() < 2.5){ //if its less than a given limit.
+	        	jumpableDoorOpen = true;  
+	        	jumpableDoorOpening = true; //start opening the door.
 	        }
         }
         
-        if (carrying && !pickupThisFrame) {
-            camera.remove(crates[carriedItem]);
+        if (carrying && !pickupThisFrame) { //If already carrying an item, picked up before this frame.
+            camera.remove(crates[carriedItem]); //remove it from the character.
             var positionDiff = new THREE.Vector3(0, 0, -1);
             var finalPosition = positionDiff.applyMatrix4(rotationMatrix);
             var oldPosition = charMesh.position
             crates[carriedItem].position.x = oldPosition.x + finalPosition.x;
             crates[carriedItem].position.y = oldPosition.y - 1;
-            crates[carriedItem].position.z = oldPosition.z + finalPosition.z;
-            scene.add(crates[carriedItem]);
-            pickUpItems.push(crates[carriedItem]);
+            crates[carriedItem].position.z = oldPosition.z + finalPosition.z; //Give it the correct position in front of the character.
+            scene.add(crates[carriedItem]); //and add it to the scene.
+            pickUpItems.push(crates[carriedItem]); //and back to the list of items to pick up.
             carrying = false;
         }
     }
-    if(level == 2 && keysPickedUp == 3){
+    if(level == 2 && keysPickedUp == 3){ //If in level 2, and all keys are collected.
     	var distance = new THREE.Vector3();
         distance.subVectors(charMesh.position, doorway.position);
-        if(distance.length() < 6){
+        if(distance.length() < 6){ //if the character is within a certain distance of the exit door.
         	if(doorway.children[0].position.y > -8){
-        		doorway.children[0].position.y -= 0.02;
+        		doorway.children[0].position.y -= 0.02; //Open the exit door.
         	}
         	else{
         		scene.remove(doorway);
@@ -216,13 +209,13 @@ function checkMovement() {
     if (health < 1 && !gameOverScreen) {
             showGameOver();
     }
-    if(jumpableDoorOpening){
+    if(jumpableDoorOpening){ //Moves the jumpable door in level 2 upwards after the lever is pulled.
     	if(jumpableDoor.position.y < 7){
     		jumpableDoor.setLinearVelocity(new THREE.Vector3(0,1,0));
     		lever.rotation.x += 0.005;
     	}
     	else{
-    		jumpableDoor.setLinearFactor(new THREE.Vector3(0,0,0));
+    		jumpableDoor.setLinearFactor(new THREE.Vector3(0,0,0)); //Stops the movement when it reaches the top.
     		jumpableDoorOpening = false;
     	}
     }
@@ -232,20 +225,20 @@ function checkMovement() {
 function checkTraps() {
 	if(level == 1){
 		for(var i = 0;  i < moveableObjects.length; i++){
-		    if (moveableObjects[i]._physijs.touches.indexOf(tile._physijs.id) === 1) {
-		        if (!triggered) {
+		    if (moveableObjects[i]._physijs.touches.indexOf(tile._physijs.id) === 1) { //If any moveable object touches the trigger tile
+		        if (!triggered) { //Trigger the trap
 		            scene.remove(trap);
-		            scene.add(trap);
-		            trap.setLinearFactor(new THREE.Vector3(0, 1, 0));
+		            scene.add(trap); //remove and add the trap to refresh it in the scene. Objects being still for too long are overlooked.
+		            trap.setLinearFactor(new THREE.Vector3(0, 1, 0)); //Let the trap be pulled down by gravity.
 		            trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
 		            triggered = true;
-		            trapTime = new THREE.Clock();
+		            trapTime = new THREE.Clock(); //Start the clock, to give the player time to pass the trap while its recharging.
 	
 		        }
 		    }
 	    }
 		for(var i = 0;  i < pickUpItems.length; i++){
-		    if (pickUpItems[i]._physijs.touches.indexOf(tile._physijs.id) === 1) {
+		    if (pickUpItems[i]._physijs.touches.indexOf(tile._physijs.id) === 1) { //the trap can also be triggered by flares.
 		        if (!triggered) {
 		            scene.remove(trap);
 		            scene.add(trap);
@@ -257,10 +250,10 @@ function checkTraps() {
 		        }
 		    }
 	    }
-	    if (triggered) {
+	    if (triggered) { //If the trap is triggered
 	
-	        if (trap.position.y < 2) {
-	                applyForce = true;
+	        if (trap.position.y < 2) { //When its below a certain point
+	                applyForce = true; //start applying an upwards force on it to lift it back up.
 	        }
 	        
 	        if (applyForce) {
@@ -268,63 +261,64 @@ function checkTraps() {
 	
 	        }
 	        
-	        if (trap.position.y > 4 && trapTime.getElapsedTime() > 2) {
-	                trap.setLinearVelocity(new THREE.Vector3(0, 0, 0));
+	        if (trap.position.y > 4 && trapTime.getElapsedTime() > 2) { //if the trap is high enough up, and enough time has passed.
+	                trap.setLinearVelocity(new THREE.Vector3(0, 0, 0)); //Stop gravity from effecting it.
 	                trap.setLinearFactor(new THREE.Vector3(0, 0, 0));
-	                applyForce = false;
+	                applyForce = false; //And stop lifting it upwards.
 	
 	        }
 	
-	        if (trapTime.getElapsedTime() > 10) {
+	        if (trapTime.getElapsedTime() > 10) { //after 10 seconds, let the trap be triggerable again.
 	                trapTime.stop();
 	                triggered = false;
 	        }
 	    }
 	
-	    var intersects = trapCaster2.intersectObjects(moveableObjects);
+	    var intersects = trapCaster2.intersectObjects(moveableObjects); //When a moveable object passes a certain point
 	    if (intersects.length > 0) {
-	        if (!triggered2) {
+	        if (!triggered2) { //trigger the horizontally moving trap
 	
-	            trap2.setLinearVelocity(new THREE.Vector3(0, 0, -7));
+	            trap2.setLinearVelocity(new THREE.Vector3(0, 0, -7)); //Give it a speed towards the triggerpoint.
 	            triggered2 = true;
 	
 	        }
 	    }
 	}
     if(level == 2){
-    	if(cratesRemoved){
+    	if(cratesRemoved){ 
     		for(var i = 0; i < crates.length; i++){
     			scene.add(crates[i]);
     		}
     		scene.add(hintCrate);
     		cratesRemoved = false;
     	}
-	    if(level2Trap1Triggered){
-	    	if(level2Trap1.position.y < 9){
-	    		level2Trap1.applyCentralForce(new THREE.Vector3(0,500, 0));
+	    if(level2Trap1Triggered){ //If the falling spikes trap is triggered by collision
+	    	if(level2Trap1.position.y < 9){ //When its far enough down
+	    		level2Trap1.applyCentralForce(new THREE.Vector3(0,500, 0)); //Start pushing it back up.
 	    	}
 	    	else if(level2Trap1.position.y > 9){
-	    		level2Trap1Triggered = false;
+	    		level2Trap1Triggered = false; //When its back at the top. Stop pushing, and let it be triggerable again.
 	    		level2Trap1.setLinearVelocity(new THREE.Vector3(0,0,0));
 	    		level2Trap1.setLinearFactor(new THREE.Vector3(0,0,0));
 	    	}
 	    }
-	    if(puzzleComplete){
+	    if(puzzleComplete){ //If the "lights on!" puzzle is complete.
 	    	if(puzzle.material.opacity > 0){
-	    		puzzle.material.opacity -= 0.01;
+	    		puzzle.material.opacity -= 0.01; //Fade it out
 	    		for(var i = 0; i < puzzlePoints.length; i++){
 	    			puzzlePoints[i].material.opacity -= 0.01;
 	    		}
 	    	}
 	    	else{
-	    		scene.remove(puzzle);
+	    		scene.remove(puzzle); //and remove it from the scene so the player can get past it.
 	    		for(var i = 0; i < puzzlePoints.length; i++){
 	    			scene.remove(puzzlePoints[i]);
 	    		}
 	    		puzzleComplete = false;
-	    		reAddPuzzle = true;
+	    		reAddPuzzle = true; //lets the restart function know that it has to add the puzzle to the scene again.
 	    	}
 	    }
+	    //Move the platforms in the ground-spikes room.
 	    if( platform1.position.z < -10 ){
 	    	platform1Velocity = 2;
 	    }
@@ -354,24 +348,24 @@ function checkTraps() {
 	    platform3.setLinearVelocity(new THREE.Vector3(platform3Velocity,0,0));
 	    platform4.setLinearVelocity(new THREE.Vector3(0,0,platform4Velocity));
 	    
-	    if(zombieAlive){
+	    if(zombieAlive){ //if the zombie is alive
 		    var distance = new THREE.Vector3();
 	        distance.subVectors(charMesh.position, zombie.position);
 	        distance.y = 0;
 	        
-	        if(distance.length() < 20){
+	        if(distance.length() < 20){ //if the distance to the player is less than 20
 	        	if(zombieSoundPlayFrames == 0){
-		        	zombieSound.play();
+		        	zombieSound.play(); //start playing the zombie sound
 		        	
 	        	}
 	        	zombieSoundPlayFrames += 1;
-	        	if(zombieSoundPlayFrames > (800 + Math.random()*400)){
-	        		zombieSoundPlayFrames = 0;
+	        	if(zombieSoundPlayFrames > (800 + Math.random()*400)){ //And replay it at random intervals.
+	        		zombieSoundPlayFrames = 0; 
 	        	}
 	        
-	        	if(distance.length() < 15){
+	        	if(distance.length() < 15){ 
 	        		
-	        		if(distance.length() < 10){
+	        		if(distance.length() < 10){ //Adjust the sound volume of the zombie by distance
 		        		if(distance.length() < 5){
 		        			zombieSound.volume = 0.45;
 		        		}
@@ -383,10 +377,10 @@ function checkTraps() {
 		        		zombieSound.volume = 0.15;
 		        	}
 	        		
-	        		if(!zombieMoving){
-		        	distance.normalize();
+	        		if(!zombieMoving){ //If the zombie is not moving
+		        	distance.normalize(); //normalize the distance
 		        	
-		        	zombieVelocityNormal = distance;
+		        	zombieVelocityNormal = distance; //and set the zombies normalized velocity vector equal to that.
 		        	zombieMoving = true;
 		        	zombieMovingFrames = 0;
 	        		}
@@ -398,17 +392,18 @@ function checkTraps() {
 		        	zombieSound.volume = 0.05;
 		        }
 	        }
-	        if(zombieMoving){
+	        if(zombieMoving){ //If the zombie is moving.
 	        	var oldVelocity = zombie.getLinearVelocity();
+	        	//Set the zombies velocity in x and z direction equal to the calculated direction towards the player, times two.
 	        	zombie.setLinearVelocity(new THREE.Vector3(zombieVelocityNormal.x * 2, oldVelocity.y, zombieVelocityNormal.z * 2 ));
 	        	zombieMovingFrames += 1;
-	        	zombie.lookAt(new THREE.Vector3(charMesh.position.x, 1, charMesh.position.z));
+	        	zombie.lookAt(new THREE.Vector3(charMesh.position.x, 1, charMesh.position.z)); //Keep the zombie facing the player
 	        	if(zombieMovingFrames > 100){
 	        		zombieMoving = false;
 	        	}
 	        }
 	        if(zombie.position.y < -5){
-	    		scene.remove(zombie);
+	    		scene.remove(zombie); //If the zombie falls down in a hole. Remove it from the scene. It is dead.
 	    		zombieAlive = false;
 	    	}
 	    }
@@ -420,7 +415,7 @@ var zombieMoving = false;
 var zombieMovingFrames = 0;
 var zombieAlive = true;
 var zombieSoundPlayFrames = 0;
-// Checks if the character should take fall dmg.
+// Checks if the character should take fall dmg. Using a raycaster downwards, checking the velocity right before impact.
 function checkFallDmg() {
     charCaster.set(charMesh.position, new THREE.Vector3(0, -1, 0));
     var intersects = charCaster.intersectObjects(objects);
@@ -493,13 +488,13 @@ function takeDamage(amount){
 		if(health - amount > 0){
 			health -= amount;
 		}
-		else{
+		else{ //health can not be negative.
 			health = 0;
 		}
 	
 		damaged = true;
-		damageSound.play();
-		damageSprite.visible = true;
+		damageSound.play(); //Play a sound when taking damage.
+		damageSprite.visible = true; //And flash the red bloodstains on the screen edges.
     	damageFrames = 0;
     	damageWarning = true;
 	}

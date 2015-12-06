@@ -467,24 +467,7 @@ function cloneBox(object) {
 	return clone;
 }
 
-// Generates level 3 (testlevel).
-function generateLevel3() {
-	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
-			.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0xee2233,
-				visible : true,
-				opacity : 0.5
-			}), 0.99, 0.2), 0);
-	floor.position.y -= 2.25;
-	scene.add(floor);
-	crate = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 2, 3), crateMaterial,
-			15);
-	moveableObjects.push(crate);
-	pickUpItems.push(crate);
-	crate.position.x += 9;
-	crate.position.z -= 12;
-	scene.add(crate);
-}
+
 
 // Called when trap model is loaded.
 function trapLoadedCallback(geometry) {
@@ -599,6 +582,7 @@ function flareBoxLoadedCallback(object) {
 	pickUpItems.push(cones);
 }
 
+//Runs when the model for the blades of the pendulum traps are loaded.
 function trapBladeLoadedCallback(object){
 	object.scale.set(0.2,0.4,0.2);
 	object.position.y -= 3;
@@ -609,6 +593,7 @@ function trapBladeLoadedCallback(object){
 	level2Trap2_3.add(object);
 }
 
+//Runs when the doorway for the level 2 exit is loaded.
 function doorwayLoadedCallback(object){
 	object.scale.set(0.82,0.6,1);
 	object.position.x = doorway.position.x;
@@ -617,6 +602,7 @@ function doorwayLoadedCallback(object){
 	scene.add(object);
 }
 
+//Runs when the model for the falling spike trap in level 2 is loaded.
 function trapSpikesLoadedCallback(object){
 	object.scale.set(0.5,0.5,0.5);
 	var clone1 = object.clone();
@@ -630,6 +616,7 @@ function trapSpikesLoadedCallback(object){
 	level2Trap1.add(clone3);
 }
 
+//Generates the collectible keys for level 2
 function createKeys(){
 	
 	keySound = new Audio('audio/270408__littlerobotsoundfactory__pickup-gold-00.wav');
@@ -691,6 +678,7 @@ function createKeys(){
 	key3.setAngularVelocity(new THREE.Vector3(0,1,0));
 }
 
+//Runs when the model for the keys in level 2 is loaded.
 function keyLoadedCallback(object){
 	object.scale.set(0.3,0.3,0.3);
 	var key1Skin = object.clone();
@@ -749,6 +737,7 @@ function textureAnimator(textureSource, tileHori, tileVert, tileNumber,
 }
 var lever;
 
+//Creates the door and lever that players have to jump over in level 2.
 function createJumpableDoor(){
 	jumpableDoor = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
@@ -768,6 +757,7 @@ function createJumpableDoor(){
 	scene.add(lever);
 }
 
+//Runs when the door model for the exit in level 2 is loaded.
 function doorwayDoorLoadedCallback(object){
 	
 	clone2 = object.clone();
@@ -778,6 +768,7 @@ function doorwayDoorLoadedCallback(object){
 	doorway.add(clone2);
 }
 
+//Runs when the door model for the jumpable door in level 2 is loaded.
 function giantDoorLoadedCallback(object){
 	clone1 = object.clone();
 	clone1.rotation.y += Math.PI/2;
@@ -790,6 +781,8 @@ var puzzlePoints = [];
 var puzzle;
 var puzzleLightOnTexture;
 var puzzleLightOffTexture;
+
+//Creates the "lights on!" puzzle in level 2.
 function createPuzzle(){
 	var puzzleTexture = textureLoader.load('images/lightwall/lightwall_texture.jpg');
     puzzleMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
@@ -837,6 +830,7 @@ var platform2Velocity = -2;
 var platform3Velocity = -3;
 var platform4Velocity = 2.5;
 
+//Creates the spikes on the ground and the moving platforms in one of the keyrooms in level 2.
 function createGroundSpikes(){
 	spikes1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
@@ -1011,6 +1005,7 @@ function createGroundSpikes(){
 	platform4.setLinearVelocity(new THREE.Vector3(0,0,platform4Velocity));
 }
 
+//Runs when the bloody spikes model for floor spikes in level 2 is loaded.
 function groundSpikesBloodyLoadedCallback(object){
 	object.scale.set(0.3,0.3,0.3);
 	object.position.y += 0.2;
@@ -1034,6 +1029,7 @@ function groundSpikesBloodyLoadedCallback(object){
 	spikes10.add(clone10);
 }
 
+//Runs when the non-bloody spikes model for floor spikes in level 2 is loaded.
 function groundSpikesLoadedCallback(object){
 	object.scale.set(0.3,0.3,0.3);
 	object.position.y += 0.2;
@@ -1050,6 +1046,7 @@ function groundSpikesLoadedCallback(object){
 	spikes9.add(clone9);
 }
 
+//Creates all the collision boxes for the floor in level 2.
 function createLevel2Floors(){
 	// Collision
 	floor1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 1, 2), Physijs
@@ -1142,6 +1139,7 @@ function createLevel2Floors(){
 	scene.add(floor9);
 }
 
+//Creates the falling spike trap, and the pendulum blade traps in level 2.
 function createLevel2Traps() {
 	level2Trap1 = new Physijs.BoxMesh(new THREE.BoxGeometry(5, 1, 15), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
@@ -1276,4 +1274,23 @@ function createLevel2Traps() {
 					level2Trap2TargetSpeed_3, 10);
 		}
 	});
+}
+
+//Generates level 3 (testlevel, not implemented).
+function generateLevel3() {
+	floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
+			.createMaterial(new THREE.MeshBasicMaterial({
+				color : 0xee2233,
+				visible : true,
+				opacity : 0.5
+			}), 0.99, 0.2), 0);
+	floor.position.y -= 2.25;
+	scene.add(floor);
+	crate = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 2, 3), crateMaterial,
+			15);
+	moveableObjects.push(crate);
+	pickUpItems.push(crate);
+	crate.position.x += 9;
+	crate.position.z -= 12;
+	scene.add(crate);
 }

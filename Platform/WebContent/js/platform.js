@@ -534,12 +534,12 @@ function onDocumentMouseMove(e)
             }
         }
     }
-    if(!menu && charCam){
-        if(oldMouseY == 0){
-        	oldMouseY = e.clientY;
+    if(!menu && charCam){ //If not in the menu
+        if(oldMouseY == 0){ //Dunno if this is needed really.
+        	oldMouseY = e.clientY; 
         	oldMouseX = e.clientX;
         }
-        if(mouseDown){
+        if(mouseDown){ //if the mouse button is down, move the camera based on the mouse movement this frame.
 	    	var diffY = e.clientY - oldMouseY;
 
 	    	var diffX = e.clientX - oldMouseX;
@@ -552,7 +552,7 @@ function onDocumentMouseMove(e)
         }
     	
     
-    	oldMouseY = e.clientY;
+    	oldMouseY = e.clientY; //Save the mouse position on each frame
     	oldMouseX = e.clientX;
       
        
@@ -630,17 +630,15 @@ function createChar() {
 	charMesh.position.z = charMeshPosition.z;
 
 	scene.add(charMesh);
-	charMesh.setAngularFactor(new THREE.Vector3(0,0,0));
+	charMesh.setAngularFactor(new THREE.Vector3(0,0,0)); //The character mesh cannot rotate in any direction.
+	//All rotation is only the camera rotating.
 	if (charCam) {
 		camera.position.z += 0;
-		camera.eulerOrder = "YXZ";
+		camera.eulerOrder = "YXZ"; //Change the rotation axis order to a more suiting one for first person camera.
 		camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
 		charMesh.add(camera);
 		charMesh.material.visible = false;
 	}
-	
-//	charMesh.setDamping(0.1, 0.9);
-
 	charCaster = new THREE.Raycaster();
 	moveableObjects.push(charMesh);
 	scene.simulate();
@@ -659,7 +657,7 @@ function onWindowResize() {
         // Update canvas
 	camera.updateProjectionMatrix();
         
-        // This makes sure regardless if width or height is changes, 
+        // This makes sure regardless if width or height is changed, 
         // the aspect stays the same, as well as updating
         if(window.innerWidth < window.innerHeight * 16/9){
             renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
@@ -696,8 +694,8 @@ function levelComplete() {
 
 
 // Restarts the level (after death for example).
-function restartLevel() { // Currently not finished.
-	if(level == 1){
+function restartLevel() { 
+	if(level == 1){ //Restarting level 1 and level 2 demands different actions.
 	    level = 0;
 	    scene.remove(charMesh);
 	    resetChar();
@@ -809,7 +807,7 @@ function resetTraps() {
 	
 		
 }
-
+//resets the falling spikes trap in level 2.
 function resetTraps2(){
 	level2Trap1Triggered = false;
 	scene.remove(level2Trap1);
@@ -821,7 +819,7 @@ function resetTraps2(){
 	level2Trap1.setAngularFactor(new THREE.Vector3(0, 0, 0));
 
 }
-
+//resets the collectible keys in level 2.
 function resetKeys(){
 	keysPickedUp = 0;
 	scene.remove(key1);
@@ -838,6 +836,7 @@ function resetKeys(){
 	key3.setAngularVelocity(new THREE.Vector3(0,1,0));
 }
 var reAddPuzzle = false;
+//resets the "lights on!" puzzle in level 2.
 function resetPuzzle(){
 	for(var i = 0; i < puzzlePoints.length; i++){
 		if(puzzlePoints[i].material.map == puzzleLightOnTexture){
@@ -858,7 +857,6 @@ function resetPuzzle(){
 		reAddPuzzle = false;
 	}
 }
-
 function resetJumpableDoor(){
 	if(jumpableDoorOpen){
 		scene.remove(jumpableDoor);
