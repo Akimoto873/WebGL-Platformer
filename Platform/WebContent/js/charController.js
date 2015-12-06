@@ -367,13 +367,44 @@ function checkTraps() {
 	        distance.subVectors(charMesh.position, zombie.position);
 	        distance.y = 0;
 	        
-	        if(distance.length() < 15 && !zombieMoving){
-	        	distance.normalize();
-	        	
-	        	zombieVelocityNormal = distance;
-	        	zombieMoving = true;
-	        	zombieMovingFrames = 0;
-	        	
+	        if(distance.length() < 20){
+	        	if(zombieSoundPlayFrames == 0){
+		        	zombieSound.play();
+		        	
+	        	}
+	        	zombieSoundPlayFrames += 1;
+	        	if(zombieSoundPlayFrames > (800 + Math.random()*400)){
+	        		zombieSoundPlayFrames = 0;
+	        	}
+	        
+	        	if(distance.length() < 15){
+	        		
+	        		if(distance.length() < 10){
+		        		if(distance.length() < 5){
+		        			zombieSound.volume = 0.45;
+		        		}
+		        		else{
+		        			zombieSound.volume = 0.3;
+		        		}
+		        	}
+		        	else{
+		        		zombieSound.volume = 0.15;
+		        	}
+	        		
+	        		if(!zombieMoving){
+		        	distance.normalize();
+		        	
+		        	zombieVelocityNormal = distance;
+		        	zombieMoving = true;
+		        	zombieMovingFrames = 0;
+	        		}
+		        	
+		        	
+		        	
+		        }
+		        else{
+		        	zombieSound.volume = 0.05;
+		        }
 	        }
 	        if(zombieMoving){
 	        	var oldVelocity = zombie.getLinearVelocity();
@@ -396,6 +427,7 @@ var zombieVelocityNormal;
 var zombieMoving = false;
 var zombieMovingFrames = 0;
 var zombieAlive = true;
+var zombieSoundPlayFrames = 0;
 // Checks if the character should take fall dmg.
 function checkFallDmg() {
     charCaster.set(charMesh.position, new THREE.Vector3(0, -1, 0));

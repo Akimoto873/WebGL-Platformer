@@ -376,6 +376,11 @@ function generateLevel2() {
 	
 	scene.add(zombie);
 	zombie.setAngularFactor(new THREE.Vector3(0,1,0));
+	zombieSound = new Audio('audio/163439__under7dude__zombie-2.wav');
+	zombieSound.addEventListener('ended', function(){
+		this.currentTime = 0;
+	});
+	zombieSound.volume = 0.15;
 	
 	createPuzzle();
 	createGroundSpikes();
