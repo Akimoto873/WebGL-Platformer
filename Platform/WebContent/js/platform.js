@@ -504,8 +504,9 @@ function onDocumentMouseMove(e)
 	    	var diffY = e.clientY - oldMouseY;
 
 	    	var diffX = e.clientX - oldMouseX;
-	    	
+	    	if((camera.rotation.x - diffY/200) <Math.PI/2 && (camera.rotation.x -diffY/200 >-Math.PI/2)){
 	        camera.rotation.x -= (diffY/200);
+	    	}
 	        camera.rotation.y -= diffX/200;
 				
 	    	
