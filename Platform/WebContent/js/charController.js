@@ -46,12 +46,12 @@ function checkKeys() {
 
     // A
     if (keyMap[65]) { 
-            counterClockwiseRotation = 2/100; // charMesh.setAngularVelocity(new
+            counterClockwiseRotation = 2/50; // charMesh.setAngularVelocity(new
     }
 
     // D
     if (keyMap[68]) { 
-            clockwiseRotation = -2/100; // charMesh.setAngularVelocity(new    // THREE.Vector3(0, -1.5, 0));
+            clockwiseRotation = -2/50; // charMesh.setAngularVelocity(new    // THREE.Vector3(0, -1.5, 0));
     }
 
     // Q - strafe
@@ -129,7 +129,7 @@ function checkMovement() {
         	}
         	jumpSound.play();
             airTime = new THREE.Clock();
-            charMesh.applyCentralImpulse(new THREE.Vector3(0, 120, 0));
+            charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
             stamina -= 20;
             // health -= 10;
             // damaged = true; //for testing purposes
