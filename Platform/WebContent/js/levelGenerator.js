@@ -462,6 +462,7 @@ function trapLoadedCallback(geometry) {
 			}), 0.0, 0.1), 0);
 	tile.position.x -= 9;
 	tile.position.y -= 1.8;
+	tile.position.z += 2;
 	scene.add(tile);
 	trap = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 1, 8), Physijs
 			.createMaterial(new THREE.MeshBasicMaterial({
