@@ -142,8 +142,15 @@ function checkMovement() {
             // damaged = true; //for testing purposes
         }
     }
-    
-    charMesh.setAngularVelocity(new THREE.Vector3(0, clockwiseRotation + counterClockwiseRotation, 0));
+    if(move){
+    	charMesh.rotation.y -= cameraRotationSinceLastUpdate;
+    	charMesh.__dirtyRotation = true;
+    	charMesh.__dirtyPosition = true;
+    	camera.rotation.y -= cameraRotationSinceLastUpdate;
+    	cameraRotationSinceLastUpdate = 0;
+    	
+    }
+//    charMesh.setAngularVelocity(new THREE.Vector3(0, clockwiseRotation + counterClockwiseRotation, 0));
 
 
     if (pickup) {
