@@ -135,9 +135,12 @@ function setupPointerLock() {
                 canvas.mozRequestPointerLock ||
                 canvas.webkitRequestPointerLock;
 
-
-        // Ask the browser to lock the pointer)
-        canvas.requestPointerLock();
+        // Ask / Lock pointer if we are not in a menu
+        if(!menu)
+        {
+            canvas.requestPointerLock();
+        }
+        
     });
 }
 
