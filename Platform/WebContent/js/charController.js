@@ -58,21 +58,6 @@ function checkKeys() {
             move = true;
     }
 
-    /*
-    // Q - strafe
-    if (keyMap[69]) {
-            forceVector.x -= force;
-            move = true;
-    }
-
-    // E - strafe
-    if (keyMap[81]) {
-            forceVector.x += force;
-            move = true;
-    }
-*/
-
-
     // Restart level if dead and R is pressed.
     if (keyMap[82] && gameOverScreen) { 
             restartLevel();
@@ -85,8 +70,8 @@ var jumpableDoorOpening = false;
 function checkMovement() {
    
 	
-	//Get rotation and velocity of character
-	var rotationMatrix = new THREE.Matrix4();
+    //Get rotation and velocity of character
+    var rotationMatrix = new THREE.Matrix4();
     rotationMatrix.extractRotation(camera.matrix);
     var oldVelocityVector = charMesh.getLinearVelocity();
     var currentVelocity = Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) 
@@ -128,10 +113,10 @@ function checkMovement() {
     
     if (jump) { 
         if(airborne1 || airborne2){ //If not both jumps are used, give the character an impulse upwards.
-        	if(airborne1){
-        		waitForKeyUp = true; 
-        	}
-        	jumpSound.play();
+            if(airborne1){
+                    waitForKeyUp = true; 
+            }
+            jumpSound.play();
             airTime = new THREE.Clock();
             charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
             stamina -= 20;
@@ -165,7 +150,7 @@ function checkMovement() {
 	            if(pickUpItems[i] == cones){ //If the item within range is the flarebox
 	            	scene.remove(pickUpItems[i]); //remove it from the scene.
 	                        pickUpItems.splice(i, 1); //remove it from the list of items that can be picked up.
-	                        carriedCones += 5; //Give the player 5 reuseable flares.
+	                        carriedCones += 1; //Give the player 1 reuseable flares.
 	                        i = pickUpItems.length + 1; //Stop the loop
 	            }
 	            else if(!carrying){ //Else, the item has to be a single flar
