@@ -70,6 +70,15 @@ function createOverlay()
 	healthSprite.visible = false;
 	staminaSprite2.visible = false;
 	healthSprite2.visible = false;
+	
+	var spriteMaterial5 = new THREE.SpriteMaterial({
+		color: 0xff0000
+	});
+	crossHairSprite = new THREE.Sprite(spriteMaterial5);
+	crossHairSprite.position.set(0,0,5);
+	crossHairSprite.scale.set(2,2,1);
+	orthoScene.add(crossHairSprite);
+	crossHairSprite.visible = false;
 }
 
 /* Shows the game over screen on death */
@@ -180,6 +189,17 @@ function checkChangesToHUD() {
 	                restartSprite.material.opacity += 0.02;
 	        }
 	    }
+	    if(level == 2 && !menu){
+		    var distance = new THREE.Vector3();
+			distance.subVectors(charMesh.position, puzzle.position);
+			if(distance.length() < 10){
+				crossHairSprite.visible = true;
+			}
+			else{
+				crossHairSprite.visible = false;
+			}
+		}
+	    
 	
 }
 

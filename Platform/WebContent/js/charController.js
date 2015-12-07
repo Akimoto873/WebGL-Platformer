@@ -87,11 +87,11 @@ function checkMovement() {
     }
     if(move && currentVelocity < maxSpeed){
     	//Give the character the intended velocity in the correct direction.
-	    var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
+//	    var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
             
             
-	    charMesh.setLinearVelocity(new THREE.Vector3(finalForceVector.x, oldVelocityVector.y,
-	                   finalForceVector.z));
+    	 charMesh.setLinearVelocity(new THREE.Vector3((forceVector.z)*Math.sin(camera.rotation.y) + (forceVector.x)*Math.cos(camera.rotation.y), oldVelocityVector.y,
+                 (forceVector.z)*Math.cos(camera.rotation.y) - (forceVector.x)*Math.sin(camera.rotation.y)));
     }
     if(runForward){
     	walkSound.playbackRate = 2; //If running, speed up the walking sound.

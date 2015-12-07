@@ -177,6 +177,7 @@ function changeCallback(e) {
             document.webkitPointerLockElement === canvas) {
 
         document.addEventListener("mousemove", moveCallback, false);
+    	document.addEventListener("click", checkPuzzle, false);
     } else {
         // No longer active
         document.removeEventListener("mousemove", moveCallback, false);
@@ -369,7 +370,7 @@ function init() {
     };
     
     loadAudio();
-    generateLevel1(); 
+    generateLevel2(); 
     createOverlay();
     createChar();
     createMenu();
@@ -418,6 +419,9 @@ function onDocumentMouseClick(e)
 	    	}
 	    }
 	}
+}
+
+function checkPuzzle(){
 	if(level == 2 && !menu){
 		var distance = new THREE.Vector3();
 		distance.subVectors(charMesh.position, puzzle.position);
@@ -440,7 +444,7 @@ function onDocumentMouseClick(e)
 					vector.y = Math.round( ( - vector.y + 1 ) * window.innerHeight / 2 );
 					vector.z = 0;
 					
-					if(Math.abs(e.clientX - vector.x) < 50 && Math.abs(e.clientY  - vector.y) < 50){
+					if(Math.abs(window.innerWidth/2 - vector.x) < 50 && Math.abs(window.innerHeight/2  - vector.y) < 50){
 						
 						if(puzzlePoints[point].material.map == puzzleLightOffTexture){
 							puzzlePoints[point].material.map = puzzleLightOnTexture;
@@ -500,9 +504,9 @@ function onDocumentMouseClick(e)
 			}
 			
 		}
-		
-		
 	}
+		
+	
 }
 
 
