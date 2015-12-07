@@ -326,6 +326,7 @@ function init() {
 // Listener: On mouse click
 function onDocumentMouseClick(e) 
 {
+	e.preventDefault();
 	if(menu){
 	    e = e || event;
 	         
@@ -525,12 +526,14 @@ function onDocumentMouseMove(e)
 //Not used. Saved in case we want to use it.
 function onDocumentMouseDown(e){
 	if(!menu){
+		e.preventDefault();
 		mouseDown = true;
 	}
 }
 function onDocumentMouseUp(e){
 	if(!menu){
 		mouseDown = false;
+		e.preventDefault();
 	}
 }
 
@@ -609,15 +612,13 @@ function createChar() {
 function onWindowResize() {
     
         // Always update camera aspect
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
+        
     
         // Update menu size
         buttonSizeX = window.innerWidth * (200/window.innerWidth);
 	buttonSizeY = (window.innerWidth * (9/16)) * (50/(window.innerWidth * (9/16)));
         
         // Update canvas
-	camera.updateProjectionMatrix();
         
         // This makes sure regardless if width or height is changed, 
         // the aspect stays the same, as well as updating
@@ -630,6 +631,8 @@ function onWindowResize() {
             renderSizeX = window.innerHeight * 16/9;
             renderSizeY = window.innerHeight;
         }
+        camera.aspect = renderSizeX / renderSizeY;
+        camera.updateProjectionMatrix();
 }
 
 //debug help
@@ -903,7 +906,7 @@ function createMenu(){
 		map : playTexture
 	});
 	playSprite = new THREE.Sprite(spriteMaterialPlay);
-	playSprite.position.set(8, -buttonSizeY + 60 , -80);
+	playSprite.position.set(8, buttonSizeY*0.5 , -80);
 	playSprite.scale.set(buttonSizeX, buttonSizeY, 1);
 	orthoScene.add(playSprite);
 	menuItems["play"] = playSprite;
@@ -915,7 +918,7 @@ function createMenu(){
 		map : optionsTexture
 	});
 	optionsSprite = new THREE.Sprite(spriteMaterialOptions);
-	optionsSprite.position.set(8, -buttonSizeY*2 + 30 , -80);
+	optionsSprite.position.set(8, -buttonSizeY , -80);
 	optionsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
 	orthoScene.add(optionsSprite);
 	menuItems["options"] = optionsSprite;
@@ -926,7 +929,7 @@ function createMenu(){
 		map : controlsTexture
 	});
 	controlsSprite = new THREE.Sprite(spriteMaterialControls);
-	controlsSprite.position.set(8, -buttonSizeY*3, -80);
+	controlsSprite.position.set(8, -buttonSizeY*2.5, -80);
 	controlsSprite.scale.set(buttonSizeX, buttonSizeY, 1);
 	orthoScene.add(controlsSprite);
 	menuItems["help"] = controlsSprite;

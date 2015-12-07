@@ -8,11 +8,12 @@ var spriteYScale2;
 function createOverlay() 
 {
 	
-	spriteXPosition = (-renderSizeX / 3);
-	spriteXScale = renderSizeX / 3;
-    spriteYScale = renderSizeY / 16;
-    spriteXScale2 = renderSizeX / 2.8;
-    spriteYScale2 = renderSizeY / 15;
+	
+	spriteXScale = window.innerWidth / 2.8;
+    spriteYScale = window.innerHeight / 17;
+    spriteXScale2 = window.innerWidth / 2.5;
+    spriteYScale2 = window.innerHeight / 16;
+    spriteXPosition = (-window.innerWidth / 2.1) + spriteXScale2/2;
 	
     // Create and append overlay container
     overlayContainer = document.createElement('div');
@@ -28,7 +29,7 @@ function createOverlay()
             color : 0x00ff00
     });
     healthSprite = new THREE.Sprite(spriteMaterial);
-    healthSprite.position.set(spriteXPosition, -(renderSizeY / 2) + 100, 10);
+    healthSprite.position.set(spriteXPosition, -(window.innerHeight / 2.5), 10);
     healthSprite.scale.set(spriteXScale, spriteYScale, 1);
     orthoScene.add(healthSprite);
 
@@ -38,7 +39,7 @@ function createOverlay()
             color : 0x000000
     });
     healthSprite2 = new THREE.Sprite(spriteMaterial2);
-    healthSprite2.position.set(spriteXPosition, -(renderSizeY / 2) + 100, 8);
+    healthSprite2.position.set(spriteXPosition, -(window.innerHeight / 2.5), 8);
     healthSprite2.scale.set(spriteXScale2, spriteYScale2, 1);
     orthoScene.add(healthSprite2);
 
@@ -48,7 +49,7 @@ function createOverlay()
             color : 0x0000ff
     });
     staminaSprite = new THREE.Sprite(spriteMaterial3);
-    staminaSprite.position.set(spriteXPosition, -(renderSizeY / 2.5) + 100, 10);
+    staminaSprite.position.set(spriteXPosition, -(window.innerHeight / 3.5), 10);
     
     staminaSprite.scale.set(spriteXScale, spriteYScale, 1);
     
@@ -60,7 +61,7 @@ function createOverlay()
             color : 0x000000
     });
     staminaSprite2 = new THREE.Sprite(spriteMaterial4);
-    staminaSprite2.position.set(spriteXPosition, -(renderSizeY / 2.5) + 100, 8);
+    staminaSprite2.position.set(spriteXPosition, -(window.innerHeight / 3.5), 8);
     staminaSprite2.scale.set(spriteXScale2, spriteYScale2, 1);
     
     orthoScene.add(staminaSprite2);
