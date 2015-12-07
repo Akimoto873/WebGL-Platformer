@@ -370,7 +370,7 @@ function init() {
     };
     
     loadAudio();
-    generateLevel2(); 
+    generateLevel1(); 
     createOverlay();
     createChar();
     createMenu();

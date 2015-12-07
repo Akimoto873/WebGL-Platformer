@@ -495,6 +495,11 @@ function takeDamage(amount){
     	damageWarning = true;
 	}
 }
+var points = 0;
+function dungCollected(){
+	points += 50;
+	//play splat sound;
+}
 
 //resets all values before next run through.
 function resetValues() {

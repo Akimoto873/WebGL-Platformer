@@ -73,7 +73,7 @@ function generateLevel1() {
 	trapTexture = textureLoader.load('images/crushers.jpg');
 
 	// JSON Loader
-	var loader = new THREE.JSONLoader();
+	loader = new THREE.JSONLoader();
 	// loader.load('models/char.js', characterLoadedCallback);
 	// loader.load('models/level_01.js', level1loadedCallback);
 	loader.load('models/trap.js', trapLoadedCallback);
@@ -172,6 +172,9 @@ function generateLevel1() {
 			levelComplete();
 		}
 	});
+	
+	loader = new THREE.JSONLoader();
+	loader.load('models/objects/dung/dung.js', dung1LoadedCallback);
 
 	scene.traverse(function(node) {
 
@@ -262,6 +265,9 @@ function generateLevel2() {
 	crates.push(hintCrate);
 	pickUpItems.push(hintCrate);
 	
+	loader = new THREE.JSONLoader();
+	loader.load('models/objects/dung/dung.js', dung2LoadedCallback);
+	
 
 	createLevel2Traps();
 	objLoader.load('models/objects/trap_spikes/trap_spikes.obj', 'models/objects/trap_spikes/trap_spikes.mtl', trapSpikesLoadedCallback);
@@ -290,6 +296,107 @@ function generateLevel2() {
 	}
 	ambience2.play();
 
+}
+
+var dungs = [];
+
+function dung1LoadedCallback(geometry){
+	dungTexture = textureLoader.load('images/poop4.jpg');
+	var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
+	dung.scale.set(0.1, 0.1, 0.1);
+	dung.position.set(5.40,1,-22.80);
+	dung.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			scene.remove(dung);
+			//addDungPoints();
+		}
+	});
+	scene.add(dung);
+	dungs.push(dung);
+	var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
+	dung.scale.set(0.1, 0.1, 0.1);
+	dung.position.set(-23.20,1,18.20);
+	dung.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			scene.remove(dung);
+			//addDungPoints();
+		}
+	});
+	scene.add(dung);
+	dungs.push(dung);
+	var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
+	dung.scale.set(0.1, 0.1, 0.1);
+	dung.position.set(-16.20,1,18.20);
+	dung.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			scene.remove(dung);
+			//addDungPoints();
+		}
+	});
+	scene.add(dung);
+	dungs.push(dung);
+	var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
+	dung.scale.set(0.1, 0.1, 0.1);
+	dung.position.set(-5.40,1,12.60);
+	dung.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			scene.remove(dung);
+			//addDungPoints();
+		}
+	});
+	scene.add(dung);
+	dungs.push(dung);
+}
+
+function dung2LoadedCallback(geometry){
+	dungTexture = textureLoader.load('images/poop4.jpg');
+	var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
+	dung.scale.set(0.1, 0.1, 0.1);
+	dung.position.set(-15.80, 1, -24.00);
+	dung.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			scene.remove(dung);
+			//addDungPoints();
+		}
+	});
+	scene.add(dung);
+	dungs.push(dung);
+	var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
+	dung.scale.set(0.1, 0.1, 0.1);
+	dung.position.set(31.80,1,23.00);
+	dung.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			scene.remove(dung);
+			//addDungPoints();
+		}
+	});
+	scene.add(dung);
+	dungs.push(dung);
+	var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
+	dung.scale.set(0.1, 0.1, 0.1);
+	dung.position.set(22.40,1,-26.80);
+	dung.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			scene.remove(dung);
+			//addDungPoints();
+		}
+	});
+	scene.add(dung);
+	dungs.push(dung);
+	var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
+	dung.scale.set(0.1, 0.1, 0.1);
+	dung.position.set(2.20,1,-12.40);
+	dung.addEventListener('collision', function(other_object){
+		if(other_object == charMesh){
+			scene.remove(dung);
+			//addDungPoints();
+		}
+	});
+	scene.add(dung);
+	dungs.push(dung);
+	
+	
+	
 }
 
 // Called when level 1 model is loaded.
