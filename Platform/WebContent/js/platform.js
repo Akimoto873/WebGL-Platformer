@@ -120,7 +120,7 @@ function tick() {
     requestAnimationFrame(tick);
 }
 
-// Pointer Lock ref: http://www.smartjava.org/examples/pointerlock/
+// Pointer Lock, based on ref: http://www.smartjava.org/examples/pointerlock/
 function setupPointerLock() {
     // Pointer Lock Event (Callback)
     document.addEventListener('pointerlockchange', changeCallback, false);
@@ -140,15 +140,13 @@ function setupPointerLock() {
         {
             canvas.requestPointerLock();
         }
-        
     });
 }
 
 
-
+// First Person View Camera
 function moveCallback(e) {
     var canvas = $("#container").get()[0];
-    // var ctx = canvas.getContext('2d');
 
     if(!menu && charCam){
         // Get movement
@@ -170,54 +168,21 @@ function moveCallback(e) {
     }
 }
 
-
-
-// Returns a position based on a mouseevent on a canvas. Based on code
-// from here: http://miloq.blogspot.nl/2011/05/coordinates-mouse-click-canvas.html
-function getPosition(canvas, event) {
-    var x = new Number();
-    var y = new Number();
-
-    if (event.x != undefined && event.y != undefined) {
-        x = event.x;
-        y = event.y;
-    }
-    else // Firefox method to get the position
-    {
-        x = event.clientX + document.body.scrollLeft +
-                document.documentElement.scrollLeft;
-        y = event.clientY + document.body.scrollTop +
-                document.documentElement.scrollTop;
-    }
-
-    x -= canvas.offsetLeft;
-    y -= canvas.offsetTop;
-
-    return {x:x, y:y};
-}
-
-
-// called when the pointer lock has changed. Here we check whether the
-// pointerlock was initiated on the element we want.
+// Call when pointer lock has changed - in order to set or remove event listener
 function changeCallback(e) {
     var canvas = $("#container").get()[0];
+    
     if (document.pointerLockElement === canvas ||
             document.mozPointerLockElement === canvas ||
             document.webkitPointerLockElement === canvas) {
 
-        // we've got a pointerlock for our element, add a mouselistener
         document.addEventListener("mousemove", moveCallback, false);
     } else {
-
-        // pointer lock is no longer active, remove the callback
+        // No longer active
         document.removeEventListener("mousemove", moveCallback, false);
-
-        // and reset the entry coordinates
         entryCoordinates = {x:0, y:0};
     }
 };
-
-
 
 //Initate 
 function init() {
@@ -279,9 +244,6 @@ function init() {
     crateMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
             map : crateTexture
     }), 0.4, 0.8);
-    
-    // Create level 1
-     
     
     // Add window resize listener
     window.addEventListener('resize', onWindowResize, false);
