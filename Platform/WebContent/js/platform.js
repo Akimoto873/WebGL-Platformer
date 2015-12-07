@@ -1,7 +1,3 @@
-/**
- * 
- */
-
 if (!Detector.webgl)
 	Detector.addGetWebGLMessage();
 
@@ -90,6 +86,9 @@ var targetList = [];
 var projector, mouse = { x: 0, y: 0 };
 var menuItems = [];
 
+// Pointer Lock
+var entryCoordinates = {x:-1, y:-1};
+
 /* DEBUG VARS */
 var charCam = true;  // Set to false for easier bugtesting.
 var enableDebugging = false;
@@ -121,10 +120,109 @@ function tick() {
     requestAnimationFrame(tick);
 }
 
+// Pointer Lock ref: http://www.smartjava.org/examples/pointerlock/
+function setupPointerLock() {
+    // Pointer Lock Event (Callback)
+    document.addEventListener('pointerlockchange', changeCallback, false);
+    document.addEventListener('mozpointerlockchange', changeCallback, false);
+    document.addEventListener('webkitpointerlockchange', changeCallback, false);
+
+    // when element is clicked, we're going to request a
+    // pointerlock
+    $("#container").click(function () {
+        var canvas = $("#container").get()[0];
+        canvas.requestPointerLock = canvas.requestPointerLock ||
+                canvas.mozRequestPointerLock ||
+                canvas.webkitRequestPointerLock;
+
+
+        // Ask the browser to lock the pointer)
+        canvas.requestPointerLock();
+    });
+}
+
+
+
+function moveCallback(e) {
+    var canvas = $("#container").get()[0];
+    // var ctx = canvas.getContext('2d');
+
+    if(!menu && charCam){
+        // Get movement
+        var movementX = e.movementX ||
+                e.mozMovementX ||
+                e.webkitMovementX ||
+                0;
+
+        var movementY = e.movementY ||
+                e.mozMovementY ||
+                e.webkitMovementY ||
+                0;
+   
+        // Rotate player camera according to mouse movement
+        if((camera.rotation.x - movementY/180) <Math.PI/2 && (camera.rotation.x -movementY/180 >-Math.PI/2)){
+            camera.rotation.x -= (movementY/180);
+        }
+        camera.rotation.y -= movementX/200; 	
+    }
+}
+
+
+
+// Returns a position based on a mouseevent on a canvas. Based on code
+// from here: http://miloq.blogspot.nl/2011/05/coordinates-mouse-click-canvas.html
+function getPosition(canvas, event) {
+    var x = new Number();
+    var y = new Number();
+
+    if (event.x != undefined && event.y != undefined) {
+        x = event.x;
+        y = event.y;
+    }
+    else // Firefox method to get the position
+    {
+        x = event.clientX + document.body.scrollLeft +
+                document.documentElement.scrollLeft;
+        y = event.clientY + document.body.scrollTop +
+                document.documentElement.scrollTop;
+    }
+
+    x -= canvas.offsetLeft;
+    y -= canvas.offsetTop;
+
+    return {x:x, y:y};
+}
+
+
+// called when the pointer lock has changed. Here we check whether the
+// pointerlock was initiated on the element we want.
+function changeCallback(e) {
+    var canvas = $("#container").get()[0];
+    if (document.pointerLockElement === canvas ||
+            document.mozPointerLockElement === canvas ||
+            document.webkitPointerLockElement === canvas) {
+
+        // we've got a pointerlock for our element, add a mouselistener
+        document.addEventListener("mousemove", moveCallback, false);
+    } else {
+
+        // pointer lock is no longer active, remove the callback
+        document.removeEventListener("mousemove", moveCallback, false);
+
+        // and reset the entry coordinates
+        entryCoordinates = {x:0, y:0};
+    }
+};
+
 
 
 //Initate 
 function init() {
+    
+    // Pointer Lock
+    setupPointerLock();
+    
+    
     Physijs.scripts.worker = 'lib/physijs_worker.js';
     Physijs.scripts.ammo = 'http://gamingJS.com/ammo.js';
 
@@ -143,7 +241,6 @@ function init() {
 
     keyboard = new THREEx.KeyboardState();
 
-   
 
     // Renderer
     renderer = new THREE.WebGLRenderer({
@@ -496,6 +593,7 @@ function onDocumentMouseMove(e)
             }
         }
     }
+    /*
     if(!menu && charCam){ //If not in the menu
         if(oldMouseY == 0){ //Dunno if this is needed really.
         	oldMouseY = e.clientY; 
@@ -508,19 +606,13 @@ function onDocumentMouseMove(e)
 	    	if((camera.rotation.x - diffY/200) <Math.PI/2 && (camera.rotation.x -diffY/200 >-Math.PI/2)){
 	        camera.rotation.x -= (diffY/200);
 	    	}
-	        camera.rotation.y -= diffX/200;
-				
-	    	
-	    	
+	        camera.rotation.y -= diffX/200; 	
         }
-    	
-    
+
     	oldMouseY = e.clientY; //Save the mouse position on each frame
     	oldMouseX = e.clientX;
-      
-       
     }
-    
+    */
 }
 
 //Not used. Saved in case we want to use it.

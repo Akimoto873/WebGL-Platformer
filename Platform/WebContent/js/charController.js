@@ -46,14 +46,19 @@ function checkKeys() {
 
     // A
     if (keyMap[65]) { 
-            counterClockwiseRotation = 2/50; // 
+            // counterClockwiseRotation = 2/50; // 
+            forceVector.x += force;
+            move = true;
     }
 
     // D
     if (keyMap[68]) { 
-            clockwiseRotation = -2/50; // 
+            // clockwiseRotation = -2/50; // 
+            forceVector.x -= force;
+            move = true;
     }
 
+    /*
     // Q - strafe
     if (keyMap[69]) {
             forceVector.x -= force;
@@ -65,6 +70,8 @@ function checkKeys() {
             forceVector.x += force;
             move = true;
     }
+*/
+
 
     // Restart level if dead and R is pressed.
     if (keyMap[82] && gameOverScreen) { 
@@ -96,6 +103,8 @@ function checkMovement() {
     if(move && currentVelocity < maxSpeed){
     	//Give the character the intended velocity in the correct direction.
 	    var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
+            
+            
 	    charMesh.setLinearVelocity(new THREE.Vector3(finalForceVector.x, oldVelocityVector.y,
 	                   finalForceVector.z));
     }
@@ -202,7 +211,7 @@ function checkMovement() {
         	}
         }
     }
-	checkTraps();
+    checkTraps();
     checkFallDmg();
 
     // If we have lost all our health, set game over
