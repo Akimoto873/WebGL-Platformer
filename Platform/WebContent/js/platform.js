@@ -1063,4 +1063,9 @@ function loadAudio(){
     jumpSound.addEventListener('ended', function(){
     	this.currentTime = 0;
     });
+    dungSound = new Audio('audio/47982__benhillyard__vocal-splat-10.wav');
+    dungSound.volume = 0.5;
+    dungSound.addEventListener('ended', function(){
+    	this.currentTime = 0;
+    });
 }

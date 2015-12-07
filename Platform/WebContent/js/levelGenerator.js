@@ -307,8 +307,8 @@ function dung1LoadedCallback(geometry){
 	dung.position.set(5.40,1,-22.80);
 	dung.addEventListener('collision', function(other_object){
 		if(other_object == charMesh){
-			scene.remove(dung);
-			//addDungPoints();
+			dungCollected();
+			scene.remove(this);
 		}
 	});
 	scene.add(dung);
@@ -318,8 +318,8 @@ function dung1LoadedCallback(geometry){
 	dung.position.set(-23.20,1,18.20);
 	dung.addEventListener('collision', function(other_object){
 		if(other_object == charMesh){
-			scene.remove(dung);
-			//addDungPoints();
+			dungCollected();
+			scene.remove(this);
 		}
 	});
 	scene.add(dung);
@@ -329,8 +329,8 @@ function dung1LoadedCallback(geometry){
 	dung.position.set(-16.20,1,18.20);
 	dung.addEventListener('collision', function(other_object){
 		if(other_object == charMesh){
-			scene.remove(dung);
-			//addDungPoints();
+			dungCollected();
+			scene.remove(this);
 		}
 	});
 	scene.add(dung);
@@ -340,8 +340,9 @@ function dung1LoadedCallback(geometry){
 	dung.position.set(-5.40,1,12.60);
 	dung.addEventListener('collision', function(other_object){
 		if(other_object == charMesh){
-			scene.remove(dung);
-			//addDungPoints();
+			dungCollected();
+			scene.remove(this);
+			
 		}
 	});
 	scene.add(dung);
@@ -355,8 +356,8 @@ function dung2LoadedCallback(geometry){
 	dung.position.set(-15.80, 1, -24.00);
 	dung.addEventListener('collision', function(other_object){
 		if(other_object == charMesh){
-			scene.remove(dung);
-			//addDungPoints();
+			dungCollected();
+			scene.remove(this);
 		}
 	});
 	scene.add(dung);
@@ -366,8 +367,8 @@ function dung2LoadedCallback(geometry){
 	dung.position.set(31.80,1,23.00);
 	dung.addEventListener('collision', function(other_object){
 		if(other_object == charMesh){
-			scene.remove(dung);
-			//addDungPoints();
+			dungCollected();
+			scene.remove(this);
 		}
 	});
 	scene.add(dung);
@@ -377,8 +378,8 @@ function dung2LoadedCallback(geometry){
 	dung.position.set(22.40,1,-26.80);
 	dung.addEventListener('collision', function(other_object){
 		if(other_object == charMesh){
-			scene.remove(dung);
-			//addDungPoints();
+			dungCollected();
+			scene.remove(this);
 		}
 	});
 	scene.add(dung);
@@ -388,8 +389,8 @@ function dung2LoadedCallback(geometry){
 	dung.position.set(2.20,1,-12.40);
 	dung.addEventListener('collision', function(other_object){
 		if(other_object == charMesh){
-			scene.remove(dung);
-			//addDungPoints();
+			dungCollected();
+			scene.remove(this);
 		}
 	});
 	scene.add(dung);
