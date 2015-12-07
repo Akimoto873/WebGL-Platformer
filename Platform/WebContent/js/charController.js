@@ -118,7 +118,7 @@ function checkMovement() {
             }
             jumpSound.play();
             airTime = new THREE.Clock();
-            charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
+            charMesh.applyCentralImpulse(new THREE.Vector3(0, 120, 0));
             stamina -= 20;
         }
     }
@@ -206,7 +206,9 @@ function checkMovement() {
     if(jumpableDoorOpening){ //Moves the jumpable door in level 2 upwards after the lever is pulled.
     	if(jumpableDoor.position.y < 7){
     		jumpableDoor.setLinearVelocity(new THREE.Vector3(0,1,0));
-    		lever.rotation.x += 0.005;
+    		if(lever.rotation.x < Math.PI/6){
+    			lever.rotation.x += 0.005;
+    		}
     	}
     	else{
     		jumpableDoor.setLinearFactor(new THREE.Vector3(0,0,0)); //Stops the movement when it reaches the top.

@@ -223,6 +223,7 @@ function generateLevel2() {
 	createJumpableDoor();
 	objLoader.load('models/objects/giant_door/giant_door.obj', 'models/objects/giant_door/giant_door.mtl', giantDoorLoadedCallback);
 	objLoader.load('models/objects/doorway_door/doorway_door.obj', 'models/objects/doorway_door/doorway_door.mtl', doorwayDoorLoadedCallback);
+	objLoader.load('models/objects/lever_wooden/lever_wooden.obj', 'models/objects/lever_wooden/lever_wooden.mtl', leverLoadedCallback);
 	doorway = new Physijs.BoxMesh(new THREE.BoxGeometry(2, 6, 2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
 				color : 0x22ee44, visible : false
@@ -266,6 +267,8 @@ function generateLevel2() {
 	objLoader.load('models/objects/trap_spikes/trap_spikes.obj', 'models/objects/trap_spikes/trap_spikes.mtl', trapSpikesLoadedCallback);
 	
 	createZombieEnemy();
+	objLoader.load('models/enemies/enemy_egyptian_mask/enemy_egyptian_mask.obj', 'models/enemies/enemy_egyptian_mask/enemy_egyptian_mask.mtl', enemyLoadedCallback);
+	
 	
 	createPuzzle();
 	createGroundSpikes();
@@ -635,10 +638,9 @@ function createJumpableDoor(){
 	jumpableDoor.setAngularFactor(new THREE.Vector3(0,0,0));
 	lever = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1, 8), 
 			new THREE.MeshBasicMaterial({
-				color : 0xee3355
+				color : 0xee3355, visible : false
 			}));
 	lever.position.set(19, 2, 12.8);
-	lever.rotation.x = Math.PI / 6;
 	scene.add(lever);
 }
 
@@ -660,6 +662,13 @@ function giantDoorLoadedCallback(object){
 	clone1.position.y -= 3;
 	clone1.scale.set(0.48,0.7,1.5);
 	jumpableDoor.add(clone1);
+}
+
+function leverLoadedCallback(object){
+	object.scale.set(0.3,0.3,0.3);
+	object.position.z -= 0.9;
+	object.rotation.x -= Math.PI/6;
+	lever.add(object);
 }
 
 var puzzlePoints = [];
@@ -834,7 +843,9 @@ function groundSpikesLoadedCallback(object){
 
 function createZombieEnemy(){
 	zombie = new Physijs.CapsuleMesh(new THREE.CylinderGeometry(1, 1, 3, 8),
-			crateMaterial, 10);
+			Physijs.createMaterial(new THREE.MeshBasicMaterial({
+				color: 0x0000ff, visible: false
+			})), 10);
 	zombie.addEventListener('collision', function(other_object, relative_velocity, relative_rotation, contact_normal){
 		
 		if(other_object == charMesh){
@@ -856,6 +867,11 @@ function createZombieEnemy(){
 		this.currentTime = 0;
 	});
 	zombieSound.volume = 0.15;
+}
+
+function enemyLoadedCallback(object){
+	object.scale.set(0.3,0.3,0.3);
+	zombie.add(object);
 }
 
 //Creates all the collision boxes for the floor in level 2.

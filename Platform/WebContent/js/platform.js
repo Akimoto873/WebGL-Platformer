@@ -890,6 +890,7 @@ function resetJumpableDoor(){
 		scene.add(jumpableDoor);
 		jumpableDoor.setLinearFactor(new THREE.Vector3(0,1,0));
 		jumpableDoor.setAngularFactor(new THREE.Vector3(0,0,0));
+		lever.rotation.x = 0;
 	}
 }
 
