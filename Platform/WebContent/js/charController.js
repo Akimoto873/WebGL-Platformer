@@ -118,7 +118,7 @@ function checkMovement() {
             }
             jumpSound.play();
             airTime = new THREE.Clock();
-            charMesh.applyCentralImpulse(new THREE.Vector3(0, 120, 0));
+            charMesh.applyCentralImpulse(new THREE.Vector3(0, 60, 0));
             stamina -= 20;
         }
     }
