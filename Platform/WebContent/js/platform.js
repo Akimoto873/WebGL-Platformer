@@ -369,7 +369,7 @@ function init() {
     };
     
     loadAudio();
-    generateLevel1(); 
+    generateLevel2(); 
     createOverlay();
     createChar();
     createMenu();

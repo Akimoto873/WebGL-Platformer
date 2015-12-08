@@ -626,8 +626,16 @@ function createLevel2Traps() {
 			level2Trap1Triggered = true;
 		} else if (other_object == charMesh) {
 			takeDamage(100);
+		} else{
+			for (var i = 0; i < crates.length; i++){
+				if(other_object == crates[i]){
+					scene.remove(other_object);
+					pickUpItems.splice(i,1);
+				}
+			}
+		
 		}
-	})
+	});
 	scene.add(level2Trap1);
 	level2Trap1.setLinearFactor(new THREE.Vector3(0, 0, 0));
 	level2Trap1.setAngularFactor(new THREE.Vector3(0, 0, 0));
