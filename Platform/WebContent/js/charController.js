@@ -165,8 +165,8 @@ function checkMovement() {
 	                        carriedCones += 1; //Give the player 1 reuseable flares.
 	                        i = pickUpItems.length + 1; //Stop the loop
 	            }
-	            else if(!carrying){ //Else, the item has to be a single flar
-	            	scene.remove(pickUpItems[i]); //So we remove the flare form the scene
+	            else if(!carrying){ //Else, the item has to be a single flare
+	            	scene.remove(pickUpItems[i]); //So we remove the flare from the scene
 	                        pickUpItems.splice(i, 1); //and from the list of items that can be picked up.
 	                        carriedCones += 1; //And add it to the players available flares for use.
 	                        i = pickUpItems.length + 1; //Stop the loop
@@ -471,8 +471,8 @@ function dropCone(){
     if (carriedCones > 0){
         carriedCones -= 1;
         var rotationMatrix = new THREE.Matrix4();
-        rotationMatrix.extractRotation(charMesh.matrix);
-        var positionDiff = new THREE.Vector3(0, 0, 1);
+        rotationMatrix.extractRotation(camera.matrix);
+        var positionDiff = new THREE.Vector3(0, 0, -1);
         var finalPosition = positionDiff.applyMatrix4(rotationMatrix);
         var oldPosition = charMesh.position
 
