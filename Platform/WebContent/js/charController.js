@@ -66,6 +66,8 @@ function checkKeys() {
 
 var jumpableDoorOpen = false;
 var jumpableDoorOpening = false;
+var platformSpeedX = 0;
+var platformSpeedZ = 0;
 // Handles all character movement.
 function checkMovement() {
    
@@ -90,8 +92,12 @@ function checkMovement() {
 //	    var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
             
             
-    	 charMesh.setLinearVelocity(new THREE.Vector3((forceVector.z)*Math.sin(camera.rotation.y) + (forceVector.x)*Math.cos(camera.rotation.y), oldVelocityVector.y,
-                 (forceVector.z)*Math.cos(camera.rotation.y) - (forceVector.x)*Math.sin(camera.rotation.y)));
+    	 charMesh.setLinearVelocity(new THREE.Vector3((forceVector.z)*Math.sin(camera.rotation.y) + (forceVector.x)*Math.cos(camera.rotation.y) + platformSpeedX, oldVelocityVector.y,
+                 (forceVector.z)*Math.cos(camera.rotation.y) - (forceVector.x)*Math.sin(camera.rotation.y) + platformSpeedZ));
+    	 if(level == 2){
+    		 platformSpeedX = 0;
+    		 platformSpeedZ = 0;
+    	 }
     }
     if(runForward){
     	walkSound.playbackRate = 2; //If running, speed up the walking sound.
@@ -315,11 +321,16 @@ function checkTraps() {
 	    	}
 	    }
 	    //Move the platforms in the ground-spikes room.
+	
 	    if( platform1.position.z < -10 ){
 	    	platform1Velocity = 2;
 	    }
 	    else if(platform1.position.z > -2.5){
 	    	platform1Velocity = -2;
+	    }
+	    if(platform1._physijs.touches.indexOf(charMesh._physijs.id) === 1){
+	    	platformSpeedZ = platform1Velocity;
+	    	log("1");
 	    }
 	    if(platform2.position.z < -22.5 ){
 	    	platform2Velocity = 2;
@@ -327,17 +338,29 @@ function checkTraps() {
 	    else if( platform2.position.z > -13){
 	    	platform2Velocity = -2;
 	    }
+	    if(platform2._physijs.touches.indexOf(charMesh._physijs.id) ===1){
+	    	platformSpeedZ = platform2Velocity;
+	    	log("2");
+	    }
 	    if(platform3.position.x > 27 ){
 	    	platform3Velocity = -3;
 	    }
 	    else if( platform3.position.x < 17.5){
 	    	platform3Velocity = 3;
 	    }
+	    if(platform3._physijs.touches.indexOf(charMesh._physijs.id) ===1){
+	    	platformSpeedX = platform3Velocity;
+	    	log("3");
+	    }
 	    if(platform4.position.z < -22.5 ){
 	    	platform4Velocity = 2.5;
 	    }
 	    else if(platform4.position.z > -13){
 	    	platform4Velocity = -2.5;
+	    }
+	    if(platform4._physijs.touches.indexOf(charMesh._physijs.id) ===1){
+	    	platformSpeedZ = platform4Velocity;
+	    	log("4");
 	    }
 	    platform1.setLinearVelocity(new THREE.Vector3(0,0,platform1Velocity));
 	    platform2.setLinearVelocity(new THREE.Vector3(0,0,platform2Velocity));
