@@ -99,6 +99,12 @@ function checkMovement() {
     		 platformSpeedZ = 0;
     	 }
     }
+    if(!move && level == 2){
+    	charMesh.setLinearVelocity(new THREE.Vector3(platformSpeedX, oldVelocityVector.y, platformSpeedZ));
+    	
+    	platformSpeedX = 0;
+    	platformSpeedZ = 0;
+    }
     if(runForward){
     	walkSound.playbackRate = 2; //If running, speed up the walking sound.
     }
@@ -328,9 +334,8 @@ function checkTraps() {
 	    else if(platform1.position.z > -2.5){
 	    	platform1Velocity = -2;
 	    }
-	    if(platform1._physijs.touches.indexOf(charMesh._physijs.id) === 1){
+	    if(platform1._physijs.touches.indexOf(charMesh._physijs.id) === 0){
 	    	platformSpeedZ = platform1Velocity;
-	    	log("1");
 	    }
 	    if(platform2.position.z < -22.5 ){
 	    	platform2Velocity = 2;
@@ -338,9 +343,8 @@ function checkTraps() {
 	    else if( platform2.position.z > -13){
 	    	platform2Velocity = -2;
 	    }
-	    if(platform2._physijs.touches.indexOf(charMesh._physijs.id) ===1){
+	    if(platform2._physijs.touches.indexOf(charMesh._physijs.id) ===0){
 	    	platformSpeedZ = platform2Velocity;
-	    	log("2");
 	    }
 	    if(platform3.position.x > 27 ){
 	    	platform3Velocity = -3;
@@ -348,9 +352,8 @@ function checkTraps() {
 	    else if( platform3.position.x < 17.5){
 	    	platform3Velocity = 3;
 	    }
-	    if(platform3._physijs.touches.indexOf(charMesh._physijs.id) ===1){
+	    if(platform3._physijs.touches.indexOf(charMesh._physijs.id) ===0){
 	    	platformSpeedX = platform3Velocity;
-	    	log("3");
 	    }
 	    if(platform4.position.z < -22.5 ){
 	    	platform4Velocity = 2.5;
@@ -358,9 +361,8 @@ function checkTraps() {
 	    else if(platform4.position.z > -13){
 	    	platform4Velocity = -2.5;
 	    }
-	    if(platform4._physijs.touches.indexOf(charMesh._physijs.id) ===1){
+	    if(platform4._physijs.touches.indexOf(charMesh._physijs.id) ===0){
 	    	platformSpeedZ = platform4Velocity;
-	    	log("4");
 	    }
 	    platform1.setLinearVelocity(new THREE.Vector3(0,0,platform1Velocity));
 	    platform2.setLinearVelocity(new THREE.Vector3(0,0,platform2Velocity));
