@@ -211,6 +211,7 @@ function removeMenu(){
     optionsSprite.visible = false;
     controlsSprite.visible = false;
     controlsScreenSprite.visible = false;
+    optionsScreenSprite.visible = false;
     backSprite.visible = false;
     controls = false;
     scene.simulate();
@@ -235,12 +236,23 @@ function showControls(){
     controls = true;
 }
 
+function showOptions(){
+	menuSprite.visible = false;
+	playSprite.visible = false;
+	optionsSprite.visible = false;
+	controlsSprite.visible = false;
+	optionsScreenSprite.visible = true;
+	backSprite.visible = true;
+	controls = true;
+}
+
 function backToMenu(){
 	menuSprite.visible = true;
 	playSprite.visible = true;
     optionsSprite.visible = true;
     controlsSprite.visible = true;
     controlsScreenSprite.visible = false;
+    optionsScreenSprite.visible = false;
     backSprite.visible = false;
     controls = false;
 }

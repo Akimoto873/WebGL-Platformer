@@ -403,7 +403,7 @@ function onDocumentMouseClick(e)
 		    // Options Button
 		    if(hasClickedButton(e, toScreenXY(menuItems["options"].position)))
 		    {
-		        // Do something
+		        showOptions();
 		    }
 		
 		    // Options Button
@@ -904,6 +904,7 @@ function createMenu(){
 	controlsTexture = textureLoader.load('images/menu/menu_help.png');
 	controlsSelectedTexture = textureLoader.load('images/menu/menu_help_selected.png');
 	controlsScreenTexture = textureLoader.load('images/menu/menu_controls.jpg');
+	optionsScreenTexture = textureLoader.load('images/menu/menu_options.jpg');
 	backTexture = textureLoader.load('images/menu/menu_back_arrow.png');
         backSelectedTexture = textureLoader.load('images/menu/menu_back_arrow_selected.png');
 	loadingBackgroundTexture = textureLoader.load('images/loadingBackground.jpg');
@@ -961,6 +962,16 @@ function createMenu(){
 	controlsScreenSprite.scale.set(menuSizeX, menuSizeY, 1);
 	controlsScreenSprite.visible = false;
 	orthoScene.add(controlsScreenSprite);
+	
+		//Options screen
+	var spriteMaterial = new THREE.SpriteMaterial({
+		map: optionsScreenTexture
+	});
+	optionsScreenSprite = new THREE.Sprite(spriteMaterial);
+	optionsScreenSprite.position.set(0,0,-100);
+	optionsScreenSprite.scale.set(menuSizeX, menuSizeY, 1);
+	optionsScreenSprite.visible = false;
+	orthoScene.add(optionsScreenSprite);
 	
         
         // Play Button
