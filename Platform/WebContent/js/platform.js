@@ -8,7 +8,6 @@ var container;
 var airborne1 = false;
 var airborne2 = false;
 var controllingChar = true;
-var controllingCrane = false;
 var keyMap = [];
 var level1Texture;
 var floor;
@@ -562,7 +561,7 @@ function onDocumentMouseMove(e)
             }
         }
     }
-    /*
+    /* OLD CAMERA CONTROL
     if(!menu && charCam){ //If not in the menu
         if(oldMouseY == 0){ //Dunno if this is needed really.
         	oldMouseY = e.clientY; 

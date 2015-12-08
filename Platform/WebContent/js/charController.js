@@ -17,7 +17,7 @@ var move = false;
 var carriedItem = 0;
 
 
-//checks keyinputs on every loop turn.
+//checks key inputs on every loop turn.
 function checkKeys() {
 
 	forceVector = new THREE.Vector3(0,0,0);
@@ -32,7 +32,7 @@ function checkKeys() {
         move = true;
     }
 
-    // If not running. Regen stamina.
+    // If not running. Regenerate stamina.
     if (!keyMap[16] && stamina < 200) { 
             stamina += 1;
     }
@@ -89,7 +89,7 @@ function checkMovement() {
     }
     if(move && currentVelocity < maxSpeed){
     	//Give the character the intended velocity in the correct direction.
-//	    var finalForceVector = forceVector.applyMatrix4(rotationMatrix);
+//	    var finalForceVector = forceVector.applyMatrix4(rotationMatrix); //this bugged out when looking up/down for some reason.
             
             
     	 charMesh.setLinearVelocity(new THREE.Vector3((forceVector.z)*Math.sin(camera.rotation.y) + (forceVector.x)*Math.cos(camera.rotation.y) + platformSpeedX, oldVelocityVector.y,
