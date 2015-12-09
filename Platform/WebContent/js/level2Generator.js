@@ -289,9 +289,9 @@ function createPuzzle(){
   puzzleMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
           map : puzzleTexture
   }), 0.4, 0.8);
-  puzzleLightOnTexture = textureLoader.load('images/lightwall/on_state.png');
+  puzzleLightOnTexture = textureLoader.load('images/lightwall/on_state.jpg');
   puzzleLightOnTexture.name = "puzzleLightOnTexture";
-  puzzleLightOffTexture = textureLoader.load('images/lightwall/off_state.png');
+  puzzleLightOffTexture = textureLoader.load('images/lightwall/off_state.jpg');
   puzzleLightOffTexture.name = "puzzleLightOffTexture";
   puzzleLightMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
           map : puzzleLightOffTexture
