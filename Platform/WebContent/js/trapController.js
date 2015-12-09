@@ -101,7 +101,7 @@ function checkTraps() {
         }
 
         //Move the platforms in the ground-spikes room.
-        if( platform1.position.z < -10 ){
+        if( platform1.position.z < -13 ){
             platform1Velocity = 2;
         }
         else if(platform1.position.z > -2.5){

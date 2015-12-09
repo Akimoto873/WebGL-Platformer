@@ -1,4 +1,4 @@
-// TODO: Comment
+// Check for webgl support
 if (!Detector.webgl)
 	Detector.addGetWebGLMessage();
 
@@ -505,7 +505,7 @@ function checkPuzzle(){
                 }
             }
             
-            // TODO: Comment
+            // Check if any puzzle lights are still off.
             var complete = true;
             for(var i = 0; i < puzzlePoints.length; i++){
                 if(puzzlePoints[i].material.map.name == "puzzleLightOffTexture"){
@@ -513,7 +513,7 @@ function checkPuzzle(){
                 }
             }
             
-            // TODO: Comment
+            // If the puzzle is complete, play sound and fade it away.
             if(complete){
                 puzzleSound.play();
                 puzzle.material.transparent = true;

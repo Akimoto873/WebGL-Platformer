@@ -167,7 +167,7 @@ function checkMovement() {
                     }
                 }
 
-                // TODO: Comment
+                // Check the flarebox
                 if(pickUpItems[i] == cones){                // If the item within range is the flarebox
                     scene.remove(pickUpItems[i]);           // Remove it from the scene.
                             pickUpItems.splice(i, 1);       // Remove it from the list of items that can be picked up.
@@ -192,7 +192,7 @@ function checkMovement() {
             }
         }
         
-        // TODO: Comment
+        // Throw out the carried crate
         if (carrying && !pickupThisFrame) {                                     // If already carrying an item, picked up before this frame.
             camera.remove(crates[carriedItem]);                                 // Remove it from the character.
             var positionDiff = new THREE.Vector3(0, 0, -1);
@@ -251,7 +251,7 @@ function checkFallDmg() {
         }
     }
     
-    //  TODO: Comment
+    //  Check for fall damage.
     if (intersects[0]) {
         if (charMesh.getLinearVelocity().y < -14 && intersects[0].distance < 2) {
             if (fallClock.getElapsedTime() > 1) {
@@ -262,7 +262,7 @@ function checkFallDmg() {
         }
     }
     
-    // TODO: Comment
+    // Check for death by falling off the edge (or into a hole).
     if(charMesh.position.y < -5){
     	takeDamage(100);
     }
