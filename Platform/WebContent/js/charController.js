@@ -1,3 +1,4 @@
+// Here be variables
 var runForward = false;
 var walkForward = false;
 var walkBackward = false;
@@ -15,96 +16,99 @@ var runSpeed = 8;
 var forceVector;
 var move = false;
 var carriedItem = 0;
-
-
-//checks key inputs on every loop turn.
-function checkKeys() {
-
-	forceVector = new THREE.Vector3(0,0,0);
-    // W
-    if (keyMap[87]) { 
-        //Shift = run
-        if (keyMap[16] && stamina > 0){
-            runForward = true;
-            stamina -= 2;
-        }
-        forceVector.z += force;
-        move = true;
-    }
-
-    // If not running. Regenerate stamina.
-    if (!keyMap[16] && stamina < 200) { 
-            stamina += 1;
-    }
-
-    // S - walk backwards
-    if (keyMap[83]) { 
-    		forceVector.z -= force;
-    		move = true;
-            
-    }
-
-    // A
-    if (keyMap[65]) { 
-            // counterClockwiseRotation = 2/50; // 
-            forceVector.x += force;
-            move = true;
-    }
-
-    // D
-    if (keyMap[68]) { 
-            // clockwiseRotation = -2/50; // 
-            forceVector.x -= force;
-            move = true;
-    }
-
-    // Restart level if dead and R is pressed.
-    if (keyMap[82] && gameOverScreen) { 
-            restartLevel();
-    }
-}
-
 var jumpableDoorOpen = false;
 var jumpableDoorOpening = false;
 var platformSpeedX = 0;
 var platformSpeedZ = 0;
+
+
+// Checks key inputs on every loop turn
+function checkKeys() {
+    
+    // Set back to 0 at every iteration to prevent accumulative forces
+    forceVector = new THREE.Vector3(0,0,0);
+    
+    // W - walk forward
+    if (keyMap[87]) { 
+        // Hold Shift to run
+        if (keyMap[16] && stamina > 0){
+            runForward = true;
+            stamina -= 2;
+        }
+        
+        // Add force
+        forceVector.z += force;
+        move = true;
+    }
+
+    // Regenerate stamina, if the player is not running
+    if (!keyMap[16] && stamina < 200) { 
+        stamina += 1;
+    }
+
+    // S - walk backwards
+    if (keyMap[83]) { 
+        forceVector.z -= force;
+        move = true;
+    }
+
+    // A - strife left
+    if (keyMap[65]) { 
+        forceVector.x += force;
+        move = true;
+    }
+
+    // D - strife right
+    if (keyMap[68]) { 
+            forceVector.x -= force;
+            move = true;
+    }
+
+    // R - Restart level if dead
+    if (keyMap[82] && gameOverScreen) { 
+        restartLevel();
+    }
+}
+
+
 // Handles all character movement.
 function checkMovement() {
-   
-	
-    //Get rotation and velocity of character
+    
+    // Get rotation and velocity of character
     var rotationMatrix = new THREE.Matrix4();
     rotationMatrix.extractRotation(camera.matrix);
     var oldVelocityVector = charMesh.getLinearVelocity();
-    var currentVelocity = Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) 
-            + Math.pow(charMesh.getLinearVelocity().z, 2));
+    var currentVelocity = Math.sqrt(Math.pow(charMesh.getLinearVelocity().x, 2) + Math.pow(charMesh.getLinearVelocity().z, 2));
     
-    //set the movement speed
+    // set the movement speed
     var maxSpeed = 4;
     force = -4;
+    
+    // Increase movement speed if we are running
     if(runForward){
-    	//and change it if running.
     	maxSpeed = 8;
     	force = -8;
     }
+    
+    // Give the character the intended velocity in the correct direction.
     if(move && currentVelocity < maxSpeed){
-    	//Give the character the intended velocity in the correct direction.
-//	    var finalForceVector = forceVector.applyMatrix4(rotationMatrix); //this bugged out when looking up/down for some reason.
-            
-            
-    	 charMesh.setLinearVelocity(new THREE.Vector3((forceVector.z)*Math.sin(camera.rotation.y) + (forceVector.x)*Math.cos(camera.rotation.y) + platformSpeedX, oldVelocityVector.y,
-                 (forceVector.z)*Math.cos(camera.rotation.y) - (forceVector.x)*Math.sin(camera.rotation.y) + platformSpeedZ));
-    	 if(level == 2){
-    		 platformSpeedX = 0;
-    		 platformSpeedZ = 0;
-    	 }
+        charMesh.setLinearVelocity(new THREE.Vector3((forceVector.z)*Math.sin(camera.rotation.y) + (forceVector.x)*Math.cos(camera.rotation.y) + platformSpeedX, oldVelocityVector.y,
+            (forceVector.z)*Math.cos(camera.rotation.y) - (forceVector.x)*Math.sin(camera.rotation.y) + platformSpeedZ));
+        if(level == 2){
+                platformSpeedX = 0;
+                platformSpeedZ = 0;
+        }
     }
+    
+    // TODO: Comment
     if(!move && level == 2){
     	charMesh.setLinearVelocity(new THREE.Vector3(platformSpeedX, oldVelocityVector.y, platformSpeedZ));
     	
     	platformSpeedX = 0;
     	platformSpeedZ = 0;
     }
+    
+    
     if(runForward){
     	walkSound.playbackRate = 2; //If running, speed up the walking sound.
     }
