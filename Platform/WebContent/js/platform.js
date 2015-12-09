@@ -80,18 +80,13 @@ var flareSprite;
 // Level Object (for lighting)
 var levelObject; 
 
-// Initial Screen Ratio
-var screenRatioX, screenRatioY;
-
-// Raycast List and Mouse Coordinates for mouse listener
-var targetList = [];
-var projector, mouse = { x: 0, y: 0 };
+// Menu Items (Play, Options, etc.)
 var menuItems = [];
 
 // Pointer Lock
 var entryCoordinates = {x:-1, y:-1};
 
-/* DEBUG VARS */
+/* Debug Variables */
 var charCam = true;  // Set to false for easier bugtesting.
 var charMeshPosition = new THREE.Vector3(5, 1, 0);
 var enableDebugging = false;
@@ -133,8 +128,8 @@ function setupPointerLock() {
     $("#container").click(function () {
         var canvas = $("#container").get()[0];
         canvas.requestPointerLock = canvas.requestPointerLock ||
-                canvas.mozRequestPointerLock ||
-                canvas.webkitRequestPointerLock;
+            canvas.mozRequestPointerLock ||
+            canvas.webkitRequestPointerLock;
 
         // Ask / Lock pointer if we are not in a menu
         if(!menu){
@@ -1055,11 +1050,11 @@ function createMenu(){
 function loadAudio(){
     // Game Over
     gameOverAudio = new Audio('audio/gameOver.mp3');
-    gameOverAudio.volume = 0.3;
+    gameOverAudio.volume = 0.4;
     ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
     
     // Level 1 music
-    ambience.volume = 0.2;
+    ambience.volume = 0.3;
     ambience.addEventListener('ended', function() {
         this.currentTime = 0; 
         this.play();
@@ -1068,7 +1063,7 @@ function loadAudio(){
     
     // Level 2 music
     ambience2 = new Audio('audio/172937__setuniman__creepy-0v55m2.mp3');
-    ambience2.volume = 0;
+    ambience2.volume = 0.3;
     ambience2.addEventListener('ended', function(){
     	this.currentTime = 0;
     	this.play();
