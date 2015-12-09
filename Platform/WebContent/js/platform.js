@@ -1,6 +1,8 @@
+// TODO: Comment
 if (!Detector.webgl)
 	Detector.addGetWebGLMessage();
 
+// Here are many variables
 var scene, keyboard, camera, orthoCamera, ambientLight, renderer;
 var charMesh;
 var stats;
@@ -42,7 +44,6 @@ var ambience2;
 var playingSound = false;
 var textureLoader;
 var menu = false;
-var charMeshPosition = new THREE.Vector3(5, 1, 0); //for debugging purposes
 var cratePosition = new THREE.Vector3(9, 1, -12);
 var cone;
 var carriedCones = 0;
@@ -90,44 +91,43 @@ var entryCoordinates = {x:-1, y:-1};
 
 /* DEBUG VARS */
 var charCam = true;  // Set to false for easier bugtesting.
+var charMeshPosition = new THREE.Vector3(5, 1, 0);
 var enableDebugging = false;
-var box; //For easier collision box placement.
+var box; // For easier collision box placement.
 
+// Main function
 function main() {
-    
     init();
 }
 
-//Game Loop
+// Game Loop
 function tick() {
     if (level != 0) {
         scene.simulate();
         stats.update();
         renderer.clear();
+        
         if(!loadingScreen){
             renderer.render(scene, camera);
         }
         renderer.clearDepth();
         renderer.render(orthoScene, orthoCamera);
+        
         if(loadingScreen){
-    		loadingBarTexture.offset.x += 0.1;
+            loadingBarTexture.offset.x += 0.1;
     	}
-    } else {
-
     }
-
     requestAnimationFrame(tick);
 }
 
-// Pointer Lock, based on ref: http://www.smartjava.org/examples/pointerlock/
+// Pointer Lock, based on http://www.smartjava.org/examples/pointerlock/
 function setupPointerLock() {
-    // Pointer Lock Event (Callback)
+    // Pointer Lock Event (Callback) with support for various browsers
     document.addEventListener('pointerlockchange', changeCallback, false);
     document.addEventListener('mozpointerlockchange', changeCallback, false);
     document.addEventListener('webkitpointerlockchange', changeCallback, false);
 
-    // when element is clicked, we're going to request a
-    // pointerlock
+    // Ask to lock pointer if we are in the game (not menu)
     $("#container").click(function () {
         var canvas = $("#container").get()[0];
         canvas.requestPointerLock = canvas.requestPointerLock ||
@@ -135,29 +135,29 @@ function setupPointerLock() {
                 canvas.webkitRequestPointerLock;
 
         // Ask / Lock pointer if we are not in a menu
-        if(!menu)
-        {
+        if(!menu){
             canvas.requestPointerLock();
         }
     });
 }
 
 
-// First Person View Camera
+// First Person View Camera Callback
 function moveCallback(e) {
     var canvas = $("#container").get()[0];
 
     if(!menu && charCam){
+        
         // Get movement
         var movementX = e.movementX ||
-                e.mozMovementX ||
-                e.webkitMovementX ||
-                0;
+            e.mozMovementX ||
+            e.webkitMovementX ||
+            0;
 
         var movementY = e.movementY ||
-                e.mozMovementY ||
-                e.webkitMovementY ||
-                0;
+            e.mozMovementY ||
+            e.webkitMovementY ||
+            0;
    
         // Rotate player camera according to mouse movement
         if((camera.rotation.x - movementY/180) <Math.PI/2 && (camera.rotation.x -movementY/180 >-Math.PI/2)){
@@ -171,6 +171,7 @@ function moveCallback(e) {
 function changeCallback(e) {
     var canvas = $("#container").get()[0];
     
+    // If we are in canvas, make sure we have added event listener
     if (document.pointerLockElement === canvas ||
             document.mozPointerLockElement === canvas ||
             document.webkitPointerLockElement === canvas) {
@@ -184,37 +185,39 @@ function changeCallback(e) {
     }
 };
 
-//Initate 
+// Initate Game
 function init() {
     
     // Pointer Lock
     setupPointerLock();
     
-    
+    // Physijs
     Physijs.scripts.worker = 'lib/physijs_worker.js';
     Physijs.scripts.ammo = 'http://gamingJS.com/ammo.js';
 
     // Projector for checking raycast on menu
     projector = new THREE.Projector();
 
+    // Setup initial scene
     scene = new Physijs.Scene({fixedTimeStep: 1/60});
     scene.fog = new THREE.Fog(0x202020, 10, 100);
     scene.setGravity(new THREE.Vector3(0, -20, 0)); // set gravity
     scene.addEventListener('update', sceneUpdate);
 
+    // Ortho camera is used for the menu
     orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2,
         window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10, 1000);
-
     orthoScene = new THREE.Scene();
 
+    // Handles keyboard state
     keyboard = new THREEx.KeyboardState();
-
 
     // Renderer
     renderer = new THREE.WebGLRenderer({
             antialias : true
     });
     
+    // Get initial width and height
     if(window.innerWidth < window.innerHeight * 16/9){
         renderer.setSize(window.innerWidth, window.innerWidth * 9/16);
         renderSizeX = window.innerWidth;
