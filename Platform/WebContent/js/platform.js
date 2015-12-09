@@ -3,7 +3,7 @@ if (!Detector.webgl)
 	Detector.addGetWebGLMessage();
 
 // Here are many variables
-var scene, keyboard, camera, orthoCamera, ambientLight, renderer;
+var scene, camera, orthoCamera, ambientLight, renderer;
 var charMesh;
 var stats;
 var container;
@@ -201,10 +201,7 @@ function init() {
     // Ortho camera is used for the menu
     orthoCamera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, -10, 1000);
     orthoScene = new THREE.Scene();
-
-    // Handles keyboard state
-    keyboard = new THREEx.KeyboardState();
-
+    
     // Renderer
     renderer = new THREE.WebGLRenderer();
     renderer.antialias = true;
@@ -1091,7 +1088,7 @@ function loadAudio(){
     });
     
     // "DUNG" pickup sound
-    dungSound = new Audio('audio/47982__benhillyard__vocal-splat-10.mp3');
+    dungSound = new Audio('audio/47982__benhillyard__vocal-splat-10.wav');
     dungSound.volume = 0.5;
     dungSound.addEventListener('ended', function(){
     	this.currentTime = 0;

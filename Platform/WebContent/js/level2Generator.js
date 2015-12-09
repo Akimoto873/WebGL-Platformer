@@ -87,6 +87,7 @@ function generateLevel2() {
     createPuzzle();
     createGroundSpikes();
     
+//    objLoader.load('models/objects/','', platformLoadedCallback);
     objLoader.load('models/objects/trap_spikes_ground/bloody/trap_spikes_ground_bloody.obj', 'models/objects/trap_spikes_ground/bloody/trap_spikes_ground_bloody.mtl', groundSpikesBloodyLoadedCallback);
     objLoader.load('models/objects/trap_spikes_ground/normal/trap_spikes_ground.obj', 'models/objects/trap_spikes_ground/normal/trap_spikes_ground.mtl', groundSpikesLoadedCallback);
     scene.traverse(function(node) {
@@ -405,6 +406,17 @@ function createGroundSpikes(){
 	platform4.setLinearFactor(new THREE.Vector3(0,0,1));
 	platform4.setAngularFactor(new THREE.Vector3(0,0,0));
 	platform4.setLinearVelocity(new THREE.Vector3(0,0,platform4Velocity));
+}
+
+function platformLoadedCallback(object){
+	var clone1 = object.clone();
+	var clone2 = object.clone();
+	var clone3 = object.clone();
+	var clone4 = object.clone();
+	platform1.add(clone1);
+	platform2.add(clone2);
+	platform3.add(clone3);
+	platform4.add(clone4);
 }
 
 //Runs when the bloody spikes model for floor spikes in level 2 is loaded.
