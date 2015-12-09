@@ -1091,7 +1091,7 @@ function loadAudio(){
     });
     
     // "DUNG" pickup sound
-    dungSound = new Audio('audio/47982__benhillyard__vocal-splat-10.wav');
+    dungSound = new Audio('audio/47982__benhillyard__vocal-splat-10.mp3');
     dungSound.volume = 0.5;
     dungSound.addEventListener('ended', function(){
     	this.currentTime = 0;

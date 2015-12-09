@@ -160,7 +160,7 @@ function trapSpikesLoadedCallback(object){
 
 //Generates the collectible keys for level 2
 function createKeys(){
-    keySound = new Audio('audio/270408__littlerobotsoundfactory__pickup-gold-00.wav');
+    keySound = new Audio('audio/270408__littlerobotsoundfactory__pickup-gold-00.mp3');
     keySound.volume = 0.5;
     keySound.addEventListener('ended', function(){
             this.currentTime = 0;
