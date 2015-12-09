@@ -87,7 +87,7 @@ function generateLevel2() {
     createPuzzle();
     createGroundSpikes();
     
-//    objLoader.load('models/objects/','', platformLoadedCallback);
+    objLoader.load('models/objects/platform_1/platform_1.obj','models/objects/platform_1/platform_1.mtl', platformLoadedCallback);
     objLoader.load('models/objects/trap_spikes_ground/bloody/trap_spikes_ground_bloody.obj', 'models/objects/trap_spikes_ground/bloody/trap_spikes_ground_bloody.mtl', groundSpikesBloodyLoadedCallback);
     objLoader.load('models/objects/trap_spikes_ground/normal/trap_spikes_ground.obj', 'models/objects/trap_spikes_ground/normal/trap_spikes_ground.mtl', groundSpikesLoadedCallback);
     scene.traverse(function(node) {
@@ -357,7 +357,7 @@ function createGroundSpikes(){
 	
 	platform1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2,0.2,2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x222222
+				color : 0x222222, visible: false
 			}), 1, 0.1), 100);
 	platform1.position.set(22.40, 1.2, -3);
 	scene.add(platform1);
@@ -366,7 +366,7 @@ function createGroundSpikes(){
 	platform1.setLinearVelocity(new THREE.Vector3(0,0,platform1Velocity));
 	platform2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2,0.2,2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x222222
+				color : 0x222222, visible: false
 			}), 1, 0.1), 100);
 	platform2.position.set(27, 1.2, -13);
 	platform2.addEventListener('collision', function(other_object){
@@ -380,7 +380,7 @@ function createGroundSpikes(){
 	platform2.setLinearVelocity(new THREE.Vector3(0,0,platform2Velocity));
 	platform3 = new Physijs.BoxMesh(new THREE.BoxGeometry(2,0.2,2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x222222
+				color : 0x222222, visible: false
 			}), 1, 0.1), 100);
 	platform3.position.set(22.40, 1.2, -22.4);
 	platform3.addEventListener('collision', function(other_object){
@@ -394,7 +394,7 @@ function createGroundSpikes(){
 	platform3.setLinearVelocity(new THREE.Vector3(platform3Velocity,0,0));
 	platform4 = new Physijs.BoxMesh(new THREE.BoxGeometry(2,0.2,2),
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color : 0x222222
+				color : 0x222222, visible: false
 			}), 1, 0.1), 100);
 	platform4.position.set(17.8, 1.2, -22.4);
 	platform4.addEventListener('collision', function(other_object){
@@ -409,6 +409,7 @@ function createGroundSpikes(){
 }
 
 function platformLoadedCallback(object){
+	object.scale.set(0.5, 0.7, 0.5);
 	var clone1 = object.clone();
 	var clone2 = object.clone();
 	var clone3 = object.clone();
