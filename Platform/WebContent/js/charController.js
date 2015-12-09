@@ -307,29 +307,32 @@ function dropCone(){
     }
 }
 
+
+// Player Take Damage
 function takeDamage(amount){
-	if(health > 0){
-		if(health - amount > 0){
-			health -= amount;
-		}
-		else{ //health can not be negative.
-			health = 0;
-		}
-	
-		damaged = true;
-		damageSound.play(); //Play a sound when taking damage.
-		damageSprite.visible = true; //And flash the red bloodstains on the screen edges.
-    	damageFrames = 0;
-    	damageWarning = true;
-	}
+    if(health > 0){
+        if(health - amount > 0){
+            health -= amount;
+        }
+        else{ //health can not be negative.
+            health = 0;
+        }
+
+        damaged = true;
+        damageSound.play(); //Play a sound when taking damage.
+        damageSprite.visible = true; //And flash the red bloodstains on the screen edges.
+        damageFrames = 0;
+        damageWarning = true;
+    }
 }
 var points = 0;
 function dungCollected(){
-	points += 50;
-	dungSound.play();
+    points += 50;
+    dungSound.play();
 }
 
-//resets all values before next run through.
+
+// Resets all values before next run
 function resetValues() {
     runForward = false;
     walkForward = false;
