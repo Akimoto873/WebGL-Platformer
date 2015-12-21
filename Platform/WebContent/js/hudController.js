@@ -78,7 +78,7 @@ function createOverlay()
     });
     crossHairSprite = new THREE.Sprite(spriteMaterial5);
     crossHairSprite.position.set(0,0,5);
-    crossHairSprite.scale.set(2,2,1);
+    crossHairSprite.scale.set(4,4,1);
     orthoScene.add(crossHairSprite);
     crossHairSprite.visible = false;
 }
@@ -122,8 +122,8 @@ function showGameOver() {
     orthoScene.add(restartSprite);
 
     gameOverScreen = true;
-    walkSound.pause();
-    gameOverAudio.play();
+    audioArray['walk'].pause();
+    audioArray['death'].play();
 }
 
 
@@ -189,8 +189,18 @@ function checkChangesToHUD() {
     // TODO: Comment
     if(level == 2 && !menu){
         var distance = new THREE.Vector3();
-        distance.subVectors(charMesh.position, puzzle.position);
+        distance.subVectors(player.mesh.position, puzzle.position);
         if(distance.length() < 10){
+            crossHairSprite.visible = true;
+        }
+        else{
+            crossHairSprite.visible = false;
+        }
+    }
+    if(level == 3 && !menu){
+    	var distance = new THREE.Vector3();
+        distance.subVectors(player.mesh.position, targetTile.mesh.position);
+        if(distance.length() < 20){
             crossHairSprite.visible = true;
         }
         else{

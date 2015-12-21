@@ -80,7 +80,7 @@ function generateLevel1() {
     // Load Trap
     loader.load('models/trap.js', trapLoadedCallback);
 
-    // Exit Texture
+    // Signs
     var exitTexture = textureLoader.load('images/exit.jpg');
     exitMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
             map : exitTexture
@@ -112,22 +112,10 @@ function generateLevel1() {
     createLevel1Walls();
 
     // Crate Object
-    crates[0] = new Physijs.BoxMesh(new THREE.BoxGeometry(1.5, 1, 1.5), crateMaterial, 15);
-    moveableObjects.push(crates[0]);
-    crates[0].position.x = cratePosition.x;
-    crates[0].position.y = cratePosition.y;
-    crates[0].position.z = cratePosition.z;
-    crates[0].addEventListener('collision', function(other_object, relative_velocity, relative_rotation, contact_normal) {
-        if (other_object == trap || other_object == trap2) {
-            crates[0].setLinearVelocity(new THREE.Vector3(0, 0, 0));
-            scene.remove(crates[0]);
-            crates[0].position.x = 9;
-            crates[0].position.z = -12;
-            scene.add(crates[0]);
-        }
-    });
-    scene.add(crates[0]);
-    pickUpItems.push(crates[0]);
+    var crate = new PickUpItem();
+    crate.createBoxMesh(new THREE.Vector3(1.5, 1, 1.5), cratePosition, crateMaterial, 15);
+    crates.push(crate);
+    moveableObjects.push(crate);
 
     // Exit Sign
     exitSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2), exitMaterial, 0);
@@ -154,7 +142,7 @@ function generateLevel1() {
     scene.add(exit);
     
     exit.addEventListener('collision', function(other_object, relative_velocity, relative_rotation, contact_normal) {
-        if (other_object == charMesh) {
+        if (other_object == player.mesh) {
             levelComplete();
         }
     });
@@ -172,52 +160,31 @@ function generateLevel1() {
 
 // Dung level 1 Callback
 function dung1LoadedCallback(geometry){
-    dungTexture = textureLoader.load('images/poop4.jpg');
-    var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
-    dung.scale.set(0.1, 0.1, 0.1);
-    dung.position.set(5.40,1,-22.80);
-    dung.addEventListener('collision', function(other_object){
-        if(other_object == charMesh){
-            dungCollected();
-            scene.remove(this);
-        }
-    });
-    scene.add(dung);
+	dungTexture = textureLoader.load('images/poop4.jpg');
+    dungMaterial = new THREE.MeshBasicMaterial({map: dungTexture});
+    var dungObject = new THREE.Mesh(geometry, dungMaterial);
+    dungObject.scale.set(0.1, 0.1, 0.1);
+    clone1 = dungObject.clone();
+    clone2 = dungObject.clone();
+    clone3 = dungObject.clone();
+    clone4 = dungObject.clone();
+    var dung = new GatherItem('points', 100, 'dung', false, true);
+    dung.createBoxMesh(new THREE.Vector3(0.5, 0.5, 0.5), new THREE.Vector3(5.40,1,-22.80), null, 1, 1, 0.1);
+    dung.mesh.add(clone1);
     dungs.push(dung);
-    var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
-    dung.scale.set(0.1, 0.1, 0.1);
-    dung.position.set(-23.20,1,18.20);
-    dung.addEventListener('collision', function(other_object){
-        if(other_object == charMesh){
-            dungCollected();
-            scene.remove(this);
-        }
-    });
-    scene.add(dung);
+    var dung = new GatherItem('points', 100, 'dung', false, true);
+    dung.createBoxMesh(new THREE.Vector3(0.5, 0.5, 0.5), new THREE.Vector3(-23.20,1,18.20), null, 1, 1, 0.1);
+    dung.mesh.add(clone2);
     dungs.push(dung);
-    var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
-    dung.scale.set(0.1, 0.1, 0.1);
-    dung.position.set(-16.20,1,18.20);
-    dung.addEventListener('collision', function(other_object){
-        if(other_object == charMesh){
-            dungCollected();
-            scene.remove(this);
-        }
-    });
-    scene.add(dung);
+    var dung = new GatherItem('points', 100, 'dung', false, true);
+    dung.createBoxMesh(new THREE.Vector3(0.5, 0.5, 0.5), new THREE.Vector3(-16.20,1,18.20), null, 1, 1, 0.1);
+    dung.mesh.add(clone3);
     dungs.push(dung);
-    var dung = new Physijs.BoxMesh(geometry, Physijs.createMaterial(new THREE.MeshBasicMaterial({map: dungTexture}), 1, 0.1), 1);
-    dung.scale.set(0.1, 0.1, 0.1);
-    dung.position.set(-5.40,1,12.60);
-    dung.addEventListener('collision', function(other_object){
-        if(other_object == charMesh){
-            dungCollected();
-            scene.remove(this);
-
-        }
-    });
-    scene.add(dung);
+    var dung = new GatherItem('points', 100, 'dung', false, true);
+    dung.createBoxMesh(new THREE.Vector3(0.5, 0.5, 0.5), new THREE.Vector3(-5.40,1,12.60), null, 1, 1, 0.1);
+    dung.mesh.add(clone4);
     dungs.push(dung);
+   
 }
 
 
@@ -250,12 +217,15 @@ function level1LoadedCallback(object) {
 
 
 // Adds a new wall with the specified position and scale
-function addWall(object, wallX, wallZ, wallScaleX, wallScaleY, wallScaleZ) {
+function addWall(object, wallX, wallZ, wallScaleX, wallScaleY, wallScaleZ, wallY, visible) {
+	var wallPositionY = wallY || 0;
+	var visibility = visible || false;
     wall = cloneBox(object);
     wall.position.x += wallX;
     wall.position.z += wallZ;
+    wall.position.y = wallPositionY;
     wall.scale.set(wallScaleX, wallScaleY, wallScaleZ);
-    wall.visible = false;
+    wall.visible = visibility;
     scene.add(wall);
 }
 
@@ -270,68 +240,27 @@ function cloneBox(object) {
 
 // Called when trap model is loaded.
 function trapLoadedCallback(geometry) {
-    tile = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 4), Physijs
-        .createMaterial(new THREE.MeshBasicMaterial({
-            color : 0x554444
-        }), 0.0, 0.1), 0);
-    tile.position.x -= 9;
-    tile.position.y -= 1.8;
-    tile.position.z += 2;
-    scene.add(tile);
-    trap = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 1, 8), Physijs
-        .createMaterial(new THREE.MeshBasicMaterial({
-            color : 0x554444
-        }), 0.0, 0.1), 100);
-    trap.position.x -= 9;
-    trap.position.y += 4;
-    scene.add(trap);
-    trap.addEventListener('collision', function(other_object, relative_velocity, relative_rotation, contact_normal) {
-        if (other_object == charMesh) {
-            takeDamage(100);
-        }
-    });
-    trap.material.visible = false;
-    trap.setLinearFactor(new THREE.Vector3(0, 0, 0));
-    trap.setAngularFactor(new THREE.Vector3(0, 0, 0));
-    trapCaster = new THREE.Raycaster();
-    trapCaster.set(new THREE.Vector3(tile.position.x, tile.position.y, tile.position.z + 2), new THREE.Vector3(0, 1, 0));
-    tile2 = new Physijs.BoxMesh(new THREE.BoxGeometry(3, 0.1, 3), Physijs
-        .createMaterial(new THREE.MeshBasicMaterial({
-            color : 0x554444
-        }), 0.0, 0.1), 0);
-    tile2.position.x -= 20;
-    tile2.position.z += 4
-    tile2.position.y -= 2.55;
-    scene.add(tile2);
-    trap2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5, 6, 0.1), Physijs
-        .createMaterial(new THREE.MeshBasicMaterial({
-            color : 0x224444,
-            visible : false
-        }), 0.0, 0.1), 10);
-    trap2.position.x -= 20;
-    trap2.position.z += 24.5;
-    trap2.position.y += 1.5;
-    scene.add(trap2);
-    trap2.addEventListener('collision', function(other_object, relative_velocity, relative_rotation, contact_normal) {
-        if (other_object == charMesh) {
-            takeDamage(100);
-        }
-    });
-    trap2.setAngularFactor(new THREE.Vector3(0, 0, 0));
-    trap2.setLinearFactor(new THREE.Vector3(0, 0, 1));
-    trapCaster2 = new THREE.Raycaster();
-    trapCaster2.set(tile2.position, new THREE.Vector3(0, 1, 0));
+	var trap1 = new Trap(new THREE.Vector3(0,1,0), 100, new THREE.Vector3(0,-4,0), 500);
+	trap1.createBoxMesh(new THREE.Vector3(3,1,8), new THREE.Vector3(-9, 4, 0), null, 100, 0.0, 0.1);
+	var tile1 = new TrapTrigger(trap1);
+	tile1.createBoxMesh(new THREE.Vector3(3, 0.1, 4), new THREE.Vector3(-9, -1.8, 2), null, 0, 0.0, 0.1);
+	traps.push(trap1);
+	var trap2 = new Trap(new THREE.Vector3(0,0,1), 100, new THREE.Vector3(0,0,-4), 800);
+	trap2.createBoxMesh(new THREE.Vector3(2.5, 6, 0.1), new THREE.Vector3(-20, 1.5, 24.5), null, 10, 0.0, 0.1);
+	var tile2 = new TrapTrigger(trap2);
+	tile2.createBoxMesh(new THREE.Vector3(3,0.1,4), new THREE.Vector3(-20, -1.8, 4), null, 0, 0.0, 0.1);
+	traps.push(trap2);
     trapBase = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
             map : trapTexture
     }));
     trapMesh = trapBase.clone();
     trapMesh.scale.set(0.1, 0.1, 0.1);
     trapMesh.position.y -= 0.5;
-    trap.add(trapMesh);
+    trap1.mesh.add(trapMesh);
     trap2Mesh = trapBase.clone();
     trap2Mesh.rotation.x += Math.PI / 2;
     trap2Mesh.scale.set(0.1, 0.1, 0.08);
-    trap2.add(trap2Mesh);
+    trap2.mesh.add(trap2Mesh);
 }
 
 
@@ -358,24 +287,13 @@ function flareLoadedCallback(object) {
 
 // Runs after Flare Box item geometry is loaded
 function flareBoxLoadedCallback(object) {
+	cones = new GatherItem('torches', 1, 'dung');
+	cones.createBoxMesh(new THREE.Vector3(0.4, 0.32, 0.2), new THREE.Vector3(0,1,0), 10, 1, 0.1);
     // Load physijs material
-    var col_material = Physijs.createMaterial(new THREE.MeshLambertMaterial({
-        color : 0xFFFFFF,
-        visible : false
-    }), 1, // friction
-    .1 // restitution
-    );
-
-    // Add physics box around the object
-    cones = new Physijs.BoxMesh(new THREE.CubeGeometry(0.4, 0.32, 0.2),
-                    col_material, 10 // mass
-    );
-
     object.scale.set(0.4, 0.4, 0.4);
     object.position.y += 0.04;
 
-    cones.add(object);
-    scene.add(cones);
+    cones.mesh.add(object);
     pickUpItems.push(cones);
 }
 

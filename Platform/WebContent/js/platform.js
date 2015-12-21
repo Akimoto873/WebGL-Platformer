@@ -4,11 +4,9 @@ if (!Detector.webgl)
 
 // Here are many variables
 var scene, camera, orthoCamera, ambientLight, renderer;
-var charMesh;
 var stats;
 var container;
-var airborne1 = false;
-var airborne2 = false;
+var airborne = false;
 var controllingChar = true;
 var keyMap = [];
 var level1Texture;
@@ -25,7 +23,6 @@ var triggered = false;
 var triggered2 = false;
 var health = 100;
 var stamina = 200;
-var gameOverAudio;
 var charLoaded = false;
 var levelLoaded = false;
 var applyForce = false;
@@ -39,8 +36,6 @@ var gameOverTexture;
 var restartTexture;
 var gameOverScreen = false;
 var level = 1;
-var ambience;
-var ambience2;
 var playingSound = false;
 var textureLoader;
 var menu = false;
@@ -49,7 +44,7 @@ var cone;
 var carriedCones = 0;
 var pickUpItems = [];
 var coneGeometry;
-var waitForKeyUp = true;
+var waitForKeyUp = false;
 var menuSizeX;
 var menuSizeY;
 var buttonSizeX;
@@ -67,6 +62,9 @@ var keysPickedUp = 0;
 var puzzleComplete = false;
 var cratesRemoved = false;
 var reAddPuzzle = false;
+var bonusArray = [];
+var audioArray = [];
+var gatherableItems = [];
 
 // Clock for delta
 var clock = new THREE.Clock();
@@ -91,6 +89,8 @@ var charCam = true;  // Set to false for easier bugtesting.
 var charMeshPosition = new THREE.Vector3(5, 1, 0);
 var enableDebugging = false;
 var box; // For easier collision box placement.
+var player;
+var mute = true;
 
 // Main function
 function main() {
@@ -242,7 +242,7 @@ function init() {
     var crateTexture = textureLoader.load('images/crate.jpg');
     crateMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
             map : crateTexture
-    }), 0.4, 0.8);
+    }), 1, 0.8);
     
     // Add window resize listener
     window.addEventListener('resize', onWindowResize, false);
@@ -262,15 +262,9 @@ function init() {
         // Space
         if (e.keyCode == 32) {
             e.preventDefault();
-            if(e.type == 'keydown' && !airborne2){
-                if(!airborne1){
-                    airborne1 = true;
-                    jump = true;
-                }
-                else if (!waitForKeyUp){
-                    airborne2 = true;
-                    jump = true;
-                }
+            if(e.type == 'keydown' && !waitForKeyUp){
+                jump = true;
+                waitForKeyUp = true;
             }
             else if(e.type == 'keyup' && waitForKeyUp){
                 waitForKeyUp = false;
@@ -299,29 +293,21 @@ function init() {
         // M to toggle music
         if (e.keyCode == 77) {
                 if (e.type == 'keyup') {
-                        if (ambience.volume != 0) {
-                                gameOverAudio.volume = 0;
-                                ambience.volume = 0;
-                                ambience2.volume = 0;
-                                damageSound.volume = 0;
-                                jumpSound.volume = 0;
-                                walkSound.volume = 0;
+                        if (audioArray['level1'].volume != 0) {
+                                audioArray['death'].volume = 0;
+                                audioArray['level1'].volume = 0;
+                                audioArray['level2'].volume = 0;
+                                audioArray['damage'].volume = 0;
+                                audioArray['jump'].volume = 0;
+                                audioArray['walk'].volume = 0;
                         } else {
-                                gameOverAudio.volume = 0.5;
-                                ambience.volume = 0.2;
-                                ambience2.volume = 0.2;
-                                damageSound.volume = 0.5;
-                                jumpSound.volume = 0.4;
-                                walkSound.volume = 0.2;
+                                audioArray['death'].volume = 0.5;
+                                audioArray['level1'].volume = 0.2;
+                                audioArray['level2'].volume = 0.2;
+                                audioArray['damage'].volume = 0.5;
+                                audioArray['jump'].volume = 0.4;
+                                audioArray['walk'].volume = 0.2;
                         }
-                }
-        }
-
-        // W, A, S, D
-        if((e.keyCode == 87 || e.keyCode == 83 || e.keyCode == 69 || e.keyCode == 81) && e.type == 'keyup'){
-                if(!keyMap[87] && !keyMap[83] && !keyMap[69] && !keyMap[81]){
-                        var oldY = charMesh.getLinearVelocity().y;
-                        charMesh.setLinearVelocity(new THREE.Vector3(0,oldY,0));
                 }
         }
 
@@ -376,13 +362,20 @@ function init() {
     loadAudio();
     
     // Generate initial level 1
-    generateLevel1(); 
+    generateLevel3(); 
     
     // Create overlay (HUD)
     createOverlay();
     
     // Create character
-    createChar();
+//    createChar();
+    if(level == 3){
+    	charMeshPosition = new THREE.Vector3(5,1,5);
+    }
+    player = new Character();
+    player.setCamera(camera);
+    bonusArray['torches'] = 0;
+    bonusArray['keys'] = 0;
     
     // Create menu
     createMenu();
@@ -398,6 +391,7 @@ function init() {
             }));
         scene.add(box);
     }
+    
 }
 
 // Listener: On mouse click in menu
@@ -437,7 +431,7 @@ function onDocumentMouseClick(e) {
 function checkPuzzle(){
     if(level == 2 && !menu){
         var distance = new THREE.Vector3();
-        distance.subVectors(charMesh.position, puzzle.position);
+        distance.subVectors(player.mesh.position, puzzle.position);
         
         // Allow button pressing within a certain distance
         if(distance.length() < 10){
@@ -512,13 +506,29 @@ function checkPuzzle(){
             
             // If the puzzle is complete, play sound and fade it away.
             if(complete){
-                puzzleSound.play();
+                audioArray['puzzle'].play();
                 puzzle.material.transparent = true;
                 for(var i = 0; i< puzzlePoints.length; i++){
                         puzzlePoints[i].material.transparent = true;
                 }
                 puzzleComplete = true;
             }
+        }
+    }
+    else if(level == 3 && !menu){
+    	var distance = new THREE.Vector3();
+        distance.subVectors(player.mesh.position, targetTile.mesh.position);
+        
+        // Allow button pressing within a certain distance
+        if(distance.length() < 20){
+        	var pillarCaster = new THREE.Raycaster();
+        	pillarCaster.setFromCamera(new THREE.Vector2(0,0), camera);
+        	var intersects = pillarCaster.intersectObjects(objects);
+        	for (var i = 0; i < icePillars.length; i++){
+        		if(intersects[1].object == icePillars[i].mesh){
+        			icePillars[i].move();
+        		}
+        	}
         }
     }
 }
@@ -629,6 +639,7 @@ function sceneUpdate(){
         checkKeys();
         checkMovement();
     }
+    checkTraps();
     checkChangesToHUD();
     resetValues();
     
@@ -638,34 +649,6 @@ function sceneUpdate(){
     if(flareAnimation != null){
     	flareAnimation.update(delta * 200);
     } 
-}
-
-
-//Creates the character mesh
-function createChar() {
-    charMesh = new Physijs.CapsuleMesh(new THREE.CylinderGeometry(0.8, 0.8, 3, 16), Physijs
-                    .createMaterial(new THREE.MeshBasicMaterial({
-                            color : 0xeeff33
-                    }), 0.5, 0.1), 10);
-    charMesh.position.x = charMeshPosition.x;
-    charMesh.position.y = charMeshPosition.y;
-    charMesh.position.z = charMeshPosition.z;
-    scene.add(charMesh);
-    
-    // Set so the character mesh cannot rotate in any direction
-    charMesh.setAngularFactor(new THREE.Vector3(0,0,0));    
-
-    // All rotation is only the camera rotating.
-    if (charCam) {
-            camera.position.z += 0;
-            camera.eulerOrder = "YXZ";                      //Change the rotation axis order to a more suiting one for first person camera
-            camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
-            charMesh.add(camera);
-            charMesh.material.visible = false;
-    }
-    charCaster = new THREE.Raycaster();
-    moveableObjects.push(charMesh);
-    scene.simulate();
 }
 
 
@@ -700,11 +683,21 @@ function log(param) {
 
 // Called when the level 1 is complete. Starts next level.
 function levelComplete() {
-    level = 0;
-    resetScene();
-    resetChar();
-    generateLevel2();
-    level = 2;
+	if(level == 1){
+	    level = 0;
+	    resetScene();
+	    resetChar();
+	    generateLevel2();
+	    level = 2;
+	}
+	else if(level == 2){
+		level = 0;
+		resetScene();
+		charMeshPosition = new THREE.Vector3(25,1,20);
+		resetChar();
+		generateLevel3();
+		level = 3;
+	}
 }
 
 
@@ -723,64 +716,42 @@ function resetScene(){
 // Restarts the level (after death for example)
 function restartLevel() { 
     // Restarting level 1 and level 2 demands different actions
-    if(level == 1){ 
-        level = 0;
-        scene.remove(charMesh);
-        resetChar();
-        resetCrate();
-        resetTraps();
-        health = 100;
-        damaged = true;
-        if (gameOverScreen) {
-            gameOverScreen = false;
-            orthoScene.remove(bloodSprite);
-            orthoScene.remove(gameOverSprite);
-            orthoScene.remove(restartSprite);
-        }
-        carriedCones = 0;
-        resetCones();
+	var temp = level;
+	level = 0;
+	resetChar();
+	resetCrates();
+	health = 100;
+	damaged = true;
+	if (gameOverScreen) {
+	     gameOverScreen = false;
+	     orthoScene.remove(bloodSprite);
+	     orthoScene.remove(gameOverSprite);
+	     orthoScene.remove(restartSprite);
+	 }
+	 carriedCones = 0;
+	 
+	 resetGatherableItems();
+    if(temp == 1){ 
         level = 1;
+        resetCones();
     }
-    if(level == 2){
-        level = 0;
-        scene.remove(charMesh);
-        resetChar();
-        resetCrates();
-        resetTraps2();
-        health = 100;
-        damaged = true;
-        if (gameOverScreen) {
-            gameOverScreen = false;
-            orthoScene.remove(bloodSprite);
-            orthoScene.remove(gameOverSprite);
-            orthoScene.remove(restartSprite);
-        }
-        carriedCones = 0;
-        resetCones(); /* TODO: Fix this - This is not working properly */
-        resetKeys();
+    if(temp == 2){
         resetPuzzle();
         resetJumpableDoor();
+        resetCones();
         level = 2;
+    }
+    if(temp == 3){
+    	level = 3;
     }
 }
 
 // Resets the character mesh
 function resetChar() {
-    charMesh.remove(camera);
-    var clone = new Physijs.CapsuleMesh(charMesh.clone().geometry, charMesh.material, charMesh.mass);
-    clone.visible = true;
-    charMesh = clone;
-    charMesh.position.x = charMeshPosition.x;
-    charMesh.position.y = charMeshPosition.y;
-    charMesh.position.z = charMeshPosition.z;
-    scene.add(charMesh);
-    if(charCam){
-    	camera.lookAt(new THREE.Vector3(0, 0, charMesh.position.z + 5));
-        charMesh.add(camera);
-    	charMesh.material.visible = false;
-    }
-    charMesh.setAngularFactor(new THREE.Vector3(0, 0, 0));
-    moveableObjects.push(charMesh);
+   player.removeCharacter();
+   player = new Character();
+   player.setCamera(camera);
+    moveableObjects.push(player.mesh);
     carrying = false;
 }
 
@@ -799,29 +770,26 @@ function resetCrate() {
 
 // Reset crates (on restart)
 function resetCrates(){
-    for(var i = 0; i < 4; i++){
-        scene.remove(crates[i]);
-        crates[i].position.set(-12, 1 + i, -22 + 2*i);	
+    for(var i = 0; i < crates.length; i++){
+        crates[i].reset();	
     }
-    scene.remove(hintCrate);
-    hintCrate.position.set(14,1,14.3);
-    cratesRemoved= true;
+}
+
+function resetDungs(){
+	for(var i = 0; i < dungs.length; i++){
+		dungs[i].reset();
+	}
+}
+
+function resetGatherableItems(){
+	for(var i = 0; i < gatherableItems.length; i++){
+		gatherableItems[i].reset();
+	}
 }
 
 // Resets the flares
 function resetCones(){
-	
-	var clone = new Physijs.BoxMesh(cones.clone().geometry, cones.material,
-			cones.mass);
-	clone.position.x = 0;
-	clone.position.z = -5;
-	clone.position.y = 1;
-	clone.rotation.z = 0;
-	clone.rotation.y = 0;
-	clone.rotation.x = 0;
-	clone.scale.set(0.2, 0.2, 0.2);
-	cones = clone;
-	scene.add(cones);
+	cones.reset();
 }
 
 // Resets the traps
@@ -849,7 +817,7 @@ function resetTraps2(){
 
 // Resets the collectible keys in level 2
 function resetKeys(){
-    keysPickedUp = 0;
+    bonusArray['keys'] = 0;
     scene.remove(key1);
     scene.add(key1);
     key1.setLinearFactor(new THREE.Vector3(0,0,0));
@@ -1046,51 +1014,70 @@ function createMenu(){
 // Loads all sound files
 function loadAudio(){
     // Game Over
-    gameOverAudio = new Audio('audio/gameOver.mp3');
-    gameOverAudio.volume = 0.4;
-    ambience = new Audio('audio/277189__georgke__ambience-composition.mp3');
+    audioArray['death'] = new Audio('audio/gameOver.mp3');
+    audioArray['death'].volume = 0.4;
+    audioArray['level1'] = new Audio('audio/277189__georgke__ambience-composition.mp3');
     
     // Level 1 music
-    ambience.volume = 0.3;
-    ambience.addEventListener('ended', function() {
+    audioArray['level1'].volume = 0.3;
+    audioArray['level1'].addEventListener('ended', function() {
         this.currentTime = 0; 
         this.play();
     }, false);
-    ambience.play();
+    audioArray['level1'].play();
+    audioArray['level1'].volume = 0;
     
     // Level 2 music
-    ambience2 = new Audio('audio/172937__setuniman__creepy-0v55m2.mp3');
-    ambience2.volume = 0.3;
-    ambience2.addEventListener('ended', function(){
+    audioArray['level2'] = new Audio('audio/172937__setuniman__creepy-0v55m2.mp3');
+    audioArray['level2'].volume = 0.3;
+    audioArray['level2'].addEventListener('ended', function(){
     	this.currentTime = 0;
     	this.play();
     }, false);
     
     // Player take damage sound
-    damageSound = new Audio('audio/262279__dirtjm__grunts-male.mp3');
-    damageSound.addEventListener('ended', function(){
+    audioArray['damage'] = new Audio('audio/262279__dirtjm__grunts-male.mp3');
+    audioArray['damage'].addEventListener('ended', function(){
     	this.currentTime = 0;
     });
     
     // Walking sound
-    walkSound = new Audio('audio/166304__fantozzi__mco-walk-f01.mp3');
-    walkSound.volume = 0.2;
-    walkSound.addEventListener('ended', function(){
+    audioArray['walk'] = new Audio('audio/166304__fantozzi__mco-walk-f01.mp3');
+    audioArray['walk'].volume = 0.2;
+    audioArray['walk'].addEventListener('ended', function(){
     	this.currentTime = 0;
     	this.play();
     });
     
     // Jump Sound
-    jumpSound = new Audio('audio/319664__manuts__jump-1.mp3');
-    jumpSound.volume = 0.5;
-    jumpSound.addEventListener('ended', function(){
+    audioArray['jump'] = new Audio('audio/319664__manuts__jump-1.mp3');
+    audioArray['jump'].volume = 0.5;
+    audioArray['jump'].addEventListener('ended', function(){
     	this.currentTime = 0;
     });
     
     // "DUNG" pickup sound
-    dungSound = new Audio('audio/47982__benhillyard__vocal-splat-10.wav');
-    dungSound.volume = 0.5;
-    dungSound.addEventListener('ended', function(){
+    audioArray['dung'] = new Audio('audio/47982__benhillyard__vocal-splat-10.wav');
+    audioArray['dung'].volume = 0.5;
+    audioArray['dung'].addEventListener('ended', function(){
+    	this.currentTime = 0;
+    });
+    //Objective complete sound
+    audioArray['objective'] = new Audio('audio/objectiveComplete.wav');
+    audioArray['objective'].volume = 1;
+    audioArray['objective'].addEventListener('ended', function(){
+    	this.currentTime = 0;
+    });
+    /*TODO: FIND A BETTER SOUND*/
+    audioArray['largeDoor'] = new Audio('audio/106259__faceonmars__concrete2.mp3');
+    audioArray['largeDoor'].volume = 0.6;
+    audioArray['largeDoor'].addEventListener('ended', function(){
+    	this.currentTime = 0;
+    });
+    
+    audioArray['slideSound'] = new Audio('audio/119751__jesabat__dry-erase-fast2.mp3');
+    audioArray['slideSound'].volume = 0.5;
+    audioArray['slideSound'].addEventListener('ended', function(){
     	this.currentTime = 0;
     });
 }
