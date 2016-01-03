@@ -5,22 +5,23 @@
 var IcePillar = function(size, position){
 	this.mesh = new Physijs.BoxMesh(new THREE.BoxGeometry(size.x, size.y, size.z), 
 			Physijs.createMaterial(new THREE.MeshBasicMaterial({
-				color: 0x002277
-			}), 0, 0.1), 1);
+				color: 0x002277, visible: false
+			}), 0, 0.01), 1);
 	this.mesh.position.set(position.x, position.y, position.z);
 	var _this = this;
 	this.position = position;
-	this.mesh.addEventListener('collision', function(other_object){
-		for(var i = 0; i < icePillars.length; i++){
-			if(other_object == icePillars[i].mesh){
+	this.mesh.addEventListener('collision', function(other_object, relative_velocity, relative_rotation, contact_normal){
+		if(Math.abs(contact_normal.y) < 0.5){
 				this.setLinearVelocity(new THREE.Vector3(0,0,0));
 				other_object.setLinearVelocity(new THREE.Vector3(0,0,0));
-			}
 		}
 	});
 	scene.add(this.mesh);
 	this.mesh.setAngularFactor(new THREE.Vector3(0,0,0));
-	this.mesh.setLinearFactor(new THREE.Vector3(1,0,1));
+	this.mesh.setLinearFactor(new THREE.Vector3(0.1,0,0.1));
+	this.skin = new THREE.Mesh(new THREE.CylinderGeometry(size.x / 2, size.z / 2, size.y, 8), new THREE.MeshBasicMaterial({map:textureArray['ice'], opacity: 0.9}));
+	this.skin.material.transparent = true;
+	this.mesh.add(this.skin);
 }
 
 IcePillar.prototype.position;

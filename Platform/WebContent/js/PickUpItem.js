@@ -32,6 +32,7 @@ PickUpItem.prototype.pickUp = function(object){
 	scene.remove(this.mesh);
 	this.mesh.position.set(0,-1,-1.5);
 	object.add(this.mesh);
+	player.carriedItem = this.mesh;
 }
 
 PickUpItem.prototype.throwOut = function(){
@@ -44,12 +45,13 @@ PickUpItem.prototype.throwOut = function(){
   this.mesh.position.x = oldPosition.x + finalPosition.x;
   this.mesh.position.y = oldPosition.y + finalPosition.y;
   this.mesh.position.z = oldPosition.z + finalPosition.z; 
-  if(this.mesh.position.y < 0.5){
+  if(this.mesh.position.y < 1){
 	  //Lessens the "super-jump" from placing the item below the character.
-	  this.mesh.position.x -= Math.sin(camera.rotation.y);
+	  this.mesh.position.x -= 1.5*Math.sin(camera.rotation.y);
 	  this.mesh.position.y = 0;
-	  this.mesh.position.z -= Math.cos(camera.rotation.y);
+	  this.mesh.position.z -= 1.5*Math.cos(camera.rotation.y);
   }
 	scene.add(this.mesh);
+	player.carriedItem = null;
 	
 }

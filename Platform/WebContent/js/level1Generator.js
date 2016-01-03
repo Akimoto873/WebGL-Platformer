@@ -43,118 +43,156 @@ function createLight(x, y, z) {
 }
 
 
-// Generates level 1
-function generateLevel1() {
-    
-    // Load assets
-    loadAssets();
-
-    // OBJ MTL Loader
+//// Generates level 1
+//function generateLevel1() {
+//    
+//    // Load assets
+//    loadAssets();
+//
+//    // OBJ MTL Loader
+//    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
+//    var objLoader = new THREE.OBJMTLLoader();
+//
+//    // Load Level 1
+//    objLoader.load('models/level_01/level_01.obj',
+//                    'models/level_01/level_01.mtl', level1LoadedCallback);
+//
+//    // Load Flare
+//    objLoader.load('models/objects/flare/flare.obj',
+//                    'models/objects/flare/flare.mtl', flareLoadedCallback);
+//
+//    // Load Flare Box
+//    objLoader.load('models/objects/flare_box/flare_box.obj',
+//                    'models/objects/flare_box/flare_box.mtl', flareBoxLoadedCallback);
+//
+//    // Lights
+//    // ambientLight = new THREE.AmbientLight(0xd3d3d3);
+//    ambientLight = new THREE.AmbientLight(0xffffff);
+//    scene.add(ambientLight);
+//    
+//
+//    // JSON Loader
+//    loader = new THREE.JSONLoader();
+//    
+//     // Trap Texture
+//    trapTexture = textureLoader.load('images/crushers.jpg');
+//    
+//    // Load Trap
+//    loader.load('models/trap.js', trapLoadedCallback);
+//
+//    // Signs
+//    var exitTexture = textureLoader.load('images/exit.jpg');
+//    exitMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
+//            map : exitTexture
+//    }), 0.4, 0.8);
+//    var crushingTexture = textureLoader.load('images/crushing.jpg');
+//    crushingMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
+//            map : crushingTexture
+//    }), 0.4, 0.8);
+//
+//    // Level Collision
+//    floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
+//        .createMaterial(new THREE.MeshBasicMaterial({
+//                color : 0xee2233,
+//                visible : false
+//        }), 1, 0.2), 0);
+//    floor.position.y -= 2.25;
+//    scene.add(floor);
+//
+//    // Roof
+//    roof = new Physijs.BoxMesh(new THREE.BoxGeometry(50, 1, 50), Physijs
+//        .createMaterial(new THREE.MeshBasicMaterial({
+//                color : 0xee2233,
+//                visible : false
+//        }), 0.9, 0.2), 0);
+//    roof.position.y += 6;
+//    scene.add(roof);
+//
+//    // Create level 1 wall collision
+//    createLevel1Walls();
+//
+//    // Crate Object
+//    var crate = new PickUpItem();
+//    crate.createBoxMesh(new THREE.Vector3(1.5, 1, 1.5), cratePosition, crateMaterial, 15);
+//    crates.push(crate);
+//    moveableObjects.push(crate);
+//
+//    // Exit Sign
+//    exitSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2), exitMaterial, 0);
+//    exitSign.position.x += 24.5;
+//    exitSign.position.z += 23.2;
+//    exitSign.position.y += 3;
+//    scene.add(exitSign);
+//
+//    crushingSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2), crushingMaterial, 0);
+//    crushingSign.position.x -= 10.6;
+//    crushingSign.position.z += 16.5;
+//    crushingSign.position.y += 3;
+//    scene.add(crushingSign);
+//
+//    exit = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 6, 3), Physijs
+//        .createMaterial(new THREE.MeshPhongMaterial({
+//            color : 0x00ff00,
+//            emissive : 0x10ff10,
+//            shininess : 100,
+//            opacity : 0.5
+//        })), 0);
+//    exit.position.x += 25;
+//    exit.position.z += 23.2;
+//    scene.add(exit);
+//    
+//    exit.addEventListener('collision', function(other_object, relative_velocity, relative_rotation, contact_normal) {
+//        if (other_object == player.mesh) {
+//            levelComplete();
+//        }
+//    });
+//
+//    // Load the dung model
+//    loader.load('models/objects/dung/dung.js', dung1LoadedCallback);
+//
+//    scene.traverse(function(node) {
+//        if (node instanceof Physijs.BoxMesh) {
+//            objects.push(node);
+//        }
+//    });
+//}
+var maps = [];
+function generateLevel1(){
+  ambientLight = new THREE.AmbientLight(0xffffff);
+  scene.add(ambientLight);
+  floorTexture = textureArray['stones1']
+  roofTexture = textureArray['dirt2']
+  wallTexture = textureArray['dirt1']
+  maps = [];
+	var level1Map =  [ // 1, 2, 3, 4, 5, 6, 7, 8, 9 10 11 12 13 14
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+  [2, 12, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 24, 8, 2], // 0
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2], // 1
+  [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 8, 2, 1, 2, 2], // 0
+  [2, 2, 2, 1, 2, 1, 2, 2, 2, 2, 1, 2, 1, 2, 1, 2, 2], // 3
+  [2, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 21, 1, 2, 1, 2, 2], // 0
+  [2, 1, 2, 1, 1, 2, 2, 2, 1, 2, 1, 2, 1, 2, 1, 2, 2], // 1
+  [2, 1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2, 1, 2, 1, 2, 2], // 0 These numbers means nothing
+  [2, 8, 1, 1, 2, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1, 2, 2], // 7
+  [2, 1, 1, 1, 1, 1, 2, 1, 2, 23, 2, 1, 2, 1, 1, 2, 2], // 0
+  [2, 1, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2], // 1
+  [2, 1, 2, 20, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2], // 0
+  [2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2], // 3
+  [2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 8, 2, 1, 2, 1, 2], // 0
+  [2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2], // 1
+  [2, 1, 1, 1, 1, 2, 18, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2], // 8
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+ ]; 
+	maps.push(level1Map);
+	generateLevel(maps);
+	loader = new THREE.JSONLoader();
+    loader.load('models/objects/dung/dung.js', dung3LoadedCallback);
     THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
     var objLoader = new THREE.OBJMTLLoader();
-
-    // Load Level 1
-    objLoader.load('models/level_01/level_01.obj',
-                    'models/level_01/level_01.mtl', level1LoadedCallback);
-
-    // Load Flare
-    objLoader.load('models/objects/flare/flare.obj',
-                    'models/objects/flare/flare.mtl', flareLoadedCallback);
-
-    // Load Flare Box
-    objLoader.load('models/objects/flare_box/flare_box.obj',
-                    'models/objects/flare_box/flare_box.mtl', flareBoxLoadedCallback);
-
-    // Lights
-    // ambientLight = new THREE.AmbientLight(0xd3d3d3);
-    ambientLight = new THREE.AmbientLight(0xffffff);
-    scene.add(ambientLight);
-    
-
-    // JSON Loader
-    loader = new THREE.JSONLoader();
-    
-     // Trap Texture
-    trapTexture = textureLoader.load('images/crushers.jpg');
-    
-    // Load Trap
-    loader.load('models/trap.js', trapLoadedCallback);
-
-    // Signs
-    var exitTexture = textureLoader.load('images/exit.jpg');
-    exitMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
-            map : exitTexture
-    }), 0.4, 0.8);
-    var crushingTexture = textureLoader.load('images/crushing.jpg');
-    crushingMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({
-            map : crushingTexture
-    }), 0.4, 0.8);
-
-    // Level Collision
-    floor = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 1, 100), Physijs
-        .createMaterial(new THREE.MeshBasicMaterial({
-                color : 0xee2233,
-                visible : false
-        }), 1, 0.2), 0);
-    floor.position.y -= 2.25;
-    scene.add(floor);
-
-    // Roof
-    roof = new Physijs.BoxMesh(new THREE.BoxGeometry(50, 1, 50), Physijs
-        .createMaterial(new THREE.MeshBasicMaterial({
-                color : 0xee2233,
-                visible : false
-        }), 0.9, 0.2), 0);
-    roof.position.y += 6;
-    scene.add(roof);
-
-    // Create level 1 wall collision
-    createLevel1Walls();
-
-    // Crate Object
-    var crate = new PickUpItem();
-    crate.createBoxMesh(new THREE.Vector3(1.5, 1, 1.5), cratePosition, crateMaterial, 15);
-    crates.push(crate);
-    moveableObjects.push(crate);
-
-    // Exit Sign
-    exitSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2), exitMaterial, 0);
-    exitSign.position.x += 24.5;
-    exitSign.position.z += 23.2;
-    exitSign.position.y += 3;
-    scene.add(exitSign);
-
-    crushingSign = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 1, 2), crushingMaterial, 0);
-    crushingSign.position.x -= 10.6;
-    crushingSign.position.z += 16.5;
-    crushingSign.position.y += 3;
-    scene.add(crushingSign);
-
-    exit = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1, 6, 3), Physijs
-        .createMaterial(new THREE.MeshPhongMaterial({
-            color : 0x00ff00,
-            emissive : 0x10ff10,
-            shininess : 100,
-            opacity : 0.5
-        })), 0);
-    exit.position.x += 25;
-    exit.position.z += 23.2;
-    scene.add(exit);
-    
-    exit.addEventListener('collision', function(other_object, relative_velocity, relative_rotation, contact_normal) {
-        if (other_object == player.mesh) {
-            levelComplete();
-        }
-    });
-
-    // Load the dung model
-    loader.load('models/objects/dung/dung.js', dung1LoadedCallback);
-
-    scene.traverse(function(node) {
-        if (node instanceof Physijs.BoxMesh) {
-            objects.push(node);
-        }
-    });
+    objLoader.load('models/objects/trap_spikes/trap_spikes.obj', 'models/objects/trap_spikes/trap_spikes.mtl', fallingRoofTrapLoadedCallback);
+    objLoader.load('models/objects/key/key.obj', 'models/objects/key/key.mtl', keyLoadedCallback3);
+    objLoader.load('models/objects/giant_door/giant_door.obj', 'models/objects/giant_door/giant_door.mtl', giantDoorLoadedCallback3);
+	level = 1;
 }
 
 
@@ -226,6 +264,7 @@ function addWall(object, wallX, wallZ, wallScaleX, wallScaleY, wallScaleZ, wallY
     wall.position.y = wallPositionY;
     wall.scale.set(wallScaleX, wallScaleY, wallScaleZ);
     wall.visible = visibility;
+    wall.renderOrder = 1;
     scene.add(wall);
 }
 

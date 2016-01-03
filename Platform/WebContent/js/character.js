@@ -14,14 +14,17 @@ var Character = function(){
 			_this.jump1 = false;
 			_this.jump2 = false;
 			airborne = false;
-			if(relative_velocity.y < -16){
+			if(relative_velocity.y < -20){
 				var damage = Math.abs(relative_velocity.y + 16)*3;
 				takeDamage(damage);
 			}
 		}
 		if(_this.movementDisabled){
-			if(Math.abs(contact_normal.x) > 0.8 || Math.abs(contact_normal.z) > 0.8){
+			if(Math.abs(contact_normal.x) > 0.8 && Math.abs(_this.surfaceVelocity.x) > 1){
 				_this.surfaceVelocity.x = - _this.surfaceVelocity.x;
+				
+			}
+			if(Math.abs(contact_normal.z) > 0.8 && Math.abs(_this.surfaceVelocity.z) > 1){
 				_this.surfaceVelocity.z = - _this.surfaceVelocity.z;
 			}
 		}
@@ -41,6 +44,8 @@ Character.prototype.jump2 = false;
 Character.prototype.running = false;
 Character.prototype.movementDisabled = false;
 Character.prototype.surfaceSet = false;
+Character.prototype.carriedItem;
+Character.prototype.floor = 0;
 
 Character.prototype.setCamera = function(camera){
 	camera.position.z = 0;
@@ -134,6 +139,7 @@ Character.prototype.removeCharacter = function(){
 	scene.remove(this.mesh);
 }
 
+/*TODO: THIS CAN MAKE THE CHARACTER STUCK SOMETIMES */
 Character.prototype.disableMovement = function(){
 	this.movementDisabled = true;
 	if(!this.surfaceSet){
@@ -151,5 +157,12 @@ Character.prototype.disableMovement = function(){
 			this.velocity = new THREE.Vector3(0,0,0);
 			this.surfaceSet = true;
 		}
+	}
+}
+
+Character.prototype.checkFloor = function(){
+	var oldFloor = this.floor;
+	this.floor = Math.floor(this.mesh.position.y/WALLHEIGHT) + 1;
+	if(this.floor != oldFloor){
 	}
 }

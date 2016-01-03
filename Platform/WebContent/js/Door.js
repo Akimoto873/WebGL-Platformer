@@ -2,11 +2,13 @@
  * 
  */
 
-var Door = function(direction, position, size, keyReq){
+var Door = function(direction, facing, position, size, keyReq){
 	this.keyReq = keyReq;
 	this.direction = direction;
+	this.facing = facing;
 	this.position = position;
 	this.speed = new THREE.Vector3(direction.x * 2, direction.y * 2, direction.z * 2);
+	this.size = size;
 	this.mesh = new Physijs.BoxMesh(new THREE.BoxGeometry(size.x, size.y, size.z), Physijs.createMaterial(new THREE.MeshBasicMaterial({
 		color: 0x0000FF, visible: false
 	}), 1, 0.1), 200);
@@ -72,12 +74,22 @@ Door.prototype.checkDoor = function(){
 				this.opening = true;
 				audioArray['largeDoor'].play();
 			}
+			else{
+				var tipText = "You need " + this.keyReq + " keys to open this door.";
+				var input = [];
+				input.push(tipText);
+				updateTipsTracker(input);
+				showTips();
+			}
 		}
 	}
 }
 
 Door.prototype.addSkin = function(skin){
 	this.skin = skin;
-	this.skin.position.set(0,-WALLHEIGHT/2, 0);
+	this.skin.position.set(0, -WALLHEIGHT/2, 0);
+	if(this.facing.z == 1){
+		this.skin.rotation.y = Math.PI/2;
+	}
 	this.mesh.add(this.skin);
 }

@@ -4,7 +4,8 @@
 
 /*TODO: NOT WORKING PERFECTLY */
 
-var MovingPlatform = function(speed, direction, length){
+var MovingPlatform = function(speed, direction, length, floor){
+	this.floor = floor || 1;
 	this.speed = speed;
 	this.velocity = new THREE.Vector3(0,0,0);
 	this.velocity.x = this.speed.x;
@@ -15,7 +16,7 @@ var MovingPlatform = function(speed, direction, length){
 }
 
 MovingPlatform.prototype.createBoxMesh = function(size, position, material, weight, friction, restitution){
-	var material = material || Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0x112233, visible : true}), friction, restitution);
+	var material = material || Physijs.createMaterial(new THREE.MeshBasicMaterial({map:textureArray['steel'], visible : true}), friction, restitution);
 	this.mesh = new Physijs.BoxMesh(new THREE.BoxGeometry(size.x, size.y, size.z), material, weight);
 	this.mesh.position.x = position.x;
 	this.mesh.position.y = position.y;
@@ -29,6 +30,9 @@ MovingPlatform.prototype.createBoxMesh = function(size, position, material, weig
 			if(Math.abs(contact_normal.z) > 0.8*_this.direction.z){
 				_this.velocity.z = -_this.velocity.z;
 			}
+			if((other_object != player.mesh) && (Math.abs(contact_normal.y) > 0.8*_this.direction.y)){
+				_this.velocity.y = -_this.velocity.y;
+			}
 	});
 	scene.add(this.mesh);
 	this.mesh.setLinearFactor(this.direction);
@@ -36,35 +40,37 @@ MovingPlatform.prototype.createBoxMesh = function(size, position, material, weig
 	this.mesh.setLinearVelocity(this.speed);
 }
 
+/*TODO: do a floorcheck*/
 MovingPlatform.prototype.move = function(){
-	if(this.direction.x != 0){
-		if(this.mesh.position.x < this.position.x){
-			this.velocity.x = this.speed.x;
+		if(this.direction.x != 0){
+			if(this.mesh.position.x < this.position.x){
+				this.velocity.x = this.speed.x;
+			}
+			else if(this.mesh.position.x > this.position.x + this.length){
+				this.velocity.x = -this.speed.x;
+			}
 		}
-		else if(this.mesh.position.x > this.position.x + this.length){
-			this.velocity.x = -this.speed.x;
+		if(this.direction.y != 0){
+			if(this.mesh.position.y < this.position.y){
+				this.velocity.y = this.speed.y;
+			}
+			else if(this.mesh.position.y > this.position.y + this.length){
+				this.velocity.y = -this.speed.y;
+			}
 		}
-	}
-	if(this.direction.y != 0){
-		if(this.mesh.position.y < this.position.y){
-			this.velocity.y = this.speed.y;
+		if(this.direction.z != 0){
+			if(this.mesh.position.z < this.position.z){
+				this.velocity.z = this.speed.z;
+			}
+			else if(this.mesh.position.z > this.position.z + this.length){
+				this.velocity.z = -this.speed.z;
+			}
 		}
-		else if(this.mesh.position.y > this.position.y + this.length){
-			this.velocity.y = -this.speed.y;
+		this.mesh.setLinearVelocity(this.velocity);
+		if(this.mesh._physijs.touches.indexOf(player.mesh._physijs.id) === 0){
+			player.setSurfaceVelocity(this.velocity);
 		}
-	}
-	if(this.direction.z != 0){
-		if(this.mesh.position.z < this.position.z){
-			this.velocity.z = this.speed.z;
-		}
-		else if(this.mesh.position.z > this.position.z + this.length){
-			this.velocity.z = -this.speed.z;
-		}
-	}
-	this.mesh.setLinearVelocity(this.velocity);
-	if(this.mesh._physijs.touches.indexOf(player.mesh._physijs.id) === 0){
-		player.setSurfaceVelocity(this.velocity);
-	}
+	
 }
 
 MovingPlatform.prototype.setSpeed = function (newSpeed){

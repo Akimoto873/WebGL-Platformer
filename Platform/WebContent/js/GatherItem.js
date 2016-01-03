@@ -9,6 +9,12 @@ var GatherItem = function(bonusType, bonusAmount, audio, spin, move){
 	this.spin = spin || false;
 	this.move = move || false;
 	gatherableItems.push(this);
+	if(bonusType == "health"){
+		this.healing = true;
+	}
+	else{
+		this.healing = false;
+	}
 }
 
 GatherItem.prototype.gathered = false;
@@ -25,8 +31,23 @@ GatherItem.prototype.createBoxMesh = function(size, position, material, weight, 
 		if(other_object == player.mesh){
 			scene.remove(_this.mesh);
 			_this.playSound();
-			bonusArray[_this.bonusType] += _this.bonusAmount;
-			_this.gathered = true;
+			if(!this.healing){
+				bonusArray[_this.bonusType] += _this.bonusAmount;
+				_this.gathered = true;
+				if(_this.bonusType == "points"){
+					updateScore();
+				}
+				if(_this.bonusType == "keys"){
+					updateKeys();
+				}
+			}
+			else{
+				health += 50;
+				if(health > 100){
+					health = 100;
+				}
+				_this.gathered = true;
+			}
 		}
 	});
 	scene.add(this.mesh);

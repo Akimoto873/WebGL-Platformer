@@ -19,8 +19,9 @@ SpecialTile.prototype.velocityChecked = false;
 SpecialTile.prototype.triggered = false;
 
 SpecialTile.prototype.makeIce = function(){
+	this.mesh.material = Physijs.createMaterial(new THREE.MeshBasicMaterial({map: textureArray['ice'], opacity: 0.7}), 0, 0.1);
 	this.mesh.material.transparent = true;
-	this.mesh.material.opacity = 0.7;
+	this.mesh.material.opacity = 0.98;
 	this.mesh.material.friction = 0;
 }
 

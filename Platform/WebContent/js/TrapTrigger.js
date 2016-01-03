@@ -2,8 +2,8 @@
  * 
  */
 
-var TrapTrigger = function(trap){
-	this.trap = trap;
+var TrapTrigger = function(traps){
+	this.traps = traps;
 }
 
 TrapTrigger.prototype.createBoxMesh = function(size, position, material, weight, friction, restitution){
@@ -18,7 +18,9 @@ TrapTrigger.prototype.createBoxMesh = function(size, position, material, weight,
 		
 		for(var i = 0; i < moveableObjects.length; i++){
 			if(other_object == moveableObjects[i].mesh){
-				_this.trap.trigger();
+				for(var j = 0; j < _this.traps.length; j++){
+					_this.traps[j].trigger();
+				}
 			}
 		}
 	});
@@ -38,9 +40,15 @@ TrapTrigger.prototype.createCylinderMesh = function(size, position, material, ro
 	this.mesh.addEventListener('collision', function(other_object){
 		for(var i = 0; i < moveableObjects.length; i++){
 			if(other_object == moveableObjects[i].mesh){
-				_this.trap.trigger();
+				for(var j = 0; j < _this.traps.length; j++){
+					_this.traps[j].trigger();
+				}
 			}
 		}
 	});
 	scene.add(this.mesh);
+}
+
+TrapTrigger.prototype.addTrap = function(trap){
+	this.traps.push(trap);
 }

@@ -360,17 +360,28 @@ function init() {
     
     // Load game sounds
     loadAudio();
+    loadTextures();
+    bonusArray['lives'] = 3;
     
     // Generate initial level 1
-    generateLevel3(); 
+    generateLevel1(); 
     
     // Create overlay (HUD)
     createOverlay();
     
     // Create character
 //    createChar();
+    if(level == 1){
+    	charMeshPosition = new THREE.Vector3(UNITSIZE * 5,2,UNITSIZE * 9);
+    }
+    if(level == 2){
+    	charMeshPosition = new THREE.Vector3(UNITSIZE * 9, 2, UNITSIZE * 5);
+    }
     if(level == 3){
-    	charMeshPosition = new THREE.Vector3(5,1,5);
+    	charMeshPosition = new THREE.Vector3(UNITSIZE,2.5,UNITSIZE);
+    }
+    if(level == 4){
+    	charMeshPosition = new THREE.Vector3(UNITSIZE*6, 5, UNITSIZE*6);
     }
     player = new Character();
     player.setCamera(camera);
@@ -506,12 +517,13 @@ function checkPuzzle(){
             
             // If the puzzle is complete, play sound and fade it away.
             if(complete){
+            	puzzleComplete = true;
                 audioArray['puzzle'].play();
                 puzzle.material.transparent = true;
                 for(var i = 0; i< puzzlePoints.length; i++){
                         puzzlePoints[i].material.transparent = true;
                 }
-                puzzleComplete = true;
+                
             }
         }
     }
@@ -520,7 +532,7 @@ function checkPuzzle(){
         distance.subVectors(player.mesh.position, targetTile.mesh.position);
         
         // Allow button pressing within a certain distance
-        if(distance.length() < 20){
+        if(distance.length() < UNITSIZE*4){
         	var pillarCaster = new THREE.Raycaster();
         	pillarCaster.setFromCamera(new THREE.Vector2(0,0), camera);
         	var intersects = pillarCaster.intersectObjects(objects);
@@ -643,12 +655,12 @@ function sceneUpdate(){
     checkChangesToHUD();
     resetValues();
     
-    // Update flare sprite animation
-    // TODO: Only loop animation on items on the ground
-    var delta = clock.getDelta();
-    if(flareAnimation != null){
-    	flareAnimation.update(delta * 200);
-    } 
+//    // Update flare sprite animation
+//    // TODO: Only loop animation on items on the ground
+//    var delta = clock.getDelta();
+//    if(flareAnimation != null){
+//    	flareAnimation.update(delta * 200);
+//    } 
 }
 
 
@@ -683,9 +695,18 @@ function log(param) {
 
 // Called when the level 1 is complete. Starts next level.
 function levelComplete() {
+	bonusArray['savedScore'] = bonusArray['points'];
+	gatherableItems = [];
+	bonusArray['keys'] = 0;
+	updateKeys();
+	doors = [];
+	if(player.carriedItem != null){
+		camera.remove(player.carriedItem);
+	}
 	if(level == 1){
 	    level = 0;
 	    resetScene();
+	    charMeshPosition = new THREE.Vector3(UNITSIZE * 9, 2, UNITSIZE * 5);
 	    resetChar();
 	    generateLevel2();
 	    level = 2;
@@ -693,11 +714,20 @@ function levelComplete() {
 	else if(level == 2){
 		level = 0;
 		resetScene();
-		charMeshPosition = new THREE.Vector3(25,1,20);
+		charMeshPosition = new THREE.Vector3(UNITSIZE,2.5,UNITSIZE);
 		resetChar();
 		generateLevel3();
 		level = 3;
 	}
+	else if(level == 3){
+		level = 0;
+		resetScene();
+		charMeshPosition = new THREE.Vector3(UNITSIZE * 5,2,UNITSIZE * 9);
+		resetChar();
+		generateLevel1();
+		level = 1;
+	}
+	
 }
 
 
@@ -717,9 +747,20 @@ function resetScene(){
 function restartLevel() { 
     // Restarting level 1 and level 2 demands different actions
 	var temp = level;
+	if(bonusArray['lives'] < 1){
+		bonusArray['lives'] = 3;
+		bonusArray['savedScore'] = 0;
+		/*TODO: Make some kind of highscore list eventually*/
+		temp = 1;
+		updateLives();
+	}
 	level = 0;
 	resetChar();
 	resetCrates();
+	bonusArray['points'] = bonusArray['savedScore'];
+	updateScore();
+	bonusArray['keys'] = 0;
+	updateKeys();
 	health = 100;
 	damaged = true;
 	if (gameOverScreen) {
@@ -733,16 +774,18 @@ function restartLevel() {
 	 resetGatherableItems();
     if(temp == 1){ 
         level = 1;
-        resetCones();
     }
     if(temp == 2){
         resetPuzzle();
-        resetJumpableDoor();
-        resetCones();
+//        resetJumpableDoor();
+        resetKeys();
         level = 2;
     }
     if(temp == 3){
     	level = 3;
+    }
+    if(temp == 4){
+    	level = 4;
     }
 }
 
@@ -817,19 +860,20 @@ function resetTraps2(){
 
 // Resets the collectible keys in level 2
 function resetKeys(){
-    bonusArray['keys'] = 0;
-    scene.remove(key1);
-    scene.add(key1);
-    key1.setLinearFactor(new THREE.Vector3(0,0,0));
-    key1.setAngularVelocity(new THREE.Vector3(0,1,0));
-    scene.remove(key2);
-    scene.add(key2);
-    key2.setLinearFactor(new THREE.Vector3(0,0,0));
-    key2.setAngularVelocity(new THREE.Vector3(0,1,0));
-    scene.remove(key3);
-    scene.add(key3);
-    key3.setLinearFactor(new THREE.Vector3(0,0,0));
-    key3.setAngularVelocity(new THREE.Vector3(0,1,0));
+	/*TODO: FIX*/
+//    bonusArray['keys'] = 0;
+//    scene.remove(key1);
+//    scene.add(key1);
+//    key1.setLinearFactor(new THREE.Vector3(0,0,0));
+//    key1.setAngularVelocity(new THREE.Vector3(0,1,0));
+//    scene.remove(key2);
+//    scene.add(key2);
+//    key2.setLinearFactor(new THREE.Vector3(0,0,0));
+//    key2.setAngularVelocity(new THREE.Vector3(0,1,0));
+//    scene.remove(key3);
+//    scene.add(key3);
+//    key3.setLinearFactor(new THREE.Vector3(0,0,0));
+//    key3.setAngularVelocity(new THREE.Vector3(0,1,0));
 }
 
 
@@ -1025,7 +1069,7 @@ function loadAudio(){
         this.play();
     }, false);
     audioArray['level1'].play();
-    audioArray['level1'].volume = 0;
+//    audioArray['level1'].volume = 0;
     
     // Level 2 music
     audioArray['level2'] = new Audio('audio/172937__setuniman__creepy-0v55m2.mp3');
@@ -1080,4 +1124,33 @@ function loadAudio(){
     audioArray['slideSound'].addEventListener('ended', function(){
     	this.currentTime = 0;
     });
+    audioArray['key'] = new Audio('audio/270408__littlerobotsoundfactory__pickup-gold-00.mp3');
+    audioArray['key'].volume = 0.5;
+    audioArray['key'].addEventListener('ended', function(){
+        this.currentTime = 0;
+    });
+    audioArray['health'] = new Audio('audio/320005__manuts__get-armour.wav');
+    audioArray['health'].volume = 0.5;
+    audioArray['health'].addEventListener('ended', function(){
+    	this.currentTime = 0;
+    });
+}
+
+var textureArray = [];
+function loadTextures(){
+	textureArray['ice'] = textureLoader.load('images/ice2.jpg');
+	textureArray['bricks1'] = textureLoader.load('images/bricks.jpg');
+	textureArray['lightWood'] = textureLoader.load('images/woodWall.jpg');
+	textureArray['stones1'] = textureLoader.load('images/stoneWall2.jpg');
+	textureArray['floral'] = textureLoader.load('images/floral.jpg');
+	textureArray['steel'] = textureLoader.load('images/shiny-steel.jpg');
+	textureArray['crate'] = textureLoader.load('images/crate.jpg');
+	textureArray['healthBox'] = textureLoader.load('images/healthBox.jpg');
+	textureArray['dirt1'] = textureLoader.load('images/dirtFloor2.jpg');
+	textureArray['marble1'] = textureLoader.load('images/marbleFloor12.jpg');
+	textureArray['marble2'] = textureLoader.load('images/marbleFloor22.jpg');
+	textureArray['darkWood'] = textureLoader.load('images/darkWoodFloor.jpg');
+	textureArray['dirt2'] = textureLoader.load('images/dirtyFloor.jpg');
+	textureArray['bricks2'] = textureLoader.load('images/brickWall.jpg');
+	textureArray['stones2'] = textureLoader.load('images/stoneFloor.jpg');
 }

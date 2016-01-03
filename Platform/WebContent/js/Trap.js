@@ -33,14 +33,17 @@ Trap.prototype.createBoxMesh = function(size, position, material, weight, fricti
 				_this.triggered = false;
 				_this.reset = true;
 			}
-			if(_this.triggered){
-				_this.triggered = false;
-				_this.reset = true;
+			if((_this.direction.y != 0 && Math.abs(contact_normal.y) > 0.5) || (_this.direction.z != 0 && Math.abs(contact_normal.z) > 0.5) || (_this.direction.x != 0 && Math.abs(contact_normal.x) > 0.5)){
+				if(_this.triggered){
+					_this.triggered = false;
+					_this.reset = true;
+				}
 				
 			}
 		}
 	});
 	scene.add(this.mesh);
+	traps.push(this);
 	this.mesh.setLinearFactor(new THREE.Vector3(0,0,0));
 	this.mesh.setAngularFactor(new THREE.Vector3(0,0,0));
 }
@@ -57,19 +60,68 @@ Trap.prototype.active = function(){
 }
 
 Trap.prototype.resetting = function(){
-	var distance = new THREE.Vector3();
-    distance.subVectors(this.mesh.position, this.position);
-    if(distance.length() < 0.5){
-    	this.waitTime += 1;
-    	if(this.waitTime > this.resetDelay){
-    		this.reset = false;
-    		this.waitTime = 0;
-    	}
-    	this.mesh.setLinearVelocity(new THREE.Vector3(0,0,0));
-    	this.mesh.setLinearFactor(new THREE.Vector3(0,0,0));
-    	this.mesh.setAngularFactor(new THREE.Vector3(0,0,0));
-    }
-    else{
-    	this.mesh.setLinearVelocity(new THREE.Vector3(-this.velocity.x, -this.velocity.y, -this.velocity.z));
-    }
+	if(this.direction.y > 0){
+		var distance = new THREE.Vector3();
+	    distance.subVectors(this.mesh.position, this.position);
+	    if(distance.length() < 0.5){
+	    	this.waitTime += 1;
+	    	if(this.waitTime > this.resetDelay){
+	    		this.reset = false;
+	    		this.waitTime = 0;
+	    	}
+	    	this.mesh.setLinearVelocity(new THREE.Vector3(0,0,0));
+	    	this.mesh.setLinearFactor(new THREE.Vector3(0,0,0));
+	    	this.mesh.setAngularFactor(new THREE.Vector3(0,0,0));
+	    }
+	    else{
+	    	this.mesh.setLinearVelocity(new THREE.Vector3(-this.velocity.x, -this.velocity.y, -this.velocity.z));
+	    }
+	}
+	else if(this.direction.z > 0){
+		if(this.position.z > this.mesh.position.z + UNITSIZE/2 + 1){
+			this.waitTime += 1;
+	    	if(this.waitTime > this.resetDelay){
+	    		this.reset = false;
+	    		this.waitTime = 0;
+	    	}
+	    	this.mesh.setLinearVelocity(new THREE.Vector3(0,0,0));
+	    	this.mesh.setLinearFactor(new THREE.Vector3(0,0,0));
+	    	this.mesh.setAngularFactor(new THREE.Vector3(0,0,0));
+	    }
+	    else{
+	    	this.mesh.setLinearVelocity(new THREE.Vector3(-this.velocity.x, -this.velocity.y, -this.velocity.z));
+	    
+		}
+	}
+	else if(this.direction.x > 0){
+		if(this.position.x > this.mesh.position.x + UNITSIZE/2 + 1){
+			this.waitTime += 1;
+	    	if(this.waitTime > this.resetDelay){
+	    		this.reset = false;
+	    		this.waitTime = 0;
+	    	}
+	    	this.mesh.setLinearVelocity(new THREE.Vector3(0,0,0));
+	    	this.mesh.setLinearFactor(new THREE.Vector3(0,0,0));
+	    	this.mesh.setAngularFactor(new THREE.Vector3(0,0,0));
+	    }
+	    else{
+	    	this.mesh.setLinearVelocity(new THREE.Vector3(-this.velocity.x, -this.velocity.y, -this.velocity.z));
+	    
+		}
+	
+	}
+}
+
+Trap.prototype.addSkin = function(skin){
+	if(this.direction.y > 0){
+		this.mesh.add(skin);
+	}
+	else if(this.direction.z > 0){
+		skin.rotation.x -= Math.PI/2;
+		this.mesh.add(skin);
+	}
+	else if(this.direction.x > 0){
+		skin.rotation.z -= Math.PI/2;
+		this.mesh.add(skin);
+	}
 }

@@ -147,11 +147,11 @@ function checkMovement() {
         	carrying = false;
         }
         if(level == 2){
-        	var distance = new THREE.Vector3();
-        	distance.subVectors(player.mesh.position, lever.position);
-        	if(distance.length() < 2.5){
-        		jumpableDoorOpening = true;
-        	}
+//        	var distance = new THREE.Vector3();
+//        	distance.subVectors(player.mesh.position, lever.position);
+//        	if(distance.length() < 2.5){
+//        		jumpableDoorOpening = true;
+//        	}
         }
         if(level == 3){
         	var distance = new THREE.Vector3();
@@ -165,28 +165,41 @@ function checkMovement() {
     
     
     // Check if all keys are picked up in level 2
-    if(level == 2 && bonusArray['keys'] == 3){
-    	var distance = new THREE.Vector3();
-        distance.subVectors(player.mesh.position, doorway.position);
-        
-        // If the character is within a certain distance of the exit door, open the door
-        if(distance.length() < 6){                                  
-            if(doorway.children[0].position.y > -8){
-                doorway.children[0].position.y -= 0.02;         
-            } else{
-                scene.remove(doorway);
-                keysPickedUp = 0;
-            }
-        }
-    }
+//    if(level == 2 && bonusArray['keys'] == 3){
+//    	var distance = new THREE.Vector3();
+//        distance.subVectors(player.mesh.position, doorway.position);
+//        
+//        // If the character is within a certain distance of the exit door, open the door
+//        if(distance.length() < 6){                                  
+//            if(doorway.children[0].position.y > -8){
+//                doorway.children[0].position.y -= 0.02;         
+//            } else{
+//                scene.remove(doorway);
+//                keysPickedUp = 0;
+//            }
+//        }
+//    }
 
 	// Check for fall damage
 
 	player.checkFall();
+	player.checkFloor();
 
 	// If we have lost all our health, set game over
 	if (health < 1 && !gameOverScreen) {
-		showGameOver();
+		if(bonusArray['lives'] > 1){
+			bonusArray['lives'] -= 1;
+			updateLives();
+			showGameOver();
+			/*TODO: Make a you died screen*/
+//			showYouDied();
+		}
+		else{
+			bonusArray['lives'] -= 1;
+			updateLives();
+			showGameOver();
+		}
+		
 	}
 }
     
